@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ccna_command_hub/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:ccna_command_hub/models/module_model.dart';
@@ -31,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen>
         centerTitle: true,
       ),
 
+      // call to drawer
+      drawer: const MainDrawer(),
       // body
 
       body: FutureBuilder<List<ModuleModel>>(
