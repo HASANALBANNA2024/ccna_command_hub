@@ -1,8 +1,19 @@
+import 'package:ccna_command_hub/main.dart';
 import 'package:flutter/material.dart';
 
-class MainDrawer extends StatelessWidget
+
+class MainDrawer extends StatefulWidget
 {
   const MainDrawer({super.key});
+  @override
+  _MainDrawerState createState() => _MainDrawerState();
+}
+
+
+class _MainDrawerState extends State<MainDrawer>
+{
+  bool _isDark = false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -42,6 +53,22 @@ class MainDrawer extends StatelessWidget
             leading: const Icon(Icons.settings_outlined),
             title: const Text("Settings"),
             onTap: () {},
+          ),
+          // থিম পরিবর্তন করার সুইচ
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: themeNotifier,
+            builder: (context, mode, _) {
+              bool isDark = mode == ThemeMode.dark;
+              return SwitchListTile(
+                title: const Text("Dark Mode"),
+                secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
+                value: isDark,
+                onChanged: (bool value) {
+                  // এখানে ভ্যালু পরিবর্তন করলেই পুরো অ্যাপের থিম বদলে যাবে
+                  themeNotifier.value = value ? ThemeMode.dark : ThemeMode.light;
+                },
+              );
+            },
           ),
           const Spacer(),
           const Padding(
