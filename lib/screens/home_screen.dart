@@ -53,29 +53,76 @@ class _HomeScreenState extends State<HomeScreen>
                     itemBuilder: (context, index)
                     {
                       final module = modules[index];
-                      // card of modules name
+                      // card design
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 10),
+                        margin: const EdgeInsets.only(bottom: 12, left: 12, right: 12),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         child: ListTile(
-                          leading: Icon(
-                            module.isUnlocked ? Icons.lock_open_rounded : Icons.lock_clock_outlined,
-                            color: module.isUnlocked ? Colors.blue : Colors.grey,
-                          ),
-                          title: Text(
-                            module.name,
-                            style: const TextStyle(
-                              fontWeight:  FontWeight.bold, fontSize: 16
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          // ১. বাম পাশের আইকন (লক/আনলক)
+                          leading: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: module.isUnlocked ? Colors.blue.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              module.isUnlocked ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
+                              color: module.isUnlocked ? Colors.blue : Colors.grey,
+                              size: 24,
                             ),
                           ),
-                          subtitle: Text(module.desc),
-                          trailing: const Icon(Icons.arrow_forward_ios,size: 14,),
 
-                          onTap: (){
-                            // locked unlocked all side sub module open but after sub module not access content
+                          // ২. মাঝখানের কন্টেন্ট (নম্বর + নাম + বর্ণনা)
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Module Number
+                              Text(
+                                "MODULE ${index + 1 < 10 ? '0' : ''}${index + 1}",
+                                style: TextStyle(
+                                  color: module.isUnlocked ? Colors.blueAccent : Colors.grey,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              // Module name
+                              Text(
+                                module.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
 
+                          // module description
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              module.desc,
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ),
+
+                          // arrow icon
+                          trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+
+                          onTap: () {
+
+                            debugPrint("Opening Module: ${module.name}");
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => SubModuleScreen(module: module)));
                           },
                         ),
                       );
+
                     }
                 );
               }
