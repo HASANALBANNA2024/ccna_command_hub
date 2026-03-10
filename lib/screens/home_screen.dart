@@ -3,6 +3,7 @@ import 'package:ccna_command_hub/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:flutter/services.dart';
+import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -128,8 +129,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     onTap: () {
-                      debugPrint("Opening Module: ${module.name}");
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => SubModuleScreen(module: module)));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SubModuleScreen(
+                            moduleName: module.name, // AppBar-এ দেখানোর জন্য মডিউলের নাম
+                            subModules: module.subModules, // ওই মডিউলের সব সাব-মডিউল লিস্ট
+                          ),
+                        ),
+                      );
                     },
                   ),
                 );
