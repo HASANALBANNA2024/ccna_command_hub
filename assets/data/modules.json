@@ -1,30 +1,521 @@
 [
-  { "id": "m1", "name": "Basic Networking", "isUnlocked": true, "desc": "Network types, Topologies, and Devices." },
-  { "id": "m2", "name": "OSI Model", "isUnlocked": false, "desc": "7 Layers of OSI and Data Encapsulation." },
-  { "id": "m3", "name": "IPv4 Addressing", "isUnlocked": false, "desc": "IPv4 Classes, Public vs Private IPs." },
-  { "id": "m4", "name": "IPv6 Addressing", "isUnlocked": false, "desc": "IPv6 Structure and Addressing types." },
-  { "id": "m5", "name": "Subnetting Mastery", "isUnlocked": false, "desc": "FLSM, VLSM and Subnet calculation." },
-  { "id": "m6", "name": "Ethernet Switching", "isUnlocked": false, "desc": "Collision vs Broadcast domains." },
-  { "id": "m7", "name": "VLAN Concepts", "isUnlocked": false, "desc": "Access ports, Trunking, and 802.1Q." },
-  { "id": "m8", "name": "EtherChannel", "isUnlocked": false, "desc": "LACP, PAgP and Bundle interfaces." },
-  { "id": "m9", "name": "Spanning Tree Protocol (STP)", "isUnlocked": false, "desc": "Root Bridge, Port roles and states." },
-  { "id": "m10", "name": "Basic Routing", "isUnlocked": false, "desc": "Routing table and Packet forwarding." },
-  { "id": "m11", "name": "Static Routing", "isUnlocked": false, "desc": "Default route and Specific static routes." },
-  { "id": "m12", "name": "EIGRP Protocol", "isUnlocked": false, "desc": "DUAL algorithm and AD values." },
-  { "id": "m13", "name": "OSPF Protocol", "isUnlocked": false, "desc": "Single area OSPF and Link-state logic." },
-  { "id": "m14", "name": "RIP Protocol", "isUnlocked": false, "desc": "Distance vector and Hop counts." },
-  { "id": "m15", "name": "BGP Protocol", "isUnlocked": false, "desc": "Autonomous Systems and Path vector." },
-  { "id": "m16", "name": "IP Service 01 (NAT)", "isUnlocked": false, "desc": "Static, Dynamic NAT and PAT." },
-  { "id": "m17", "name": "IP Service 02 (DHCP)", "isUnlocked": false, "desc": "DORA process and Relay agents." },
-  { "id": "m18", "name": "IP Service 03 (NTP)", "isUnlocked": false, "desc": "Time synchronization in networks." },
-  { "id": "m19", "name": "IP Service 04 (SNMP)", "isUnlocked": false, "desc": "Network monitoring and management." },
-  { "id": "m20", "name": "Security (Standard ACL)", "isUnlocked": false, "desc": "Filtering based on source IP." },
-  { "id": "m21", "name": "Security (Extended ACL)", "isUnlocked": false, "desc": "Port and Protocol based filtering." },
-  { "id": "m22", "name": "Port Security", "isUnlocked": false, "desc": "Mac-address binding and Violation modes." },
-  { "id": "m23", "name": "WAN Concepts", "isUnlocked": false, "desc": "HDLC, PPP and Frame Relay basics." },
-  { "id": "m24", "name": "VPN Concepts (General)", "isUnlocked": false, "desc": "Tunneling and Encryption basics." },
-  { "id": "m25", "name": "Site-to-Site VPN", "isUnlocked": false, "desc": "IPsec tunnels between offices." },
-  { "id": "m26", "name": "Remote Access VPN", "isUnlocked": false, "desc": "AnyConnect and Clientless VPN." },
-  { "id": "m27", "name": "Network Automation", "isUnlocked": false, "desc": "SDN, Controllers and APIs." },
-  { "id": "m28", "name": "Programming Fundamentals", "isUnlocked": false, "desc": "Python and JSON for Networks." }
+  {
+    "id": "m1",
+    "name": "Basic Networking",
+    "isUnlocked" : true,
+    "desc": "Network types, Topologies, and Devices.",
+    "subModules":
+            [
+              { "id": "m1s1", "title": "Networking Intro", "isUnlocked": true, "desc": "Basics of computer networking." },
+              { "id": "m1s2", "title": "Why Networking", "isUnlocked": true, "desc": "Importance of networking." },
+              { "id": "m1s3", "title": "Network Types", "isUnlocked": true, "desc": "LAN, WAN, MAN and PAN." },
+              { "id": "m1s4", "title": "Network Devices", "isUnlocked": true, "desc": "Router, switch and other devices." },
+              { "id": "m1s5", "title": "Network Topology", "isUnlocked": true, "desc": "Common network structures." },
+              { "id": "m1s6", "title": "Network Media", "isUnlocked": true, "desc": "Cables and wireless media." },
+              { "id": "m1s7", "title": "MAC Address", "isUnlocked": true, "desc": "Unique device hardware address." }
+            ]
+  },
+  {
+    "id": "m2",
+    "name": "OSI Model",
+    "isUnlocked": false,
+    "desc": "7 Layers of OSI and Data Encapsulation.",
+    "subModules":
+    [
+      { "id": "m2s1", "title": "OSI Model Intro", "isUnlocked": false, "desc": "Introduction to OSI model." },
+      { "id": "m2s2", "title": "Purpose of OSI Model", "isUnlocked": false, "desc": "Why OSI model is used." },
+      { "id": "m2s3", "title": "OSI 7 Layers Overview", "isUnlocked": false, "desc": "Overview of all layers." },
+      { "id": "m2s4", "title": "Physical Layer", "isUnlocked": false, "desc": "Layer 1 functions." },
+      { "id": "m2s5", "title": "Data Link Layer", "isUnlocked": false, "desc": "Layer 2 communication." },
+      { "id": "m2s6", "title": "Network Layer", "isUnlocked": false, "desc": "Routing and IP logic." },
+      { "id": "m2s7", "title": "Transport Layer", "isUnlocked": false, "desc": "TCP and UDP basics." },
+      { "id": "m2s8", "title": "Session Layer", "isUnlocked": false, "desc": "Session management." },
+      { "id": "m2s9", "title": "Presentation Layer", "isUnlocked": false, "desc": "Data format and encryption." },
+      { "id": "m2s10", "title": "Application Layer", "isUnlocked": false, "desc": "User network services." },
+      { "id": "m2s11", "title": "Data Encapsulation Process", "isUnlocked": false, "desc": "Encapsulation concept." },
+      { "id": "m2s12", "title": "PDU (Protocol Data Unit)", "isUnlocked": false, "desc": "Data unit at layers." }
+   ]
+  },
+  { "id": "m3",
+    "name": "IPv4 Addressing",
+    "isUnlocked": false,
+    "desc": "IPv4 Classes, Public vs Private IPs.",
+    "subModules":
+            [
+                { "id": "m3s1", "title": "IPv4 Intro", "isUnlocked": false, "desc": "Basics of IPv4." },
+                { "id": "m3s2", "title": "IPv4 Classes", "isUnlocked": false, "desc": "Class A to E overview." },
+                { "id": "m3s3", "title": "Public vs Private IP", "isUnlocked": false, "desc": "Difference between IP types." },
+                { "id": "m3s4", "title": "Static vs Dynamic IP", "isUnlocked": false, "desc": "Static and dynamic IPs." },
+                { "id": "m3s5", "title": "Default Gateway", "isUnlocked": false, "desc": "What is a default gateway." },
+                { "id": "m3s6", "title": "Broadcast Address", "isUnlocked": false, "desc": "Understanding broadcast address." },
+                { "id": "m3s7", "title": "Network Address", "isUnlocked": false, "desc": "Understanding network address." },
+                { "id": "m3s8", "title": "Host Address Calculation", "isUnlocked": false, "desc": "How to calculate host IPs." },
+                { "id": "m3s9", "title": "CIDR Notation", "isUnlocked": false, "desc": "Understanding CIDR (/24, /16)." },
+                { "id": "m3s10", "title": "Private IP Ranges", "isUnlocked": false, "desc": "Common private IP ranges." },
+                { "id": "m3s11", "title": "APIPA / Automatic IP", "isUnlocked": false, "desc": "Auto private IP assignment." },
+                { "id": "m3s12", "title": "Loopback Address", "isUnlocked": false, "desc": "127.0.0.1 usage." },
+                { "id": "m3s13", "title": "Reserved Addresses", "isUnlocked": false, "desc": "Reserved IPv4 addresses." }
+
+            ]
+
+  },
+  {
+    "id": "m4",
+    "name": "IPv6 Addressing",
+    "isUnlocked": false,
+    "desc": "IPv6 structure and addressing types.",
+    "subModules":
+            [
+              { "id": "m4s1", "title": "IPv6 Intro", "isUnlocked": false, "desc": "Basics of IPv6." },
+              { "id": "m4s2", "title": "IPv6 Address Types", "isUnlocked": false, "desc": "Unicast, Multicast, Anycast." },
+              { "id": "m4s3", "title": "IPv6 Address Format", "isUnlocked": false, "desc": "128-bit address structure." },
+              { "id": "m4s4", "title": "Link-local Address", "isUnlocked": false, "desc": "Addresses within a link." },
+              { "id": "m4s5", "title": "Global Unicast Address", "isUnlocked": false, "desc": "Routable IPv6 address." },
+              { "id": "m4s6", "title": "Unique Local Address", "isUnlocked": false, "desc": "Private IPv6 address range." },
+              { "id": "m4s7", "title": "IPv6 Header", "isUnlocked": false, "desc": "Simplified header structure." },
+              { "id": "m4s8", "title": "IPv6 vs IPv4", "isUnlocked": false, "desc": "Differences between IPv4 and IPv6." },
+              { "id": "m4s10", "title": "IPv6 Deployment", "isUnlocked": false, "desc": "Transition and deployment tips." }
+            ]
+
+  },
+  {
+    "id": "m5",
+    "name": "Subnetting Mastery",
+    "isUnlocked": false,
+    "desc": "FLSM, VLSM and Subnet calculation,",
+    "subModules":
+            [
+              { "id": "m5s1", "title": "Subnetting Intro", "isUnlocked": false, "desc": "Basics of subnetting." },
+              { "id": "m5s2", "title": "IP Review", "isUnlocked": false, "desc": "IPv4 classes and structure." },
+              { "id": "m5s3", "title": "Subnet Mask Basics", "isUnlocked": false, "desc": "Understanding subnet masks." },
+              { "id": "m5s4", "title": "Binary & Decimal Conversion", "isUnlocked": false, "desc": "IP binary-decimal conversion." },
+              { "id": "m5s5", "title": "Subnetting Formula", "isUnlocked": false, "desc": "Calculate subnets and hosts." },
+              { "id": "m5s6", "title": "FLSM (Fixed Length)", "isUnlocked": false, "desc": "Fixed size subnetting." },
+              { "id": "m5s7", "title": "VLSM (Variable Length)", "isUnlocked": false, "desc": "Variable size subnetting." },
+              { "id": "m5s8", "title": "CIDR & Supernetting", "isUnlocked": false, "desc": "CIDR and supernet basics." }
+            ]
+  },
+  {
+    "id": "m6",
+    "name": "Ethernet Switching",
+    "isUnlocked": false,
+    "desc": "Collision vs Broadcast domains.",
+    "subModules":
+            [
+              { "id": "m6s1", "title": "Ethernet Intro", "isUnlocked": false, "desc": "Basics of Ethernet." },
+              { "id": "m6s2", "title": "Collision Domain", "isUnlocked": false, "desc": "Understanding collision domains." },
+              { "id": "m6s3", "title": "Broadcast Domain", "isUnlocked": false, "desc": "Understanding broadcast domains." },
+              { "id": "m6s4", "title": "Switch vs Hub", "isUnlocked": false, "desc": "Difference between switch and hub." },
+              { "id": "m6s5", "title": "Full Duplex vs Half Duplex", "isUnlocked": false, "desc": "Ethernet duplex modes." },
+              { "id": "m6s6", "title": "MAC Address Table", "isUnlocked": false, "desc": "Switch MAC address learning." },
+              { "id": "m6s7", "title": "Port Behavior", "isUnlocked": false, "desc": "How switch ports forward traffic." },
+              { "id": "m6s8", "title": "Ethernet Example", "isUnlocked": false, "desc": "Practical Ethernet scenario." }
+
+            ]
+  },
+  {
+    "id": "m7",
+    "name": "VLAN Concepts",
+    "isUnlocked": false,
+    "desc": "Access ports, Trunking, and 802.1Q.",
+    "subModules":
+            [
+              { "id": "m7s1", "title": "VLAN Intro", "isUnlocked": false, "desc": "What is VLAN and why used." },
+              { "id": "m7s2", "title": "VLAN Benefits", "isUnlocked": false, "desc": "Advantages of VLANs." },
+              { "id": "m7s3", "title": "Access Port", "isUnlocked": false, "desc": "Ports assigned to single VLAN." },
+              { "id": "m7s4", "title": "Trunk Port", "isUnlocked": false, "desc": "Carry multiple VLANs." },
+              { "id": "m7s5", "title": "VLAN Tagging (802.1Q)", "isUnlocked": false, "desc": "How VLAN tags work." },
+              { "id": "m7s6", "title": "Native VLAN", "isUnlocked": false, "desc": "VLAN for untagged traffic." },
+              { "id": "m7s7", "title": "VLAN Membership", "isUnlocked": false, "desc": "Assigning devices to VLANs." },
+              { "id": "m7s8", "title": "VLAN Types", "isUnlocked": false, "desc": "Data, Voice, Management VLANs." },
+              { "id": "m7s9", "title": "VLAN Pruning", "isUnlocked": false, "desc": "Limiting VLAN traffic on trunks." }
+            ]
+  },
+  {
+    "id": "m8",
+    "name": "Inter-Vlan & SVI",
+    "isUnlocked": false,
+    "desc": "Routing between VLANs using SVI.",
+    "subModules":
+    [
+      { "id": "m8s1", "title": "Inter-VLAN Routing", "isUnlocked": false, "desc": "Routing between VLANs." },
+      { "id": "m8s2", "title": "SVI (Switched Virtual Interface)", "isUnlocked": false, "desc": "VLAN interface for routing." },
+      { "id": "m8s3", "title": "SVI Configuration", "isUnlocked": false, "desc": "How to configure SVI on switches." },
+      { "id": "m8s4", "title": "Inter-VLAN Configuration", "isUnlocked": false, "desc": "Configure routing between VLANs." }
+    ]
+  },
+  {
+    "id": "m9",
+    "name": "EtherChannel",
+    "isUnlocked": false,
+    "desc": "LACP, PAgP and Bundle interfaces.",
+    "subModules":
+            [
+              { "id": "m9s1", "title": "EtherChannel Intro", "isUnlocked": false, "desc": "What is EtherChannel and why used." },
+              { "id": "m9s2", "title": "EtherChannel Benefits", "isUnlocked": false, "desc": "Advantages of EtherChannel." },
+              { "id": "m9s3", "title": "EtherChannel Types", "isUnlocked": false, "desc": "Static and dynamic types (LACP, PAgP)." },
+              { "id": "m9s4", "title": "LACP Protocol", "isUnlocked": false, "desc": "Link Aggregation Control Protocol basics." },
+              { "id": "m9s5", "title": "PAgP Protocol", "isUnlocked": false, "desc": "Port Aggregation Protocol basics." },
+              { "id": "m9s6", "title": "EtherChannel Configuration", "isUnlocked": false, "desc": "Step-by-step switch config." }
+            ]
+  },
+  {
+    "id": "m10",
+    "name": "Spanning Tree Protocol (STP)",
+    "isUnlocked": false,
+    "desc":"Root Bridge, Port roles and states.",
+    "subModules":
+            [
+
+                { "id": "m10s1", "title": "STP Intro", "isUnlocked": false, "desc": "What is STP and why needed." },
+                { "id": "m10s2", "title": "STP Purpose", "isUnlocked": false, "desc": "Role in preventing loops." },
+                { "id": "m10s3", "title": "STP Operation", "isUnlocked": false, "desc": "How STP works (BPDU exchange)." },
+                { "id": "m10s4", "title": "STP Root Bridge", "isUnlocked": false, "desc": "Root bridge selection process." },
+                { "id": "m10s5", "title": "STP Port Roles", "isUnlocked": false, "desc": "Root, Designated, Alternate ports." },
+                { "id": "m10s6", "title": "STP Port States", "isUnlocked": false, "desc": "Blocking, Listening, Learning, Forwarding, Disabled." },
+                { "id": "m10s7", "title": "STP Timers", "isUnlocked": false, "desc": "Hello, Forward Delay, Max Age timers." },
+                { "id": "m10s8", "title": "STP Variants", "isUnlocked": false, "desc": "PVST, RSTP, MSTP overview." },
+                { "id": "m10s9", "title": "STP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on switches." }
+
+            ]
+  },
+  {
+    "id": "m11",
+    "name": "VLAN Trunking Protocol (VTP)",
+    "isUnlocked": false,
+    "desc": "Manage VLANs across multiple switches.",
+    "subModules":
+    [
+        { "id": "m11s1", "title": "VTP Intro", "isUnlocked": false, "desc": "What is VTP and why used." },
+        { "id": "m11s2", "title": "VTP Modes", "isUnlocked": false, "desc": "Server, Client, Transparent modes." },
+        { "id": "m11s3", "title": "VTP Domain", "isUnlocked": false, "desc": "Define and manage VTP domains." },
+        { "id": "m11s4", "title": "VTP Pruning", "isUnlocked": false, "desc": "Reduce unnecessary VLAN traffic." },
+        { "id": "m11s5", "title": "VTP Version", "isUnlocked": false, "desc": "VTP versions 1, 2, 3 overview." },
+        { "id": "m11s6", "title": "VTP Configuration", "isUnlocked": false, "desc": "Step-by-step VTP setup." },
+        { "id": "m11s7", "title": "VTP Verification", "isUnlocked": false, "desc": "Check VTP status and info." }
+
+    ]
+  },
+  {
+    "id": "m12",
+    "name": "Basic Routing",
+    "isUnlocked": false,
+    "desc": "Routing table and packet forwarding.",
+    "subModules":
+    [
+        { "id": "m12s1", "title": "Routing Intro", "isUnlocked": false, "desc": "What is routing and why needed." },
+        { "id": "m12s2", "title": "Routing Table", "isUnlocked": false, "desc": "How routers store routes." },
+        { "id": "m12s3", "title": "Packet Forwarding", "isUnlocked": false, "desc": "How router forwards packets." },
+        { "id": "m12s4", "title": "Static Routing Intro", "isUnlocked": false, "desc": "What is static routing." },
+        { "id": "m12s5", "title": "Dynamic Routing Intro", "isUnlocked": false, "desc": "What is dynamic routing." },
+        { "id": "m12s6", "title": "Routing Protocols Overview", "isUnlocked": false, "desc": "RIP, OSPF, EIGRP basics." },
+        { "id": "m12s7", "title": "Routing Metrics", "isUnlocked": false, "desc": "Hop count, cost, bandwidth." },
+        { "id": "m12s8", "title": "Default Route", "isUnlocked": false, "desc": "Concept and usage of default route." }
+    ]
+  },
+  {
+    "id": "m13",
+    "name": "Static Routing",
+    "isUnlocked": false,
+    "desc": "Configure fixed routes manually on routers.",
+    "subModules":
+    [
+        { "id": "m13s1", "title": "Static Routing Intro", "isUnlocked": false, "desc": "What is static routing." },
+        { "id": "m13s2", "title": "Default Route", "isUnlocked": false, "desc": "Using default static routes." },
+        { "id": "m13s3", "title": "Specific Static Routes", "isUnlocked": false, "desc": "Configure routes to specific networks." }
+    ]
+  },
+  {
+    "id": "m14",
+    "name": "Dynamic Routing",
+    "isUnlocked": false,
+    "desc": "Automatic route updates using routing protocols.",
+    "subModules":
+      [
+        { "id": "m14s1", "title": "Dynamic Routing Intro", "isUnlocked": false, "desc": "What is dynamic routing." },
+        { "id": "m14s2", "title": "Routing Protocols Overview", "isUnlocked": false, "desc": "RIP, OSPF, EIGRP basics." },
+        { "id": "m14s3", "title": "Distance Vector Routing", "isUnlocked": false, "desc": "RIP protocol and hop count." },
+        { "id": "m14s4", "title": "Link-State Routing", "isUnlocked": false, "desc": "OSPF basics and LSA types." }
+      ]
+  },
+  {
+    "id": "m15",
+    "name": "EIGRP Routing",
+    "isUnlocked": false,
+    "desc": "EIGRP protocol, metrics, and configuration.",
+    "subModules":
+      [
+        { "id": "m15s1", "title": "EIGRP Intro", "isUnlocked": false, "desc": "What is EIGRP and why used." },
+        { "id": "m15s2", "title": "EIGRP Metrics", "isUnlocked": false, "desc": "How EIGRP calculates routes." },
+        { "id": "m15s3", "title": "DUAL Algorithm", "isUnlocked": false, "desc": "EIGRP route calculation logic." },
+        { "id": "m15s4", "title": "EIGRP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." },
+        { "id": "m15s5", "title": "EIGRP Verification", "isUnlocked": false, "desc": "Check EIGRP neighbor and routes." }
+      ]
+  },
+  {
+    "id": "m16",
+    "name": "OSPF Routing Protocol",
+    "isUnlocked": false,
+    "desc": "OSPF concepts, areas, configuration.",
+    "subModules":
+      [
+        { "id": "m16s1", "title": "OSPF Intro", "isUnlocked": false, "desc": "What is OSPF and why used." },
+        { "id": "m16s2", "title": "OSPF Features", "isUnlocked": false, "desc": "Key features of OSPF protocol." },
+        { "id": "m16s3", "title": "OSPF Areas", "isUnlocked": false, "desc": "Backbone and normal areas overview." },
+        { "id": "m16s4", "title": "OSPF LSAs", "isUnlocked": false, "desc": "Types of Link-State Advertisements." },
+        { "id": "m16s5", "title": "OSPF Neighbor Formation", "isUnlocked": false, "desc": "Hello packets and adjacency process." },
+        { "id": "m16s6", "title": "OSPF Router Types", "isUnlocked": false, "desc": "Internal, ABR, ASBR router roles." },
+        { "id": "m16s7", "title": "OSPF Configuration", "isUnlocked": false, "desc": "Step-by-step OSPF setup on routers." }
+      ]
+  },
+  {
+    "id": "m17",
+    "name": "OSPF Network Types",
+    "isUnlocked": false,
+    "desc": "OSPF network types and their characteristics.",
+    "subModules":
+    [
+        { "id": "m17s1", "title": "Network Type Intro", "isUnlocked": false, "desc": "What are OSPF network types." },
+        { "id": "m17s2", "title": "Broadcast Network", "isUnlocked": false, "desc": "OSPF on Ethernet or broadcast networks." },
+        { "id": "m17s3", "title": "Point-to-Point Network", "isUnlocked": false, "desc": "Direct router-to-router links." },
+        { "id": "m17s4", "title": "Non-Broadcast Multi-Access (NBMA)", "isUnlocked": false, "desc": "OSPF over NBMA networks like Frame Relay." },
+        { "id": "m17s5", "title": "Point-to-Multipoint Network", "isUnlocked": false, "desc": "Single router connecting multiple routers." },
+        { "id": "m17s6", "title": "OSPF Network Type Configuration", "isUnlocked": false, "desc": "How to configure network types on routers." },
+        { "id": "m17s7", "title": "Verification & Troubleshooting", "isUnlocked": false, "desc": "Check network type settings and fix issues." },
+        { "id": "m17s8", "title": "Network Type Lab Example", "isUnlocked": false, "desc": "Practical lab with different OSPF network types." }
+    ]
+  },
+  {
+    "id": "m18",
+    "name": "RIP Routing Protocol",
+    "isUnlocked": false,
+    "desc": "RIP protocol, distance vector concepts, and configuration.",
+    "subModules":
+      [
+        { "id": "m18s1", "title": "RIP Intro", "isUnlocked": false, "desc": "What is RIP and why used." },
+        { "id": "m18s2", "title": "Distance Vector Concept", "isUnlocked": false, "desc": "RIP uses hop count for routing." },
+        { "id": "m18s3", "title": "RIP Versions", "isUnlocked": false, "desc": "RIP v1 and RIP v2 overview." },
+        { "id": "m18s4", "title": "RIP Timers", "isUnlocked": false, "desc": "Update, Invalid, Hold-down, Flush timers." },
+        { "id": "m18s5", "title": "RIP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." }
+      ]
+  },
+  {
+    "id": "m19",
+    "name": "BGP Protocol",
+    "isUnlocked": false,
+    "desc": "BGP, autonomous systems, path selection, and configuration.",
+    "subModules":
+      [
+        { "id": "m19s1", "title": "BGP Intro", "isUnlocked": false, "desc": "What is BGP and why used." },
+        { "id": "m19s2", "title": "BGP Features", "isUnlocked": false, "desc": "Key features of BGP protocol." },
+        { "id": "m19s3", "title": "Autonomous Systems (AS)", "isUnlocked": false, "desc": "IBGP vs EBGP overview." },
+        { "id": "m19s4", "title": "BGP Path Attributes", "isUnlocked": false, "desc": "AS-Path, Next-Hop, MED, Local Preference." },
+        { "id": "m19s5", "title": "BGP Route Selection", "isUnlocked": false, "desc": "How BGP selects the best path." },
+        { "id": "m19s6", "title": "BGP Neighbors / Peers", "isUnlocked": false, "desc": "Configure and maintain BGP peers." },
+        { "id": "m19s7", "title": "BGP Message Types", "isUnlocked": false, "desc": "Open, Update, Keepalive, Notification." },
+        { "id": "m19s8", "title": "BGP Table", "isUnlocked": false, "desc": "BGP routing table structure." },
+        { "id": "m19s9", "title": "BGP Configuration", "isUnlocked": false, "desc": "Step-by-step BGP setup on routers." },
+        { "id": "m19s10", "title": "BGP Route Filtering", "isUnlocked": false, "desc": "Prefix lists, route maps, and AS-path filters." },
+        { "id": "m19s11", "title": "BGP Attributes Manipulation", "isUnlocked": false, "desc": "Modify Local Pref, MED, Weight for path selection." },
+        { "id": "m19s12", "title": "BGP Route Aggregation", "isUnlocked": false, "desc": "Combine multiple routes into one summarized route." },
+        { "id": "m19s13", "title": "BGP Communities", "isUnlocked": false, "desc": "Tagging routes with communities for policy control." },
+        { "id": "m19s14", "title": "BGP Confederations", "isUnlocked": false, "desc": "Simplify large AS with confederation design." },
+        { "id": "m19s15", "title": "BGP Multi-Hop & Timers", "isUnlocked": false, "desc": "EBGP multi-hop setup and timers." },
+        { "id": "m19s16", "title": "BGP Best Practices", "isUnlocked": false, "desc": "Recommended design and configuration practices." }
+      ]
+  },
+  {
+    "id": "m20",
+    "name": "IP Service 01 (NAT)",
+    "isUnlocked": false,
+    "desc": "NAT types, configuration.",
+    "subModules":
+      [
+        { "id": "m20s1", "title": "NAT Intro", "isUnlocked": false, "desc": "What is NAT and why used." },
+        { "id": "m20s2", "title": "Static NAT", "isUnlocked": false, "desc": "Map one private IP to one public IP." },
+        { "id": "m20s3", "title": "Dynamic NAT", "isUnlocked": false, "desc": "Map private IPs to pool of public IPs." },
+        { "id": "m20s4", "title": "PAT / Overloading", "isUnlocked": false, "desc": "Multiple private IPs using single public IP." },
+        { "id": "m20s5", "title": "NAT Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." }
+      ]
+  },
+  {
+    "id": "m21",
+    "name": "IP Service 02 (DHCP)",
+    "isUnlocked": false,
+    "desc": "DHCP, DORA process, configuration.",
+    "subModules":
+    [
+        { "id": "m21s1", "title": "DHCP Intro", "isUnlocked": false, "desc": "What is DHCP and why used." },
+        { "id": "m21s2", "title": "DHCP Benefits", "isUnlocked": false, "desc": "Advantages of DHCP in networks." },
+        { "id": "m21s3", "title": "DORA Process", "isUnlocked": false, "desc": "Discover, Offer, Request, Acknowledge steps." },
+        { "id": "m21s4", "title": "DHCP Scopes", "isUnlocked": false, "desc": "IP pool, lease time, and options." },
+        { "id": "m21s5", "title": "DHCP Relay Agent", "isUnlocked": false, "desc": "Forward requests between subnets." },
+        { "id": "m21s6", "title": "DHCP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers/switches." }
+    ]
+  },
+  {
+    "id": "m22",
+    "name": "IP Service 03 (NTP)",
+    "isUnlocked": false,
+    "desc": "Network time synchronization.",
+    "subModules":
+      [
+        { "id": "m22s1", "title": "NTP Intro", "isUnlocked": false, "desc": "What is NTP and why used." },
+        { "id": "m22s2", "title": "NTP Modes", "isUnlocked": false, "desc": "Client, Server, Peer, Broadcast modes." },
+        { "id": "m22s3", "title": "NTP Stratum", "isUnlocked": false, "desc": "Stratum levels explained." },
+        { "id": "m22s4", "title": "NTP Authentication", "isUnlocked": false, "desc": "Securing NTP messages." },
+        { "id": "m22s5", "title": "NTP Configuration", "isUnlocked": false, "desc": "Setup NTP on routers and switches." }
+      ]
+  },
+  {
+    "id": "m23",
+    "name": "IP Service 04 (SNMP)",
+    "isUnlocked": false,
+    "desc": "Network monitoring and management.",
+    "subModules":
+    [
+      { "id": "m23s1", "title": "SNMP Intro", "isUnlocked": false, "desc": "What is SNMP and why used." },
+      { "id": "m23s2", "title": "SNMP Versions", "isUnlocked": false, "desc": "SNMPv1, v2c, v3 overview." },
+      { "id": "m23s3", "title": "SNMP Communities", "isUnlocked": false, "desc": "Community strings and access control." },
+      { "id": "m23s4", "title": "SNMP Security", "isUnlocked": false, "desc": "Authentication and encryption (v3)." },
+      { "id": "m23s5", "title": "SNMP Configuration", "isUnlocked": false, "desc": "Step-by-step SNMP setup." }
+    ]
+  },
+  {
+    "id": "m24",
+    "name": "Security (Standard ACL)",
+    "isUnlocked": false,
+    "desc": "Filter traffic based on IP using standard ACL.",
+    "subModules":
+    [
+        { "id": "m24s1", "title": "Standard ACL Intro", "isUnlocked": false, "desc": "What is Standard ACL and why used." },
+        { "id": "m24s2", "title": "ACL Numbers & Range", "isUnlocked": false, "desc": "Standard ACL number ranges (1-99, 1300-1999)." },
+        { "id": "m24s3", "title": "Permit & Deny", "isUnlocked": false, "desc": "How to allow or block traffic." },
+        { "id": "m24s4", "title": "ACL Placement", "isUnlocked": false, "desc": "Where to apply ACL on inbound/outbound." },
+        { "id": "m24s5", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step ACL setup on routers." }
+    ]
+  },
+  {
+    "id": "m25",
+    "name": "Security (Extended ACL)",
+    "isUnlocked": false,
+    "desc": "Filter traffic based on IP, protocol, and port using extended ACL.",
+    "subModules":
+    [
+        { "id": "m25s1", "title": "Extended ACL Intro", "isUnlocked": false, "desc": "What is Extended ACL and why used." },
+        { "id": "m25s2", "title": "ACL Number & Range", "isUnlocked": false, "desc": "Extended ACL number ranges (100-199, 2000-2699)." },
+        { "id": "m25s3", "title": "Protocol Filtering", "isUnlocked": false, "desc": "Filter traffic by TCP, UDP, ICMP." },
+        { "id": "m25s4", "title": "Port Filtering", "isUnlocked": false, "desc": "Filter traffic by source/destination ports." },
+        { "id": "m25s5", "title": "ACL Placement", "isUnlocked": false, "desc": "Where to apply ACL on inbound/outbound." },
+        { "id": "m25s6", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step extended ACL setup." }
+    ]
+  },
+  {
+    "id": "m26",
+    "name": "Port Security",
+    "isUnlocked": false,
+    "desc": "Secure switch ports using MAC address.",
+    "subModules":
+    [
+        { "id": "m26s1", "title": "Port Security Intro", "isUnlocked": false, "desc": "What is port security and why used." },
+        { "id": "m26s2", "title": "MAC Address Basics", "isUnlocked": false, "desc": "How MAC addresses work on switch ports." },
+        { "id": "m26s3", "title": "Port Security Modes", "isUnlocked": false, "desc": "Static, Dynamic, Sticky MAC addresses." },
+        { "id": "m26s4", "title": "Violation Modes", "isUnlocked": false, "desc": "Protect, Restrict, Shutdown explained." },
+        { "id": "m26s5", "title": "Port Security Configuration", "isUnlocked": false, "desc": "Step-by-step port security setup." }
+   ]
+  },
+  {
+    "id": "m27",
+    "name": "WAN Concepts",
+    "isUnlocked": false,
+    "desc": "Wide Area Network basics, protocols, and connections.",
+    "subModules":
+    [
+        { "id": "m27s1", "title": "WAN Intro", "isUnlocked": false, "desc": "What is WAN and why used." },
+        { "id": "m27s2", "title": "WAN Types", "isUnlocked": false, "desc": "Point-to-Point, MPLS, VPN, Internet." },
+        { "id": "m27s3", "title": "HDLC Protocol", "isUnlocked": false, "desc": "High-Level Data Link Control basics." },
+        { "id": "m27s4", "title": "PPP Protocol", "isUnlocked": false, "desc": "Point-to-Point Protocol concepts." },
+        { "id": "m27s5", "title": "PPP Authentication", "isUnlocked": false, "desc": "PAP and CHAP explained." },
+        { "id": "m27s6", "title": "Frame Relay", "isUnlocked": false, "desc": "Frame Relay concepts and DLCIs." },
+        { "id": "m27s7", "title": "WAN Design Considerations", "isUnlocked": false, "desc": "Choosing proper WAN links and protocols." }
+    ]
+  },
+  {
+    "id": "m28",
+    "name": "VPN Concepts (Basic)",
+    "isUnlocked": false,
+    "desc": "Tunneling, and encryption Basics.",
+    "subModules":
+    [
+        { "id": "m28s1", "title": "VPN Intro", "isUnlocked": false, "desc": "What is VPN and why used." },
+        { "id": "m28s2", "title": "VPN Types", "isUnlocked": false, "desc": "Site-to-Site vs Remote Access VPN." },
+        { "id": "m28s3", "title": "Tunneling Protocols", "isUnlocked": false, "desc": "GRE, IPsec, L2TP basics." },
+        { "id": "m28s4", "title": "Encryption Basics", "isUnlocked": false, "desc": "How VPN secures data in transit." },
+        { "id": "m28s5", "title": "VPN Authentication", "isUnlocked": false, "desc": "Pre-shared keys, certificates, and login." },
+        { "id": "m28s6", "title": "VPN Design Considerations", "isUnlocked": false, "desc": "Choosing VPN type and topology." }
+    ]
+  },
+  {
+    "id": "m29",
+    "name": "Site-to-Site VPN",
+    "isUnlocked": false,
+    "desc": "Securely connect multiple office over the internet.",
+    "subModules":
+    [
+        { "id": "m29s1", "title": "Site-to-Site VPN Intro", "isUnlocked": false, "desc": "What is Site-to-Site VPN and why used." },
+        { "id": "m29s2", "title": "VPN Tunnel Concept", "isUnlocked": false, "desc": "How VPN tunnels connect sites." },
+        { "id": "m29s3", "title": "IPsec Overview", "isUnlocked": false, "desc": "IPsec basics for site-to-site VPN." },
+        { "id": "m29s4", "title": "IKE Phases", "isUnlocked": false, "desc": "Phase 1 and Phase 2 negotiation explained." },
+        { "id": "m29s5", "title": "VPN Configuration", "isUnlocked": false, "desc": "Step-by-step setup between two offices." }
+   ]
+  },
+  {
+    "id": "m30",
+    "name": "Remote Access VPN",
+    "isUnlocked": false,
+    "desc": "Connect remote users securely to corporate network.",
+    "subModules":
+    [
+        { "id": "m30s1", "title": "Remote VPN Intro", "isUnlocked": false, "desc": "What is Remote Access VPN and why used." },
+        { "id": "m30s2", "title": "VPN Client Types", "isUnlocked": false, "desc": "AnyConnect, Clientless SSL, and native clients." },
+        { "id": "m30s3", "title": "Authentication Methods", "isUnlocked": false, "desc": "Username/password, certificates, MFA." },
+        { "id": "m30s4", "title": "VPN Tunnel & Encryption", "isUnlocked": false, "desc": "How traffic is encrypted and tunneled." },
+        { "id": "m30s5", "title": "VPN Configuration", "isUnlocked": false, "desc": "Step-by-step client and server setup." },
+        { "id": "m30s6", "title": "VPN Verification", "isUnlocked": false, "desc": "Check connectivity, encryption, and session status." },
+        { "id": "m30s7", "title": "VPN Troubleshooting", "isUnlocked": false, "desc": "Fix common remote VPN issues." },
+        { "id": "m30s8", "title": "VPN Lab Example", "isUnlocked": false, "desc": "Practical lab with remote user connecting to corporate network." }
+    ]
+  },
+  {
+    "id": "m31",
+    "name": "Network Automation",
+    "isUnlocked": false,
+    "desc": "SDN, Controllers and APIs.",
+    "subModules":
+    [
+        { "id": "m31s1", "title": "Network Automation Intro", "isUnlocked": false, "desc": "What is network automation and why used." },
+        { "id": "m31s2", "title": "SDN Basics", "isUnlocked": false, "desc": "Software-Defined Networking concepts." },
+        { "id": "m31s3", "title": "Controllers Overview", "isUnlocked": false, "desc": "Role of SDN controllers in automation." },
+        { "id": "m31s4", "title": "APIs in Networking", "isUnlocked": false, "desc": "REST and NETCONF APIs basics." },
+        { "id": "m31s5", "title": "Automation Tools", "isUnlocked": false, "desc": "Ansible, Python, and network scripts." },
+        { "id": "m31s6", "title": "Configuration Automation", "isUnlocked": false, "desc": "Automate device configs using scripts." },
+        { "id": "m31s7", "title": "Monitoring & Alerts", "isUnlocked": false, "desc": "Automate network monitoring and notifications." }
+    ]
+  },
+  {
+    "id": "m32",
+    "name": "Programming Fundamentals",
+    "isUnlocked": false,
+    "desc": "Python and JSON basics for networks.",
+    "subModules":
+    [
+        { "id": "m32s1", "title": "Programming Intro", "isUnlocked": false, "desc": "Why programming is needed in networking." },
+        { "id": "m32s2", "title": "Python Basics", "isUnlocked": false, "desc": "Variables, data types, loops, and conditionals." },
+        { "id": "m32s3", "title": "Python Functions", "isUnlocked": false, "desc": "Defining and using functions." },
+        { "id": "m32s4", "title": "Python Modules & Libraries", "isUnlocked": false, "desc": "Importing and using libraries for networking." },
+        { "id": "m32s5", "title": "JSON Basics", "isUnlocked": false, "desc": "Understanding JSON structure and syntax." },
+        { "id": "m32s6", "title": "Python-JSON Interaction", "isUnlocked": false, "desc": "Reading, writing, and parsing JSON in Python." },
+        { "id": "m32s7", "title": "Network Automation Scripts", "isUnlocked": false, "desc": "Writing Python scripts for device configs." }
+    ]
+  }
 ]
