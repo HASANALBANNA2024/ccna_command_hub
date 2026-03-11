@@ -1,0 +1,215 @@
+{
+  "m1": {
+    "m1s1": {
+      "theory": "কম্পিউটার নেটওয়ার্কিং হলো একাধিক কম্পিউটার ও ডিভাইসকে একত্রে সংযুক্ত করার প্রক্রিয়া, যার মাধ্যমে তারা ডেটা, রিসোর্স এবং সার্ভিস শেয়ার করতে পারে। নেটওয়ার্কিং শুধু ফাইল শেয়ারিং নয়, এটি ইন্টারনেট অ্যাকসেস, ইমেইল, ভয়েস ও ভিডিও কমিউনিকেশন, প্রিন্টার এবং অন্যান্য হার্ডওয়্যার রিসোর্স ব্যবহার সহজ করে। নেটওয়ার্কের মাধ্যমে একটি অফিস, স্কুল, বা এমনকি পুরো শহর জুড়ে ডিভাইসগুলো কার্যকরভাবে সংযুক্ত থাকে। নেটওয়ার্কিং বিভিন্ন ধরণের হতে পারে, যেমন LAN (Local Area Network), WAN (Wide Area Network), MAN (Metropolitan Area Network) এবং PAN (Personal Area Network), যা ব্যবহারের উদ্দেশ্য এবং আকার অনুযায়ী নির্বাচন করা হয়।",
+      "example": "একটি অফিসে ১০টি কম্পিউটার এবং একটি প্রিন্টার সংযুক্ত করা হয়েছে। প্রতিটি কম্পিউটারকে একটি switch বা router এর মাধ্যমে সংযুক্ত করা হয়েছে। ফলে যেকোনো কম্পিউটার থেকে প্রিন্টার ব্যবহার করা যায়, ফাইল শেয়ার করা যায় এবং ইন্টারনেট অ্যাকসেস করা যায়। এর ফলে অফিসের কাজ দ্রুত এবং কার্যকরভাবে সম্পন্ন হয়।",
+      "image": " "
+    },
+    "m1s2": {
+      "theory": "নেটওয়ার্কিং গুরুত্বপূর্ণ কারণ এটি বিভিন্ন কম্পিউটার ও ডিভাইসকে একত্রে সংযুক্ত করে, যাতে তারা ডেটা এবং রিসোর্স শেয়ার করতে পারে। নেটওয়ার্কিং-এর মাধ্যমে অফিস, স্কুল বা হোমে ইন্টারনেট ব্যবহার, ফাইল শেয়ারিং, প্রিন্টার এবং অন্যান্য হার্ডওয়্যার ডিভাইসের অ্যাকসেস সহজ হয়। এটি যোগাযোগ ও সহযোগিতা বাড়ায়, কাজের কার্যকারিতা বৃদ্ধি করে এবং রিসোর্স ব্যবহারে খরচ কমায়। বৃহৎ নেটওয়ার্কের মাধ্যমে কোম্পানি বা প্রতিষ্ঠান সহজেই সার্ভার, ডেটাবেস, ইমেইল এবং ক্লাউড সার্ভিস ব্যবহার করতে পারে।",
+      "example": "একটি স্কুলে বিভিন্ন কম্পিউটার ল্যাবের পিসি এবং শিক্ষক/স্টাফের কম্পিউটার একটি LAN এর মাধ্যমে সংযুক্ত করা হয়েছে। এর মাধ্যমে শিক্ষকরা এক কম্পিউটার থেকে অন্য কম্পিউটারে ফাইল শেয়ার করতে পারে, ল্যাবের প্রিন্টার ব্যবহার করতে পারে, এবং স্কুলের ইন্টারনেট সংযোগ ব্যবহার করতে পারে।",
+      "image": ""
+    },
+    "m1s3": {
+      "theory": "নেটওয়ার্ক টাইপ হলো বিভিন্ন আকার ও উদ্দেশ্য অনুযায়ী কম্পিউটার ও ডিভাইসকে সংযুক্ত করার পদ্ধতি। নেটওয়ার্কের ধরন ঠিকভাবে জানা গুরুত্বপূর্ণ, কারণ এটি ব্যবহারের স্কেল, ডেটা ট্রান্সফার এবং রিসোর্স শেয়ারিং নির্ধারণ করে।",
+      "types": [
+        {
+          "name": "LAN",
+          "desc": "Local Area Network: ছোট এলাকা যেমন অফিস বা বাড়ির মধ্যে ডিভাইস সংযুক্ত করে।",
+          "image": "lan_image.png"
+        },
+        {
+          "name": "MAN",
+          "desc": "Metropolitan Area Network: শহর বা শহরের বৃহৎ এলাকা জুড়ে ডিভাইস সংযুক্ত করে।",
+          "image": "man_image.png"
+        },
+        {
+          "name": "WAN",
+          "desc": "Wide Area Network: দেশ বা মহাদেশ জুড়ে ডিভাইস সংযুক্ত করতে ব্যবহৃত হয়।",
+          "image": "wan_image.png"
+        },
+        {
+          "name": "PAN",
+          "desc": "Personal Area Network: ব্যক্তিগত ডিভাইস যেমন মোবাইল, ল্যাপটপ, ট্যাব সংযুক্ত করে।",
+          "image": "pan_image.png"
+        }
+      ]
+    },
+    "m1s4": {
+      "theory": "নেটওয়ার্ক ডিভাইস হলো হার্ডওয়্যার যেগুলো কম্পিউটার ও অন্যান্য ডিভাইসকে সংযুক্ত করে এবং ডেটা ট্রান্সফার করে। প্রতিটি ডিভাইসের আলাদা কাজ এবং উদ্দেশ্য থাকে।",
+      "devices": [
+        {
+          "name": "Router",
+          "desc": "ডেটা প্যাকেটকে এক নেটওয়ার্ক থেকে অন্য নেটওয়ার্কে পাঠায়।",
+          "image": "router_image.png"
+        },
+        {
+          "name": "Switch",
+          "desc": "একই নেটওয়ার্কের ডিভাইসগুলোকে সংযুক্ত করে এবং ডেটা ঠিক ঠিক ডিভাইসে পাঠায়।",
+          "image": "switch_image.png"
+        },
+        {
+          "name": "Hub",
+          "desc": "ডেটা প্যাকেট সকল পোর্টে পাঠায়, নির্দিষ্ট ডিভাইস নয়।",
+          "image": "hub_image.png"
+        },
+        {
+          "name": "Access Point",
+          "desc": "ওয়্যারলেস ডিভাইসকে নেটওয়ার্কে সংযুক্ত করে।",
+          "image": "accesspoint_image.png"
+        },
+        {
+          "name": "Modem",
+          "desc": "ISP থেকে ইন্টারনেট সিগন্যাল নিয়ে নেটওয়ার্কে রূপান্তর করে।",
+          "image": "modem_image.png"
+        }
+      ]
+    },
+    "m1s5": {
+      "theory": "নেটওয়ার্ক টপোলজি হলো নেটওয়ার্কের ভিজ্যুয়াল বা লজিক্যাল বিন্যাস যা দেখায় কিভাবে ডিভাইসগুলো একে অপরের সাথে সংযুক্ত। এটি গুরুত্বপূর্ণ কারণ এটি নির্ধারণ করে ডেটা কিভাবে প্রবাহিত হবে, নেটওয়ার্কের কার্যকারিতা কেমন হবে এবং সমস্যা সমাধান কতটা সহজ হবে।",
+      "topologies": [
+        {
+          "name": "Star",
+          "desc": "Star topology তে সব ডিভাইস একটি central hub বা switch এর সাথে সংযুক্ত থাকে। সুবিধা: সহজে troubleshoot করা যায়, একটি কম্পিউটার ব্যর্থ হলেও নেটওয়ার্ক কাজ করে থাকে। সীমাবদ্ধতা: central hub ব্যর্থ হলে পুরো নেটওয়ার্ক বন্ধ হয়ে যায়। সাধারণ ব্যবহার: ছোট থেকে মাঝারি অফিস নেটওয়ার্ক।",
+          "image": "star_topology.png"
+        },
+        {
+          "name": "Bus",
+          "desc": "Bus topology তে সব ডিভাইস একটি single backbone cable এর সাথে সংযুক্ত থাকে। সুবিধা: installation সহজ এবং কম খরচে করা যায়। সীমাবদ্ধতা: backbone ব্যর্থ হলে পুরো নেটওয়ার্ক বন্ধ হয়ে যায়, এবং বড় নেটওয়ার্কে performance কমে যায়। সাধারণ ব্যবহার: ছোট অফিস বা temporary LAN।",
+          "image": "bus_topology.png"
+        },
+        {
+          "name": "Ring",
+          "desc": "Ring topology তে প্রতিটি ডিভাইস neighbor এর সাথে সংযুক্ত এবং ডেটা নির্দিষ্ট direction এ প্রবাহিত হয়। সুবিধা: predictable এবং orderly data flow। সীমাবদ্ধতা: একটি ডিভাইস বা সংযোগ ব্যর্থ হলে পুরো নেটওয়ার্ক প্রভাবিত হয়। সাধারণ ব্যবহার: Token Ring নেটওয়ার্ক এবং কিছু MAN নেটওয়ার্ক।",
+          "image": "ring_topology.png"
+        },
+        {
+          "name": "Mesh",
+          "desc": "Mesh topology তে প্রতিটি ডিভাইস অন্য সব ডিভাইসের সাথে direct সংযুক্ত থাকে। সুবিধা: high redundancy, reliability এবং fault-tolerant। সীমাবদ্ধতা: খরচ বেশি এবং configuration জটিল। সাধারণ ব্যবহার: critical networks, data centers, backbone networks।",
+          "image": "mesh_topology.png"
+        }
+      ]
+    },
+    "m1s6": {
+      "theory": "Network Transmission Media হলো মাধ্যম যার মাধ্যমে নেটওয়ার্কে ডেটা পাঠানো হয়। এটি দুই ধরনের হতে পারে: Wired এবং Wireless। সঠিক transmission medium বেছে নেওয়া নেটওয়ার্কের performance, reliability, এবং distance handling নির্ধারণ করে।",
+      "media": [
+        {
+          "name": "UTP Cable",
+          "desc": "Unshielded Twisted Pair (UTP) হলো সবচেয়ে সাধারণ wired medium। এতে pairs of wires twisted থাকে interference কমানোর জন্য। সুবিধা: সস্তা, সহজে ইনস্টল করা যায়। সীমাবদ্ধতা: distance কম, EMI/Noise এর প্রতি সংবেদনশীল। সাধারণ ব্যবহার: LAN networks।",
+          "image": "utp_cable.png"
+        },
+        {
+          "name": "STP Cable",
+          "desc": "Shielded Twisted Pair (STP) হলো UTP এর মতো, তবে extra shielding থাকে EMI কমানোর জন্য। সুবিধা: interference কম, better performance। সীমাবদ্ধতা: দাম বেশি, installation একটু জটিল। সাধারণ ব্যবহার: industrial environments, EMI sensitive areas।",
+          "image": "stp_cable.png"
+        },
+        {
+          "name": "Fiber Optic",
+          "desc": "Fiber optic cable ডেটা light pulses এর মাধ্যমে পাঠায়। সুবিধা: high speed, long distance, EMI immune। সীমাবদ্ধতা: দাম বেশি, installation ও maintenance চ্যালেঞ্জিং। সাধারণ ব্যবহার: WAN backbone, ISP connections, high-speed data centers।",
+          "image": "fiber_optic.png"
+        },
+        {
+          "name": "Wireless",
+          "desc": "Wireless transmission medium এ radio waves বা infrared waves ব্যবহার করা হয়। সুবিধা: installation সহজ, mobility high। সীমাবদ্ধতা: interference ও security issues থাকতে পারে, distance কম। সাধারণ ব্যবহার: Wi-Fi, mobile networks, campus networks।",
+          "image": "wireless_media.png"
+        }
+      ]
+    },
+    "m1s7": {
+      "theory": "MAC Address (Media Access Control Address) হলো একটি ইউনিক hardware address যা প্রতিটি network interface card (NIC) এর সাথে permanently যুক্ত থাকে। এটি ডিভাইসকে network এ uniqueভাবে চিহ্নিত করে। MAC address সাধারণত 48-bit বা 64-bit হয় এবং hexadecimal format এ প্রকাশিত হয়।",
+      "details": [
+        {
+          "name": "Purpose",
+          "desc": "MAC address ব্যবহার করা হয় network device কে uniqueভাবে চিহ্নিত করতে এবং data frames ঠিক ঠিক device এ পাঠাতে।"
+        },
+        {
+          "name": "Format",
+          "desc": "সাধারণ MAC address 6-byte (48-bit) হয়, যা 12 hexadecimal digits আকারে থাকে। উদাহরণ: 00:1A:2B:3C:4D:5E।"
+        },
+        {
+          "name": "Types",
+          "desc": "1. Unicast: এক device এর জন্য। 2. Broadcast: সব devices এ পাঠানো হয়। 3. Multicast: নির্দিষ্ট group devices।"
+        },
+        {
+          "name": "Advantages",
+          "desc": "MAC address fixed এবং unique হওয়ায় network security এবং communication নিশ্চিত হয়। এটি network troubleshooting এবং device tracking সহজ করে।"
+        },
+        {
+          "name": "Usage",
+          "desc": "MAC address switches এবং routers এ data forwarding, ARP process, VLAN assignment এবং port security এর জন্য ব্যবহার হয়।"
+        },
+        {
+          "name": "Example",
+          "desc": "একটি ল্যাপটপের NIC এর MAC address হতে পারে 00:1B:44:11:3A:B7। এই address network এ device কে শনাক্ত করতে ব্যবহার করা হয়।"
+        }
+      ],
+      "image": "mac_address.png"
+    }
+  },
+
+
+
+
+  "m2": {
+    "m2s1": {
+      "theory": "OSI Model (Open Systems Interconnection Model) হলো একটি conceptual framework যা network communication কে 7টি distinct layer এ ভাগ করে। এটি network devices এবং protocols কিভাবে ডেটা পাঠায় ও receive করে তা standardized ভাবে বোঝায়। OSI model এর উদ্দেশ্য হলো network communication সহজ করা, interoperability নিশ্চিত করা, এবং network troubleshooting সহজ করা।",
+      "example": "যখন তুমি একটি email পাঠাও, data প্রথমে application layer থেকে physical layer পর্যন্ত যায়, এবং receiving device একই reverse process ব্যবহার করে data receive করে। এই পুরো প্রক্রিয়াটাই OSI model অনুযায়ী structured।",
+      "image": "osi_model_intro.png"
+    },
+    "m2s2": {
+      "theory": "OSI Model এর মূল উদ্দেশ্য হলো network communication কে standardized এবং structured করা। এটি network devices এবং protocols কে বিভিন্ন layer এ ভাগ করে, যাতে interoperability সহজ হয়, troubleshooting সহজ হয়, এবং network design ও maintenance আরও efficient হয়। OSI Model network engineers কে network problems বুঝতে এবং সমাধান করতে সহায়তা করে।",
+      "example": "যেমন ধরো একটি organization এ বিভিন্ন vendor এর networking devices ব্যবহার হচ্ছে। OSI model অনুযায়ী, data transmission ঠিকমত হয় কারণ প্রতিটি layer নির্দিষ্ট কাজ করে এবং devices layer-wise communication অনুসরণ করে।",
+      "image": "osi_model_purpose.png"
+    },
+    "m2s4": {
+      "theory": "OSI Model এ data transmission শুরু হয় user application থেকে এবং পৌঁছায় receiving device পর্যন্ত। এটি layered approach অনুসরণ করে, যেখানে প্রতিটি layer নির্দিষ্ট কাজ সম্পন্ন করে।\n\nপ্রক্রিয়া overview:\n1. User application (যেমন email বা browser) data generate করে।\n2. Data গুলো encapsulate হয় বিভিন্ন layer এ, প্রতিটি layer তার নিজস্ব header/metadata যোগ করে।\n3. Physical transmission medium (cable বা wireless) দিয়ে data sender থেকে network এ প্রবেশ করে।\n4. Network devices (switches, routers) layered approach অনুযায়ী data forward করে।\n5. Receiving end এ, data reverse process হয়। প্রতিটি layer তার own header/metadata remove করে এবং final data application layer এ পৌঁছে।\n\nএই overview দেখায় যে, কিভাবে data smooth, reliable এবং structured ভাবে network এ প্রবাহিত হয়, এবং network communication এর A to Z concept বুঝতে সাহায্য করে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো। তোমার computer application layer থেকে data তৈরি করে। এরপর transport layer segment তৈরি করে, network layer packet তৈরি করে, এবং data link layer frame এ wrap হয়। Physical layer data signal হিসেবে পাঠায়। Receiving end এ, switch/routing devices data forward করে, receiver OSI layer অনুযায়ী reverse process করে email finally application layer এ আসে।",
+      "image": "osi_layer_a_to_z.png"
+    },
+    "m2s5": {
+      "theory": "Physical Layer হলো OSI Model এর প্রথম layer।\nএটি মূলত ডেটা transmission এর physical medium handle করে, যেমন electrical signals, light pulses বা radio waves।\nPhysical Layer data bits (0s এবং 1s) কে actual signal এ convert করে এবং medium এর মাধ্যমে পাঠায়।\nএতে cable types, connectors, voltage levels, bit rate ইত্যাদি অন্তর্ভুক্ত।\nএই layer network devices এবং medium এর মধ্যে data transmission ঠিকঠাক হচ্ছে কিনা তা নিশ্চিত করে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nPhysical Layer এ তোমার computer এর data bits electric signals হিসেবে UTP cable দিয়ে sender switch এ যায়।\nSwitch থেকে router এবং তারপর receiving end পর্যন্ত একই process অনুসারে signal forward হয়।\nReceiving end এ, signals আবার bits এ convert হয় এবং higher layers data receive করে।",
+      "image": "physical_layer.png"
+    },
+    "m2s6": {
+      "theory": "Data Link Layer হলো OSI Model এর second layer।\nএটি Physical Layer থেকে আসা raw bits কে structured frames এ convert করে।\nData Link Layer error detection এবং correction, flow control, এবং MAC addressing handle করে।\nএটি ensures করে যে data ঠিকভাবে neighbor devices এ পৌঁছায়।\nSwitches এবং NIC এই layer এ কাজ করে।\nএই layer network topology অনুযায়ী data forwarding এবং collision management এ গুরুত্বপূর্ণ ভূমিকা রাখে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nPhysical Layer signal হিসেবে data bits পাঠায়।\nData Link Layer এগুলোকে frame এ wrap করে এবং source MAC address, destination MAC address যোগ করে।\nSwitch এর মাধ্যমে frame ঠিক device এ পৌঁছে।\nReceiving Data Link Layer frame check করে, error detect করলে ঠিক করে, এবং bits কে Network Layer এ পাঠায়।",
+      "image": "data_link_layer.png"
+    },
+    "m2s7": {
+      "theory": "Network Layer হলো OSI Model এর third layer।\nএটি data packets কে source থেকে destination পর্যন্ত delivery নিশ্চিত করে।\nNetwork Layer logical addressing (যেমন IP addresses) ব্যবহার করে path select করে।\nRouting protocols যেমন RIP, OSPF, এবং BGP এই layer এ কাজ করে।\nএটি congestion control, fragmentation এবং reassembly handle করে।\nNetwork Layer নিশ্চিত করে যে data সঠিক network এবং device এ পৌঁছে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nData Link Layer থেকে frame receive করে, Network Layer তা packet এ convert করে এবং source IP এবং destination IP যোগ করে।\nRouter network topology অনুযায়ী best path নির্বাচন করে packet forward করে।\nReceiving end Network Layer packet check করে এবং Transport Layer এ পাঠায়।",
+      "image": "network_layer.png"
+    },
+    "m2s8": {
+      "theory": "Transport Layer হলো OSI Model এর fourth layer।\nএটি end-to-end communication নিশ্চিত করে এবং data integrity ও reliability handle করে।\nTransport Layer segmentation করে বড় data কে ছোট segments এ ভাগ করে এবং receiving end এ reassemble করে।\nTCP (Transmission Control Protocol) reliable, connection-oriented communication provide করে।\nUDP (User Datagram Protocol) lightweight, connectionless communication provide করে।\nPort numbers ব্যবহার করে application এর জন্য data deliver করে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nNetwork Layer থেকে packet receive করে, Transport Layer তা segments এ ভাগ করে TCP ব্যবহার করে reliable delivery নিশ্চিত করে।\nReceiving end Transport Layer segments reassemble করে এবং higher layer (Application Layer) এ পাঠায়।",
+      "image": "transport_layer.png"
+    },
+    "m2s9": {
+      "theory": "Session Layer হলো OSI Model এর fifth layer।\nএটি applications এর মধ্যে session তৈরি, পরিচালনা এবং terminate করে।\nSession Layer communication sessions establish করে, maintain করে এবং synchronized রাখে।\nএটি dialog control এবং token management handle করে যাতে একাধিক applications একই সময়ে network ব্যবহার করতে পারে।\nSession Layer error recovery এবং checkpointing support করে, যাতে data transmission মধ্যে failure হলে পুনরায় শুরু করা যায়।",
+      "example": "ধরুন তুমি একটি video conference session চালাচ্ছো।\nSession Layer session তৈরি করে, participants কে synchronize রাখে এবং communication manage করে।\nSession 중 interruption হলে, Session Layer checkpoint ব্যবহার করে পুনরায় connection restore করে।",
+      "image": "session_layer.png"
+    },
+    "m2s10":{
+      "theory": "Presentation Layer হলো OSI Model এর sixth layer।\nএটি data কে এমন format এ convert করে যা receiving application বুঝতে পারে।\nPresentation Layer data encryption, decryption, compression, এবং translation handle করে।\nএটি বিভিন্ন data formats (যেমন text, image, audio, video) কে standardized করে যাতে applications সহজে data process করতে পারে।\nPresentation Layer ensure করে যে data sender থেকে receiver পর্যন্ত consistent এবং secure থাকে।",
+      "example": "ধরুন তুমি একটি encrypted email পাঠাচ্ছো।\nPresentation Layer data encrypt করে এবং receiver এ তা decrypt করে।\nযদি file image বা video হয়, তাহলে Presentation Layer formats standardized করে receiver application এর জন্য।",
+      "image": "presentation_layer.png"
+    },
+    "m2s11":{
+      "theory": "Application Layer হলো OSI Model এর seventh (highest) layer।\nএটি end-user এবং network এর মধ্যে সরাসরি interface provide করে।\nApplication Layer user application যেমন email client, browser, file transfer program এর জন্য services provide করে।\nএটি network resources access করার জন্য protocols ব্যবহার করে, যেমন HTTP, FTP, SMTP, DNS।\nApplication Layer ensure করে যে user request network এ ঠিকভাবে process হয় এবং response receive হয়।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nApplication Layer user interface থেকে email data নেয়, SMTP protocol ব্যবহার করে message send করে।\nReceiving end এ Application Layer data receive করে এবং user mailbox এ deliver করে।",
+      "image": "application_layer.png"
+    },
+    "m2s12":{
+      "theory": "Data Encapsulation Process হলো OSI Model এর এক গুরুত্বপূর্ণ concept।\nএটি দেখায় কিভাবে data sender থেকে receiver পর্যন্ত পৌঁছানোর জন্য multiple layers data কে wrap করে।\nপ্রত্যেকটি layer তার নিজস্ব header বা trailer যোগ করে, যাতে receiving end ঠিকমতো data process করতে পারে।\nProcess step-wise হয়:\n1. Application Layer data generate করে।\n2. Transport Layer segment তৈরি করে এবং header যোগ করে।\n3. Network Layer packet তৈরি করে এবং logical address যোগ করে।\n4. Data Link Layer frame তৈরি করে এবং MAC addresses যোগ করে।\n5. Physical Layer signal হিসেবে data transmit করে।\nReceiving end এ layers reverse order এ data unwrap করে।\nEncapsulation ensure করে data integrity, addressing এবং proper delivery।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nApplication Layer থেকে email text generate হয়।\nTransport Layer segment তৈরি করে TCP header যোগ করে।\nNetwork Layer packet তৈরি করে source এবং destination IP address যোগ করে।\nData Link Layer frame তৈরি করে source এবং destination MAC address যোগ করে।\nPhysical Layer bits হিসেবে network medium দিয়ে transmit হয়।\nReceiving end reverse process করে, শেষ পর্যন্ত email user mailbox এ পৌঁছায়।",
+      "image": "data_encapsulation.png"
+    },
+    "m2s13":{
+      "theory": "PDU (Protocol Data Unit) হলো OSI Model এ data কে represent করার unit।\nপ্রত্যেকটি layer তার নিজস্ব PDU ব্যবহার করে।\nApplication Layer → Data\nTransport Layer → Segment (TCP) / Datagram (UDP)\nNetwork Layer → Packet\nData Link Layer → Frame\nPhysical Layer → Bits\nPDU নিশ্চিত করে যে প্রতিটি layer তার নির্দিষ্ট structure অনুযায়ী data handle করে।\nReceiving end এই PDU reverse process করে original data reconstruct করে।",
+      "example": "ধরুন তুমি একটি email পাঠাচ্ছো।\nApplication Layer data generate করে → PDU: Data\nTransport Layer TCP segment তৈরি করে → PDU: Segment\nNetwork Layer IP packet তৈরি করে → PDU: Packet\nData Link Layer frame তৈরি করে → PDU: Frame\nPhysical Layer bits হিসেবে transmit হয় → PDU: Bits\nReceiving end reverse process করে final email user mailbox এ পৌঁছায়।",
+      "image": "pdu_layers.png"
+    }
+  }
+}

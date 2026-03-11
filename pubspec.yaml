@@ -35,4 +35,10 @@ flutter:
   # assets file loading
   assets:
     - assets/data/modules.json
+    - assets/data/details.json
+
+
+
+    #image connection
+    - assets/images/lan_image.png
 

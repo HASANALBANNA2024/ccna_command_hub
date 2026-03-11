@@ -133,12 +133,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => SubModuleScreen(
+                            moduleId: module.id,
                             moduleName: module.name, // AppBar-এ দেখানোর জন্য মডিউলের নাম
                             subModules: module.subModules, // ওই মডিউলের সব সাব-মডিউল লিস্ট
                           ),
                         ),
                       );
                     },
+
                   ),
                 );
               },

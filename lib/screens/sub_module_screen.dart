@@ -1,11 +1,14 @@
+import 'package:ccna_command_hub/screens/details_screen.dart';
 import 'package:flutter/material.dart';
 
 class SubModuleScreen extends StatelessWidget {
+  final String moduleId;
   final String moduleName;
   final List<dynamic> subModules;
 
   const SubModuleScreen({
     super.key,
+    required this.moduleId,
     required this.moduleName,
     required this.subModules,
   });
@@ -107,13 +110,32 @@ class SubModuleScreen extends StatelessWidget {
                     ? const Icon(Icons.arrow_circle_right_rounded, color: Colors.blueAccent, size: 28)
                     : Icon(Icons.lock_clock_outlined, color: Colors.blueGrey.shade800, size: 20),
 
-                onTap: () {
-                  if (isUnlocked) {
-                    debugPrint("Level Entry: ${sub['title']}");
-                    // Navigator.push... ৩য় স্ক্রিনের জন্য
-                  } else {
-                    _showLockedDialog(context, sub['title']);
-                  }
+                // onTap: () {
+                //   if (isUnlocked) {
+                //     debugPrint("Level Entry: ${sub['title']}");
+                //     // Navigator.push... ৩য় স্ক্রিনের জন্য
+                //   } else {
+                //     _showLockedDialog(context, sub['title']);
+                //   }
+                // },
+
+                // call to details screen
+                onTap: (){
+                  if(isUnlocked)
+                    {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailsScreen(
+                                  moduleId: sub['id'].toString().substring(0,2),
+                                  subId: sub['id'],
+                                  title: sub['title']
+                              )
+                          ));
+                    }
+                  else
+                    {
+                      _showLockedDialog(context, sub['title']);
+                    }
                 },
               ),
             ),
