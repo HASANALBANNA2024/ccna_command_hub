@@ -146,10 +146,6 @@
       "image": "mac_address.png"
     }
   },
-
-
-
-
   "m2": {
     "m2s1": {
       "theory": "OSI Model (Open Systems Interconnection Model) হলো একটি conceptual framework যা network communication কে 7টি distinct layer এ ভাগ করে। এটি network devices এবং protocols কিভাবে ডেটা পাঠায় ও receive করে তা standardized ভাবে বোঝায়। OSI model এর উদ্দেশ্য হলো network communication সহজ করা, interoperability নিশ্চিত করা, এবং network troubleshooting সহজ করা।",
