@@ -59,6 +59,7 @@ class _DetailsScreenState extends State<DetailsScreen>
       // appbar
       appBar: AppBar(
         title: Text(widget.title),
+        centerTitle: true,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.blueAccent,
       ),
       // body

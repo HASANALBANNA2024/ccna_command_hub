@@ -1,4 +1,5 @@
 import 'package:ccna_command_hub/screens/details_screen.dart';
+import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:flutter/material.dart';
 
 class SubModuleScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class SubModuleScreen extends StatelessWidget {
     return Scaffold(
       // ব্যাকগ্রাউন্ড হোম স্ক্রিন থেকে একটু বেশি ডার্ক (Charcoal Black)
       backgroundColor: isDark ? const Color(0xFF020617) : const Color(0xFFF1F5F9),
-
+      // header of content
       appBar: AppBar(
         title: Text(moduleName, style: const TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.1)),
         centerTitle: true,
@@ -38,7 +39,7 @@ class SubModuleScreen extends StatelessWidget {
           ),
         ),
       ),
-
+      // body for content
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
         itemCount: subModules.length,
@@ -141,6 +142,36 @@ class SubModuleScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+      // Final Quiz NavigationBar call
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent,
+            minimumSize: const Size(double.infinity, 55),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 5,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuizScreen(moduleId: moduleId),
+              ),
+            );
+          },
+          icon: const Icon(Icons.psychology_alt_rounded, color: Colors.white),
+          label: Text(
+            // এখানে moduleId 'm1' থেকে '01' ফরম্যাটে নম্বর দেখাবে
+            "Start Module ${moduleId.replaceAll('m', '').padLeft(2, '0')} Final Quiz",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
     );
   }
