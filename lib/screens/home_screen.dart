@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:ccna_command_hub/widgets/main_drawer.dart';
+import 'package:ccna_command_hub/widgets/search_Delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
+import 'package:ccna_command_hub/widgets/search_Delegate.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,10 +16,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // module list for save appbar Icon search
+  List<ModuleModel> allModules = [];
+
   Future<List<ModuleModel>> loadModules() async {
     final String response = await rootBundle.loadString('assets/data/modules.json');
     final List<dynamic> data = json.decode(response);
-    return data.map((json) => ModuleModel.fromJson(json)).toList();
+    // return data.map((json) => ModuleModel.fromJson(json)).toList();
+// ডাটা লোড করে লিস্টে রূপান্তর করা
+    List<ModuleModel> modules = data.map((json) => ModuleModel.fromJson(json)).toList();
+
+    // ২. ডাটাগুলো allModules ভেরিয়েবলে রেখে দেওয়া হচ্ছে
+    allModules = modules;
+
+    return modules;
+
   }
 
   @override
@@ -35,6 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         // অ্যাপবারে হালকা গ্রাডিয়েন্ট ইফেক্ট (ঐচ্ছিক, আপনার থিমের সাথে মিলবে)
         backgroundColor: isDark ? Colors.transparent : Colors.blueAccent,
+
+        actions: [
+          IconButton(onPressed: (){
+            showSearch(context: context, delegate: GlobalSearchDelegate(allModules));
+          }, icon: Icon(Icons.search))
+        ],
       ),
 
       drawer: const MainDrawer(),
