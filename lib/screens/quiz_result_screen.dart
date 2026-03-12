@@ -71,6 +71,8 @@ class QuizResultScreen extends StatelessWidget {
         onPrimary: () {
           Navigator.of(context, rootNavigator: true).pop();
           if (passed) {
+            // all update before next module
+            Navigator.of(context).popUntil((route) => route.isFirst);
             // সরাসরি নেক্সট মডিউলে যাবে
             _navigateToNextModule(context);
           } else {

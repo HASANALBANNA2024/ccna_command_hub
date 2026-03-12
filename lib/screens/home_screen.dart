@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
+import 'package:ccna_command_hub/services/unlock_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -52,96 +53,107 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: modules.length,
               itemBuilder: (context, index) {
                 final module = modules[index];
+                bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    // কার্ডের কালার ডার্ক মোড ফ্রেন্ডলি করা হয়েছে
-                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      )
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                return FutureBuilder<bool>(
+                  // UnlockService থেকে রিয়েল-টাইম স্ট্যাটাস চেক করা হচ্ছে
+                  future: UnlockService.isModuleUnlocked(module.id),
+                  builder: (context, snapshot) {
+                    // ডাটা না আসা পর্যন্ত ডিফল্ট বা JSON এর ডাটা দেখাবে
+                    bool isUnlocked = snapshot.data ?? (module.id == "m1");
 
-                    // ১. বাম পাশের আইকন ডিজাইন
-                    leading: Container(
-                      padding: const EdgeInsets.all(10),
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                        color: module.isUnlocked
-                            ? Colors.blue.withOpacity(0.15)
-                            : Colors.grey.withOpacity(0.1),
-                        shape: BoxShape.circle,
+                        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
                       ),
-                      child: Icon(
-                        module.isUnlocked ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
-                        color: module.isUnlocked ? Colors.blueAccent : Colors.grey,
-                        size: 24,
-                      ),
-                    ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
-                    // ২. মাঝখানের কন্টেন্ট
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "MODULE ${index + 1 < 10 ? '0' : ''}${index + 1}",
-                          style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
+                        // ১. বাম পাশের আইকন ডিজাইন (রিয়েল-টাইম আনলক চেক)
+                        leading: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isUnlocked
+                                ? Colors.blue.withOpacity(0.15)
+                                : Colors.grey.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            isUnlocked ? Icons.lock_open_rounded : Icons.lock_outline_rounded,
+                            color: isUnlocked ? Colors.blueAccent : Colors.grey,
+                            size: 24,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          module.name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: isDark ? Colors.white : Colors.black87,
+
+                        // ২. মাঝখানের কন্টেন্ট (UI একই আছে)
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "MODULE ${index + 1 < 10 ? '0' : ''}${index + 1}",
+                              style: const TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              module.name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            module.desc,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
 
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        module.desc,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                          color: isDark ? Colors.blueGrey : Colors.grey,
                         ),
+
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SubModuleScreen(
+                                moduleId: module.id,
+                                moduleName: module.name,
+                                subModules: module.subModules,
+                              ),
+                            ),
+                          ).then((_) {
+                            // কুইজ স্ক্রিন বা সাব-মডিউল থেকে ব্যাক করলে যাতে আইকন আপডেট হয়
+                            setState(() {});
+                          });
+                        },
                       ),
-                    ),
-
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 14,
-                      color: isDark ? Colors.blueGrey : Colors.grey,
-                    ),
-
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SubModuleScreen(
-                            moduleId: module.id,
-                            moduleName: module.name, // AppBar-এ দেখানোর জন্য মডিউলের নাম
-                            subModules: module.subModules, // ওই মডিউলের সব সাব-মডিউল লিস্ট
-                          ),
-                        ),
-                      );
-                    },
-
-                  ),
+                    );
+                  },
                 );
               },
             );
