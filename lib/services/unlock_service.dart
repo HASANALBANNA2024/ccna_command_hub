@@ -54,4 +54,26 @@ class UnlockService {
     return totalPassed;
   }
 
+  // last unlocked module
+
+  static Future<String> getLastUnlockedModuleId() async {
+    final prefs = await SharedPreferences.getInstance();
+    int lastUnlocked = 1;
+
+    for (int i = 1; i <= 32; i++) {
+      // আপনার সেভ করা কি (Key) অনুযায়ী চেক করছি
+      bool isUnlocked = prefs.getBool('unlocked_mod_m$i') ?? false;
+
+      if (isUnlocked) {
+        lastUnlocked = i;
+      } else {
+        // যদি m1 এবং m2 আনলক থাকে, তবে লুপটি ২ এ এসে থামবে
+        break;
+      }
+    }
+
+    // যেহেতু m1 আনলক মানে ইউজার m1 এর কুইজ দিতে পারে,
+    // তাই আমরা সরাসরি m$lastUnlocked রিটার্ন করবো।
+    return "m$lastUnlocked";
+  }
 }

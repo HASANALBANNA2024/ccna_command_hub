@@ -8,6 +8,7 @@ import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
+import 'package:ccna_command_hub/screens/quiz_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -229,12 +230,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 
-                  _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () {
+                  _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    int targetModule = 1;
 
+                    for (int i = 32; i >= 1; i--) {
+                      // উল্টো দিক থেকে চেক করছি কোনটি সবার শেষ আনলক হয়েছে
+                      if (prefs.getBool('unlocked_mod_m$i') ?? false) {
+                        targetModule = i;
+                        break;
+                      }
+                    }
 
+                    if (!mounted) return;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule")),
+                    ).then((_) {
+                      updateOverallProgress();
+                      setState(() {});
+                    });
                   }),
-
-
                 ],
               ),
 
@@ -275,7 +292,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                 ),
               ),
-              Text("${percentage.toInt()}%", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)), // ১২ থেকে ১৩
+              Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)), // ১২ থেকে ১৩
             ],
           ),
           const SizedBox(width: 16),
