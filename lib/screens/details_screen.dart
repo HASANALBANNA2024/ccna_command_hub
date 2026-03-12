@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ccna_command_hub/services/bookmark_service.dart';
 
 class DetailsScreen extends StatefulWidget
 {
@@ -84,6 +85,8 @@ class _DetailsScreenState extends State<DetailsScreen>
           // ৩. এক্সাম্পল সেকশন
           if (details!['example'] != null && details!['example'] != "")
             _buildExpandableSection("Example", Icons.lightbulb_rounded, details!['example'], isDark, false),
+
+
         ],
       )
     );
@@ -108,25 +111,134 @@ class _DetailsScreenState extends State<DetailsScreen>
     );
   }
   // custom widget
-  Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode)
-  {
-    return Card(
-      margin:  const EdgeInsets.only(bottom: 12),
-      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+  // Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode)
+  // {
+  //   return Card(
+  //     margin:  const EdgeInsets.only(bottom: 12),
+  //     color: isDark ? const Color(0xFF1E293B) : Colors.white,
+  //
+  //     child: ExpansionTile(
+  //       leading: Icon(icon, color: Colors.blueAccent,),
+  //       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold,)),
+  //       children: [
+  //         Padding(
+  //           padding: const EdgeInsets.all(16),
+  //           child: Text(content, style: const TextStyle(fontSize: 15, height: 1.5)),
+  //         ),
+  //       ],
+  //     )
+  //   );
+  //   }
+    // bookmark icon widget for content of sub module
 
+  Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       child: ExpansionTile(
-        leading: Icon(icon, color: Colors.blueAccent,),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold,)),
+        leading: Icon(icon, color: Colors.blueAccent),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(content, style: const TextStyle(fontSize: 15, height: 1.5)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // মূল টেক্সট (অপরিবর্তিত)
+                Text(content, style: const TextStyle(fontSize: 15, height: 1.5)),
+
+                const SizedBox(height: 12), // টেক্সট থেকে বাটনের গ্যাপ
+                const Divider(thickness: 0.5), // হালকা সেপারেটর
+
+                // আপনার চাওয়া অনুযায়ী বক্সের ভেতর ডান পাশে বুকমার্ক বাটন
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: _buildStyleBookmark({
+                    'id': widget.subId,
+                    'title': widget.title, // সাব-মডিউল + সেকশন নাম
+                    'theory': content,
+                  }, context),
+                ),
+              ],
+            ),
           ),
         ],
-      )
+      ),
     );
-    }
   }
+  Widget _buildStyleBookmark(Map<String, dynamic> subModule, BuildContext context) {
+    return FutureBuilder<bool>(
+      future: BookmarkService.isBookmarked(subModule['title']),
+      builder: (context, snapshot) {
+        // Initial state load korbe
+        bool isSaved = snapshot.data ?? false;
+
+        return StatefulBuilder(
+          builder: (context, setLocalState) {
+            return InkWell(
+              onTap: () async {
+                // Database update
+                await BookmarkService.toggleBookmark(subModule);
+
+                // UI sathe sathe update hobe (Quran app style)
+                setLocalState(() {
+                  isSaved = !isSaved;
+                });
+
+                // User ke feedback dewa
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(isSaved ? "বুকমার্কে সেভ করা হয়েছে" : "বুকমার্ক থেকে সরানো হয়েছে"),
+                    duration: const Duration(milliseconds: 700),
+                    backgroundColor: isSaved ? Colors.amber.shade900 : Colors.blueGrey.shade800,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  // Select korle Amber color hobe, unselect korle transparent thakbe
+                  color: isSaved ? Colors.amber.withOpacity(0.15) : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isSaved ? Colors.amber.shade700 : Colors.grey.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Icon color switching
+                    Icon(
+                      isSaved ? Icons.bookmark_rounded : Icons.bookmark_add_outlined,
+                      size: 22,
+                      color: isSaved ? Colors.amber.shade800 : Colors.grey,
+                    ),
+                    const SizedBox(width: 8),
+                    // Text color switching
+                    Text(
+                      isSaved ? "Bookmarked" : "Bookmark",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: isSaved ? Colors.amber.shade900 : Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+}
+
 
 
 

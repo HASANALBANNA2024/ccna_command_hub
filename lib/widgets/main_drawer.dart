@@ -1,4 +1,5 @@
 import 'package:ccna_command_hub/main.dart';
+import 'package:ccna_command_hub/screens/bookmark_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -46,6 +47,15 @@ class _MainDrawerState extends State<MainDrawer>
             title: const Text("Home"),
             onTap: (){
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.bookmark),
+            title: Text("Bookmark"),
+            onTap: (){
+              Navigator.pop(context);
+
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> BookmarkScreen()));
             },
           ),
           const Divider(),
