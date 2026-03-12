@@ -303,6 +303,7 @@ class _DetailsScreenState extends State<DetailsScreen>
       ),
     );
   }
+
   Widget _buildStyleBookmark(Map<String, dynamic> subModule, BuildContext context) {
     return FutureBuilder<bool>(
       future: BookmarkService.isBookmarked(subModule['title']),
