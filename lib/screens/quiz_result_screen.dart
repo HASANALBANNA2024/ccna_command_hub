@@ -85,7 +85,10 @@ class QuizResultScreen extends StatelessWidget {
         },
         onSecondary: () {
           // শুধু পপআপ বন্ধ হবে, ইউজার রেজাল্ট এনালাইসিস দেখবে
-          Navigator.of(context, rootNavigator: true).pop();
+          // নিশ্চিত করুন যে শুধুমাত্র পপআপ ডায়ালগটি বন্ধ হচ্ছে
+          if (Navigator.canPop(context)) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
         },
       );
     });

@@ -35,11 +35,11 @@ class OverlayWidgets {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
                 onPressed: () { timer?.cancel(); onPrimary(); },
-                child: Text(passed ? "পরবর্তী মডিউল" : "ট্রাই এগেইন", style: const TextStyle(color: Colors.white)),
+                child: Text(passed ? "Next Module" : "Try Again", style: const TextStyle(color: Colors.white)),
               ),
               TextButton(
                 onPressed: () { timer?.cancel(); onSecondary(); },
-                child: Text(passed ? "স্কিপ" : "ভিউ ডিটেইলস", style: const TextStyle(color: Colors.blueAccent)),
+                child: Text(passed ? "Skip" : "View Details", style: const TextStyle(color: Colors.blueAccent)),
               ),
             ],
           ),
