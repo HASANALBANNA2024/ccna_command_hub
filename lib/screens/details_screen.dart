@@ -98,40 +98,87 @@ class _DetailsScreenState extends State<DetailsScreen>
                       color: isSaved ? Colors.amber : Colors.white,
                       size: 26,
                     ),
+                    // onPressed: () async {
+                    //   // ১. চেক করা হচ্ছে ডাটা লোড হয়েছে কি না
+                    //   if (details == null) {
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //         const SnackBar(content: Text("ডাটা এখনো লোড হচ্ছে, অপেক্ষা করুন..."))
+                    //     );
+                    //     return;
+                    //   }
+                    //
+                    //   // ২. শেয়ার লজিকের মতো সব কন্টেন্ট প্যাকেজ করা
+                    //   Map<String, dynamic> fullData = {
+                    //     'id': widget.subId,
+                    //     'moduleId': widget.moduleId,
+                    //     'title': widget.title,
+                    //     'full_content': Map<String, dynamic>.from(details!), // ম্যাপটি কপি করে নেওয়া হলো
+                    //   };
+                    //
+                    //   // ৩. বুকমার্ক সার্ভিস কল করা
+                    //   await BookmarkService.toggleBookmark(fullData);
+                    //
+                    //   // ৪. তৎক্ষণাৎ আইকন কালার পরিবর্তন
+                    //   setLocalState(() {
+                    //     isSaved = !isSaved;
+                    //   });
+                    //
+                    //   // ৫. ফিডব্যাক মেসেজ
+                    //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content: Text(isSaved ? "Full Module Bookmarked!" : "Removed from Bookmarks"),
+                    //       duration: const Duration(milliseconds: 700),
+                    //       backgroundColor: isSaved ? Colors.amber.shade900 : Colors.blueGrey,
+                    //       behavior: SnackBarBehavior.floating,
+                    //     ),
+                    //   );
+                    // },
                     onPressed: () async {
-                      // ১. চেক করা হচ্ছে ডাটা লোড হয়েছে কি না
-                      if (details == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("ডাটা এখনো লোড হচ্ছে, অপেক্ষা করুন..."))
-                        );
-                        return;
+                      if (details == null) return;
+
+                      // ১. সব কন্টেন্টকে একটি সুন্দর লিস্টে সাজানো (শেয়ার লজিকের মতো)
+                      List<Map<String, dynamic>> allSections = [];
+
+                      // থিওরি যোগ করা
+                      if (details!['theory'] != null) {
+                        allSections.add({'title': 'Theory', 'content': details!['theory']});
                       }
 
-                      // ২. শেয়ার লজিকের মতো সব কন্টেন্ট প্যাকেজ করা
+                      // ডিভাইস, টপোলজি ইত্যাদি লিস্টগুলো যোগ করা
+                      List<String> keys = ['devices', 'topologies', 'types', 'media', 'details'];
+                      for (var key in keys) {
+                        if (details![key] != null && details![key] is List) {
+                          String listContent = "";
+                          for (var item in details![key]) {
+                            listContent += "• ${item['name']}: ${item['desc']}\n";
+                          }
+                          allSections.add({'title': key.toUpperCase(), 'content': listContent});
+                        }
+                      }
+
+                      // এক্সাম্পল যোগ করা
+                      if (details!['example'] != null) {
+                        allSections.add({'title': 'Example', 'content': details!['example']});
+                      }
+
+                      // ২. পুরো ডাটা প্যাকেজ তৈরি
                       Map<String, dynamic> fullData = {
                         'id': widget.subId,
-                        'moduleId': widget.moduleId,
                         'title': widget.title,
-                        'full_content': Map<String, dynamic>.from(details!), // ম্যাপটি কপি করে নেওয়া হলো
+                        'full_content': allSections, // এখানে এখন সব সাজানো লিস্ট আছে
+                        'is_full_module': true,      // এটি চেনার জন্য যে এটি পুরো মডিউল
                       };
 
-                      // ৩. বুকমার্ক সার্ভিস কল করা
+                      // ৩. সেভ করা
                       await BookmarkService.toggleBookmark(fullData);
 
-                      // ৪. তৎক্ষণাৎ আইকন কালার পরিবর্তন
                       setLocalState(() {
                         isSaved = !isSaved;
                       });
 
-                      // ৫. ফিডব্যাক মেসেজ
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(isSaved ? "Full Module Bookmarked!" : "Removed from Bookmarks"),
-                          duration: const Duration(milliseconds: 700),
-                          backgroundColor: isSaved ? Colors.amber.shade900 : Colors.blueGrey,
-                          behavior: SnackBarBehavior.floating,
-                        ),
+                        const SnackBar(content: Text("Puro Module Bookmark kora hoyeche!")),
                       );
                     },
                   );
@@ -171,24 +218,55 @@ class _DetailsScreenState extends State<DetailsScreen>
   }
 
   // কাস্টম লিস্ট সেকশন (Types, Devices, etc.)
-  
-  Widget _buildListSection(String title, List<dynamic> list, bool isDark)
-  {
+
+  Widget _buildListSection(String title, List<dynamic> list, bool isDark) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      color:  isDark ? const Color(0xFF1E293B) : Colors.white,
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       child: ExpansionTile(
         initiallyExpanded: true,
-        leading: const Icon(Icons.list_alt_rounded, color: Colors.orangeAccent,),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold,),),
-        children: list.map((item) => ListTile(
-          title: Text(item['name'] ?? "", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-          subtitle: Text(item['desc'] ?? ""),
+        leading: const Icon(Icons.list_alt_rounded, color: Colors.orangeAccent),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        children: list.map((item) => Container(
+          width: double.infinity, // পুরো জায়গা নেওয়ার জন্য
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.1))), // প্রতিটা আইটেমের নিচে হালকা দাগ
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ১. নাম (Title)
+              Text(
+                  item['name'] ?? "",
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent, fontSize: 16)
+              ),
+              const SizedBox(height: 4),
+
+              // ২. বর্ণনা (Description)
+              Text(
+                item['desc'] ?? "",
+                style: const TextStyle(fontSize: 14, height: 1.4),
+              ),
+
+              const SizedBox(height: 8),
+
+              // ৩. একদম নিচে ডান পাশে বুকমার্ক বাটন
+              Align(
+                alignment: Alignment.centerRight,
+                child: _buildStyleBookmark({
+                  'id': item['name'],
+                  'title': item['name'],
+                  'theory': item['desc'],
+                  'category': title,
+                }, context),
+              ),
+            ],
+          ),
         )).toList(),
-      )
+      ),
     );
   }
-
 
   Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode) {
     return Card(

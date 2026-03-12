@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
-import 'package:ccna_command_hub/services/share_service.dart'; // Share service ইমপোর্ট করুন
+import 'package:ccna_command_hub/services/share_service.dart';
 import 'package:ccna_command_hub/screens/home_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
@@ -66,8 +66,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
             itemCount: bookmarks.length,
             itemBuilder: (context, index) {
               final item = bookmarks[index];
-              // কন্টেন্ট ডাটা বের করা
-              final contentData = item['full_content'] ?? item;
+              final dynamic fullContent = item['full_content'];
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
@@ -87,29 +86,33 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ১. থিওরি সেকশন
-                          if (contentData['theory'] != null && contentData['theory'] != "")
-                            _buildContentBlock("Theory", contentData['theory'], Colors.blueAccent),
+                          // ১. যদি AppBar থেকে পুরো মডিউল সেভ করা হয় (এটি List হবে)
+                          if (fullContent != null && fullContent is List)
+                            ...fullContent.map((section) {
+                              return _buildContentBlock(
+                                  section['title'] ?? "",
+                                  section['content'] ?? "",
+                                  Colors.blueAccent
+                              );
+                            }).toList()
 
-                          // ২. এক্সাম্পল সেকশন (গ্যাপসহ)
-                          if (contentData['example'] != null && contentData['example'] != "")
-                            _buildContentBlock("Example", contentData['example'], Colors.green),
-
-                          // ৩. যদি কোনো লিস্ট থাকে (Devices/Types)
-                          if (contentData['devices'] != null || contentData['types'] != null)
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: Text("Detailed lists are available in the main page.",
-                                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: Colors.grey)),
-                            ),
+                          // ২. যদি ইন্ডিভিজুয়াল সেভ করা হয় (theory/desc চেক করবে)
+                          else ...[
+                            if (item['theory'] != null || item['desc'] != null)
+                              _buildContentBlock(
+                                  "Content",
+                                  item['theory'] ?? item['desc'] ?? "",
+                                  Colors.blueAccent
+                              ),
+                            if (item['example'] != null && item['example'] != "")
+                              _buildContentBlock("Example", item['example'], Colors.green),
+                          ],
 
                           const Divider(),
 
-                          // বাটন রো (Share and Remove)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              // শেয়ার বাটন
                               IconButton(
                                 icon: const Icon(Icons.share_outlined, color: Colors.blueAccent),
                                 onPressed: () {
@@ -117,7 +120,6 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 },
                               ),
                               const Spacer(),
-                              // রিমুভ বাটন
                               TextButton.icon(
                                 onPressed: () async {
                                   await BookmarkService.toggleBookmark(item);
@@ -141,15 +143,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     );
   }
 
-  // আলাদা সেকশন তৈরির হেল্পার উইজেট
   Widget _buildContentBlock(String title, String text, Color titleColor) {
+    if (text.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title, style: TextStyle(fontWeight: FontWeight.bold, color: titleColor, fontSize: 15)),
         const SizedBox(height: 4),
         Text(text, style: const TextStyle(fontSize: 14, height: 1.5)),
-        const SizedBox(height: 16), // সেকশনের মাঝে গ্যাপ
+        const SizedBox(height: 16),
       ],
     );
   }
