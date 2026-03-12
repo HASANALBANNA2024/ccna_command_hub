@@ -1,5 +1,6 @@
 import 'package:ccna_command_hub/main.dart';
 import 'package:ccna_command_hub/screens/bookmark_screen.dart';
+import 'package:ccna_command_hub/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -47,6 +48,8 @@ class _MainDrawerState extends State<MainDrawer>
             title: const Text("Home"),
             onTap: (){
               Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder:
+              (_)=> DashboardScreen()));
             },
           ),
           ListTile(
