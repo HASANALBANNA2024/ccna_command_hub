@@ -103,25 +103,84 @@ class QuizResultScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Score Header
           Container(
-            padding: const EdgeInsets.all(25),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25), // প্যাডিং কমিয়ে হাইট কন্ট্রোল করা হয়েছে
             width: double.infinity,
             decoration: BoxDecoration(
-              color: passed ? Colors.green.shade700 : Colors.red.shade700,
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30), bottomRight: Radius.circular(30)),
+              // সলিড কালারের বদলে ডিজাইনফুল গ্রেডিয়েন্ট ব্যবহার করা হয়েছে
+              gradient: LinearGradient(
+                colors: passed
+                    ? [Colors.green.shade800, Colors.green.shade500]
+                    : [Colors.red.shade900, Colors.red.shade600],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(35),
+                  bottomRight: Radius.circular(35)
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                )
+              ],
             ),
-            child: Column(
+            child: Row( // কলামের বদলে রো (Row) ব্যবহার করে হাইট কমানো হয়েছে
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(passed ? Icons.verified_user_rounded : Icons.error_outline_rounded, color: Colors.white, size: 50),
-                const SizedBox(height: 10),
-                Text(passed ? "Exam Passed!" : "Failed - Try Again",
-                    style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
-                Text("Score: $score / 25", style: const TextStyle(color: Colors.white70, fontSize: 16)),
+                // বাম পাশে আইকন
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                      passed ? Icons.emoji_events_rounded : Icons.gpp_bad_rounded,
+                      color: Colors.white,
+                      size: 35
+                  ),
+                ),
+                const SizedBox(width: 20),
+
+                // মাঝখানে টেক্সট এবং স্কোর
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        passed ? "EXAM PASSED!" : "EXAM FAILED!",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2
+                        )
+                    ),
+                    const SizedBox(height: 4),
+                    // ছোট করে স্কোর বক্স ডিজাইন
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                          "Score: $score / 25",
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600
+                          )
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),

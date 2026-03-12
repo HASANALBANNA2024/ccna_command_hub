@@ -109,7 +109,7 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
       // Final Quiz NavigationBar call
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15), // প্যাডিং কিছুটা কমানো হয়েছে সেফটির জন্য
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1E293B) : Colors.white,
           boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
@@ -126,14 +126,22 @@ class _QuizScreenState extends State<QuizScreen> {
               MaterialPageRoute(
                   builder: (context) => QuizResultScreen(
                     questions: questions,
-                    moduleId: widget.moduleId, // moduleId পাস করতে হবে
+                    moduleId: widget.moduleId,
                   )
               ),
             );
           },
-          child: Text(
-            "Submit Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} Final Answers",
-            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          child: FittedBox( // এটি টেক্সটকে এক লাইনে রাখার জন্য অটোমেটিক ছোট করবে
+            fit: BoxFit.scaleDown,
+            child: Text(
+              "Submit Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} Final Answers",
+              maxLines: 1, // নিশ্চিত করবে যেন এক লাইনের বেশি না হয়
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ),
