@@ -145,7 +145,7 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
 
             bool allRead = await UnlockService.canTakeQuiz(widget.subModules);
             if (allRead) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId)));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId)));
             } else {
               _showCustomLockedDialog(context, "সবগুলো সাব-মডিউল না পড়ে ফাইনাল কুইজ দেওয়া যাবে না!");
             }
@@ -173,7 +173,7 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
             break;
           }
         }
-        Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: lastModuleToExam)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: lastModuleToExam)));
       },
       onAd: () async {
         // Unlock current module directly via Ad
