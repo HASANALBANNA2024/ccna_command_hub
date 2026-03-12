@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
+import 'package:ccna_command_hub/services/share_service.dart';
 
 class DetailsScreen extends StatefulWidget
 {
@@ -62,6 +63,15 @@ class _DetailsScreenState extends State<DetailsScreen>
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share_rounded, color: Colors.white),
+            onPressed: () {
+              // শুধু এই লাইনটি কল করবেন
+              ShareService.shareSubModule(widget.title, details);
+            },
+          ),
+        ],
       ),
       // body
       body: isLoading ?
@@ -110,26 +120,7 @@ class _DetailsScreenState extends State<DetailsScreen>
       )
     );
   }
-  // custom widget
-  // Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode)
-  // {
-  //   return Card(
-  //     margin:  const EdgeInsets.only(bottom: 12),
-  //     color: isDark ? const Color(0xFF1E293B) : Colors.white,
-  //
-  //     child: ExpansionTile(
-  //       leading: Icon(icon, color: Colors.blueAccent,),
-  //       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold,)),
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.all(16),
-  //           child: Text(content, style: const TextStyle(fontSize: 15, height: 1.5)),
-  //         ),
-  //       ],
-  //     )
-  //   );
-  //   }
-    // bookmark icon widget for content of sub module
+
 
   Widget _buildExpandableSection(String title, IconData icon, String content, bool isDark, bool isCode) {
     return Card(
