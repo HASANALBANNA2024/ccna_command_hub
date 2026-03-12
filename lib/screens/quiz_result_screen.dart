@@ -1,16 +1,91 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/models/quiz_model.dart';
+import 'package:ccna_command_hub/services/unlock_service.dart';
+import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
+import 'package:ccna_command_hub/screens/quiz_screen.dart';
+import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
   final List<QuizQuestion> questions;
   final String moduleId;
   const QuizResultScreen({super.key, required this.questions, required this.moduleId});
 
+  // সরাসরি পরবর্তী মডিউলের ডাটা লোড করে সেখানে যাওয়ার ফাংশন
+  Future<void> _navigateToNextModule(BuildContext context) async {
+    try {
+      // ১. JSON ফাইলটি লোড করা
+      final String response = await rootBundle.loadString('assets/data/modules.json');
+      final List<dynamic> data = json.decode(response);
+
+      // ২. পরবর্তী মডিউল আইডি বের করা
+      int currentNum = int.parse(moduleId.replaceAll('m', ''));
+      String nextModId = "m${currentNum + 1}";
+
+      // ৩. লিস্ট থেকে পরবর্তী মডিউলের অবজেক্টটি খুঁজে বের করা
+      var nextModuleData = data.firstWhere(
+            (m) => m['id'] == nextModId,
+        orElse: () => null,
+      );
+
+      if (nextModuleData != null) {
+        // ৪. সরাসরি পরবর্তী মডিউলের সাব-মডিউল স্ক্রিনে পাঠিয়ে দেওয়া
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SubModuleScreen(
+              moduleId: nextModuleData['id'],
+              moduleName: nextModuleData['name'],
+              subModules: nextModuleData['subModules'],
+            ),
+          ),
+        );
+      } else {
+        // যদি আর কোন মডিউল না থাকে তবে হোমে পাঠিয়ে দেওয়া
+        Navigator.popUntil(context, (route) => route.isFirst);
+      }
+    } catch (e) {
+      debugPrint("Error navigating to next module: $e");
+      Navigator.popUntil(context, (route) => route.isFirst);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     int score = questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = score >= 18; // ১৮ তে পাস
+    bool passed = score >= 18;
+
+    // পপআপ ওভারলে দেখানোর লজিক
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (passed) {
+        int currentNum = int.parse(moduleId.replaceAll('m', ''));
+        String nextModuleId = "m${currentNum + 1}";
+        await UnlockService.unlockModule(nextModuleId);
+      }
+
+      OverlayWidgets.showResultOverlay(
+        context: context,
+        passed: passed,
+        onPrimary: () {
+          if (passed) {
+            // সরাসরি নেক্সট মডিউলে যাবে
+            _navigateToNextModule(context);
+          } else {
+            // ট্রাই এগেইন: কুইজ স্ক্রিন আবার চালু হবে
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => QuizScreen(moduleId: moduleId)),
+            );
+          }
+        },
+        onSecondary: () {
+          // শুধু পপআপ বন্ধ হবে, ইউজার রেজাল্ট এনালাইসিস দেখবে
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+      );
+    });
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
@@ -83,7 +158,6 @@ class QuizResultScreen extends StatelessWidget {
           ),
         ],
       ),
-      // Final Quiz NavigationBar call
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(15),
         child: TextButton(
