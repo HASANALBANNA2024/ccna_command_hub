@@ -55,7 +55,7 @@ class _MainDrawerState extends State<MainDrawer>
             onTap: (){
               Navigator.pop(context);
 
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> BookmarkScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (_)=> BookmarkScreen()));
             },
           ),
           const Divider(),

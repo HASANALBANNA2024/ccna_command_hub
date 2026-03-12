@@ -9,21 +9,29 @@ class BookmarkService {
     final prefs = await SharedPreferences.getInstance();
     List<String> bookmarks = prefs.getStringList(_key) ?? [];
 
-    // টাইটেল দিয়ে চেক করা হচ্ছে (unique identifier হিসেবে)
+    // ১. সাব-মডিউলের টাইটেলটি বের করা (এটিই আমাদের ইউনিক আইডি)
     String title = subModule['title'] ?? "Untitled";
-    int index = bookmarks.indexWhere((item) {
-      final decoded = json.decode(item);
-      return decoded['title'] == title;
-    });
+
+    // ২. অলরেডি এই টাইটেলটি বুকমার্ক লিস্টে আছে কি না চেক করা
+    int index = -1;
+    for (int i = 0; i < bookmarks.length; i++) {
+      Map<String, dynamic> item = json.decode(bookmarks[i]);
+      if (item['title'] == title) {
+        index = i;
+        break;
+      }
+    }
 
     if (index >= 0) {
-      // যদি আগে থেকেই থাকে, তবে রিমুভ করো
+      // ৩. যদি অলরেডি থাকে, তবে সেটি রিমুভ করে দাও (Un-bookmark)
       bookmarks.removeAt(index);
     } else {
-      // না থাকলে পুরো ম্যাপটি (ID, Title, Theory, Desc) JSON করে সেভ করো
+      // ৪. যদি না থাকে, তবে পুরো ম্যাপটি (full_content সহ) সেভ করো
+      // এখানে আমরা পুরো ম্যাপটিকে কপি করে নিচ্ছি যাতে ডাটা লস না হয়
       bookmarks.add(json.encode(subModule));
     }
 
+    // ৫. আপডেট হওয়া লিস্টটি লোকাল স্টোরেজে সেভ করা
     await prefs.setStringList(_key, bookmarks);
   }
 

@@ -63,12 +63,80 @@ class _DetailsScreenState extends State<DetailsScreen>
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.blueAccent,
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.share_rounded, color: Colors.white),
+        //     onPressed: () {
+        //       // শুধু এই লাইনটি কল করবেন
+        //       ShareService.shareSubModule(widget.title, details);
+        //     },
+        //   ),
+        // ],
+
+
         actions: [
+          // Share Button (ShareService call kora hoyeche)
           IconButton(
             icon: const Icon(Icons.share_rounded, color: Colors.white),
             onPressed: () {
-              // শুধু এই লাইনটি কল করবেন
               ShareService.shareSubModule(widget.title, details);
+            },
+          ),
+
+          // Full Sub-Module Bookmark Button
+          // AppBar actions এর ভেতর বুকমার্ক বাটন
+          FutureBuilder<bool>(
+            future: BookmarkService.isBookmarked(widget.title),
+            builder: (context, snapshot) {
+              bool isSaved = snapshot.data ?? false;
+
+              return StatefulBuilder(
+                builder: (context, setLocalState) {
+                  return IconButton(
+                    icon: Icon(
+                      isSaved ? Icons.bookmark : Icons.bookmark_border_rounded,
+                      color: isSaved ? Colors.amber : Colors.white,
+                      size: 26,
+                    ),
+                    onPressed: () async {
+                      // ১. চেক করা হচ্ছে ডাটা লোড হয়েছে কি না
+                      if (details == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("ডাটা এখনো লোড হচ্ছে, অপেক্ষা করুন..."))
+                        );
+                        return;
+                      }
+
+                      // ২. শেয়ার লজিকের মতো সব কন্টেন্ট প্যাকেজ করা
+                      Map<String, dynamic> fullData = {
+                        'id': widget.subId,
+                        'moduleId': widget.moduleId,
+                        'title': widget.title,
+                        'full_content': Map<String, dynamic>.from(details!), // ম্যাপটি কপি করে নেওয়া হলো
+                      };
+
+                      // ৩. বুকমার্ক সার্ভিস কল করা
+                      await BookmarkService.toggleBookmark(fullData);
+
+                      // ৪. তৎক্ষণাৎ আইকন কালার পরিবর্তন
+                      setLocalState(() {
+                        isSaved = !isSaved;
+                      });
+
+                      // ৫. ফিডব্যাক মেসেজ
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isSaved ? "Full Module Bookmarked!" : "Removed from Bookmarks"),
+                          duration: const Duration(milliseconds: 700),
+                          backgroundColor: isSaved ? Colors.amber.shade900 : Colors.blueGrey,
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
             },
           ),
         ],
