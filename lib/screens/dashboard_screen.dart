@@ -5,6 +5,9 @@ import 'package:ccna_command_hub/screens/home_screen.dart';
 import 'package:ccna_command_hub/screens/bookmark_screen.dart';
 import 'package:ccna_command_hub/widgets/search_Delegate.dart';
 import 'package:ccna_command_hub/models/module_model.dart';
+import 'package:ccna_command_hub/services/bookmark_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ccna_command_hub/services/unlock_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,12 +18,52 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   List<ModuleModel> allModulesList = [];
+  List<ModuleModel> myGlobalBookmarkList = [];
   bool isLoading = true;
+
+  // update bookmark count
+  int bookmarkCount = 0;
+
+  // overall progress bar
+  int totalModules = 32;
+  int passedModulesCount = 0;
+  double progressPercentage = 0.0;
+
+
+  Future<void> updateOverallProgress() async {
+    // সার্ভিস থেকে পাস করা মডিউলের সংখ্যা আনা
+    int passed = await UnlockService.getPassedQuizCount();
+
+    if (mounted) {
+      setState(() {
+        passedModulesCount = passed;
+        // ক্যালকুলেশন: (পাস করা মডিউল / ৩২) * ১০০
+        progressPercentage = (passedModulesCount / totalModules) * 100;
+      });
+    }
+  }
+
+  Future<void> updateBookmarkCount() async {
+    final List<Map<String, dynamic>> bookmarks = await BookmarkService.getAllBookmarks();
+
+    // কনসোলে চেক করুন সংখ্যাটি কত দেখাচ্ছে
+    debugPrint("Current Bookmarks in DB: ${bookmarks.length}");
+
+    if (mounted) {
+      setState(() {
+        bookmarkCount = bookmarks.length;
+        // যদি মডেল কনভার্ট করতে রেড লাইন দেয়, তবে এই লাইনটি আপাতত কমেন্ট করে রাখুন
+        // myGlobalBookmarkList = bookmarks.map((item) => ModuleModel.fromJson(item)).toList();
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     loadDashboardData();
+    updateBookmarkCount();
+    updateOverallProgress();
   }
 
   Future<void> loadDashboardData() async {
@@ -116,21 +159,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               const SizedBox(height: 14),
 
-              // --- ৩. সার্কুলার প্রগ্রেস ---
-              _buildOverallProgress(45.0, isDark),
+              // --- Overall progress---
+              _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
 
               const SizedBox(height: 14),
 
               // --- ৪. স্ট্যাটস কার্ড ---
               Row(
                 children: [
+                  // ১. মডিউল মেনু কার্ড (বাম পাশে)
                   _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
+
                   const SizedBox(width: 12),
-                  _buildStatCard("Bookmarks", "12", Colors.orange, isDark),
-                ],
+
+                  // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
+
+                  _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
+                 ]
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
               // --- ৫. লার্নিং হাব ---
               const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), // ১৪ থেকে ১৫
@@ -144,12 +192,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 mainAxisSpacing: 12,
                 childAspectRatio: 1.5,
                 children: [
-                  _buildMenuCard(context, "Modules", Icons.menu_book, Colors.indigo, isDark,
-                          () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()))),
-                  _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark,
-                          () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BookmarkScreen()))),
+
+                  _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark,
+                        () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      ).then((_) {
+
+                        loadDashboardData();
+                        updateBookmarkCount();
+                        updateOverallProgress();
+                      });
+                    },
+                  ),
+
+                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark,
+                  //         () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BookmarkScreen()))),
+                  
+                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, (){
+                  //   Navigator.push(context, MaterialPageRoute(builder: (context)=> const BookmarkScreen(bookmarkedItems: [])));
+                  // }),
+
+                  _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))
+                    ).then((value) {
+
+                      // স্ক্রিন থেকে ফিরে আসার পর UI রিফ্রেশ করার জন্য
+                      setState(() {});
+                    });
+                  }),
+
                   _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
-                  _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () {}),
+
+
+
+                  _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () {
+
+
+                  }),
+
+
                 ],
               ),
 
@@ -168,7 +253,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   // --- হেল্পার উইজেটস (Size Adjusted) ---
-  Widget _buildOverallProgress(double percentage, bool isDark) {
+  Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(12), // ১০ থেকে ১২
       decoration: BoxDecoration(
@@ -198,8 +283,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Overall Progress", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)), // ১৩ থেকে ১৪
-                Text("${(percentage/100 * 16).toInt()} / 16 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)), // ১০ থেকে ১১
+                const Text("Overall Progress", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                Text("${(percentage/100 * 32).toInt()} / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)),
               ],
             ),
           ),

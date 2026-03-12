@@ -4,7 +4,8 @@ import 'package:ccna_command_hub/services/share_service.dart';
 import 'package:ccna_command_hub/screens/home_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
-  const BookmarkScreen({super.key});
+  final List<dynamic> bookmarkedItems;
+  const BookmarkScreen({super.key, required this.bookmarkedItems});
 
   @override
   State<BookmarkScreen> createState() => _BookmarkScreenState();
@@ -41,7 +42,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
         ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: BookmarkService.getBookmarks(),
+        future: BookmarkService.getAllBookmarks(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

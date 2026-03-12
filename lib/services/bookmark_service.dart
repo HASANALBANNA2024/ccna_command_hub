@@ -2,17 +2,16 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookmarkService {
+  // ১. সব জায়গায় এই একই Key ব্যবহার করতে হবে
   static const String _key = "ccna_bookmarks";
 
-  // ১. বুকমার্ক টগল (সেভ থাকলে ডিলিট হবে, না থাকলে নতুন করে সেভ হবে)
+  // ২. বুকমার্ক টগল (সেভ থাকলে ডিলিট হবে, না থাকলে নতুন করে সেভ হবে)
   static Future<void> toggleBookmark(Map<String, dynamic> subModule) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> bookmarks = prefs.getStringList(_key) ?? [];
 
-    // ১. সাব-মডিউলের টাইটেলটি বের করা (এটিই আমাদের ইউনিক আইডি)
     String title = subModule['title'] ?? "Untitled";
 
-    // ২. অলরেডি এই টাইটেলটি বুকমার্ক লিস্টে আছে কি না চেক করা
     int index = -1;
     for (int i = 0; i < bookmarks.length; i++) {
       Map<String, dynamic> item = json.decode(bookmarks[i]);
@@ -23,35 +22,46 @@ class BookmarkService {
     }
 
     if (index >= 0) {
-      // ৩. যদি অলরেডি থাকে, তবে সেটি রিমুভ করে দাও (Un-bookmark)
       bookmarks.removeAt(index);
     } else {
-      // ৪. যদি না থাকে, তবে পুরো ম্যাপটি (full_content সহ) সেভ করো
-      // এখানে আমরা পুরো ম্যাপটিকে কপি করে নিচ্ছি যাতে ডাটা লস না হয়
+      // পুরো ম্যাপটি JSON স্ট্রিং করে সেভ করা
       bookmarks.add(json.encode(subModule));
     }
 
-    // ৫. আপডেট হওয়া লিস্টটি লোকাল স্টোরেজে সেভ করা
+    // আপডেট হওয়া লিস্টটি লোকাল স্টোরেজে সেভ করা
     await prefs.setStringList(_key, bookmarks);
   }
 
-  // ২. চেক করা যে কোনো আইটেম বুকমার্ক করা আছে কি না
+  // ৩. চেক করা যে কোনো নির্দিষ্ট আইটেম বুকমার্ক করা আছে কি না
   static Future<bool> isBookmarked(String title) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> bookmarks = prefs.getStringList(_key) ?? [];
-    return bookmarks.any((item) => json.decode(item)['title'] == title);
+    return bookmarks.any((item) {
+      try {
+        return json.decode(item)['title'] == title;
+      } catch (e) {
+        return false;
+      }
+    });
   }
 
-  // ৩. সব বুকমার্ক লিস্ট হিসেবে নিয়ে আসা
-  static Future<List<Map<String, dynamic>>> getBookmarks() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> bookmarks = prefs.getStringList(_key) ?? [];
+  // ৪. সব বুকমার্ক লিস্ট হিসেবে নিয়ে আসা (এটি ড্যাশবোর্ড এবং বুকমার্ক স্ক্রিন দুই জায়গাতেই কাজ করবে)
+  static Future<List<Map<String, dynamic>>> getAllBookmarks() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      // getStringList ব্যবহার করা হয়েছে কারণ সেভ করার সময় setStringList ব্যবহার করা হয়
+      List<String> bookmarks = prefs.getStringList(_key) ?? [];
 
-    // JSON স্ট্রিং থেকে পুনরায় Map এ কনভার্ট করা
-    return bookmarks.map((e) => json.decode(e) as Map<String, dynamic>).toList();
+      return bookmarks
+          .map((e) => json.decode(e) as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print("Error fetching bookmarks: $e");
+      return [];
+    }
   }
 
-  // ৪. সবগুলো বুকমার্ক এক ক্লিকে ডিলিট করা (নতুন যোগ করা হয়েছে)
+  // ৫. সবগুলো বুকমার্ক এক ক্লিকে ডিলিট করা
   static Future<void> clearAllBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);

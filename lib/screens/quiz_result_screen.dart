@@ -6,6 +6,7 @@ import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuizResultScreen extends StatelessWidget {
   final List<QuizQuestion> questions;
@@ -58,13 +59,20 @@ class QuizResultScreen extends StatelessWidget {
     bool passed = score >= 18;
 
     // পপআপ ওভারলে দেখানোর লজিক
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (passed) {
+        // ১. ড্যাশবোর্ডের প্রগ্রেস সেভ করার জন্য এই দুই লাইন যোগ করা হয়েছে
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('quiz_passed_$moduleId', true);
+
+        // ২. আপনার আগের আনলক লজিক (অপরিবর্তিত)
         int currentNum = int.parse(moduleId.replaceAll('m', ''));
         String nextModuleId = "m${currentNum + 1}";
         await UnlockService.unlockModule(nextModuleId);
       }
 
+      // ৩. বাকি ওভারলে লজিক সব আগের মতোই থাকবে
       OverlayWidgets.showResultOverlay(
         context: context,
         passed: passed,
@@ -85,14 +93,12 @@ class QuizResultScreen extends StatelessWidget {
         },
         onSecondary: () {
           // শুধু পপআপ বন্ধ হবে, ইউজার রেজাল্ট এনালাইসিস দেখবে
-          // নিশ্চিত করুন যে শুধুমাত্র পপআপ ডায়ালগটি বন্ধ হচ্ছে
           if (Navigator.canPop(context)) {
             Navigator.of(context, rootNavigator: true).pop();
           }
         },
       );
     });
-
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
       appBar: AppBar(

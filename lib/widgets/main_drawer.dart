@@ -52,15 +52,15 @@ class _MainDrawerState extends State<MainDrawer>
               (_)=> DashboardScreen()));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.bookmark),
-            title: Text("Bookmark"),
-            onTap: (){
-              Navigator.pop(context);
-
-              Navigator.push(context, MaterialPageRoute(builder: (_)=> BookmarkScreen()));
-            },
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.bookmark),
+          //   title: Text("Bookmark"),
+          //   onTap: (){
+          //     Navigator.pop(context);
+          //
+          //     Navigator.push(context, MaterialPageRoute(builder: (_)=> BookmarkScreen(bookmarkedItems: [],)));
+          //   },
+          // ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings_outlined),
