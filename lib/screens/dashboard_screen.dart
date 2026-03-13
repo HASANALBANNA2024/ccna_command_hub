@@ -34,6 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String lastReadId = "m1";
   String lastReadName = "Introduction to CCNA";
+  int lastTopicIndex = -1;
   List<dynamic> lastSubModules = [];
 
   Future<void> loadLastRead() async {
@@ -42,6 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         lastReadId = prefs.getString('last_mod_id') ?? "m1";
         lastReadName = prefs.getString('last_mod_name') ?? "Introduction to CCNA";
+        lastTopicIndex = prefs.getInt('last_topic_index') ?? -1;
 
         String? subJson = prefs.getString('last_sub_modules');
         if (subJson != null) {
@@ -60,6 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // প্রথম মডিউলটি খুঁজে বের করা
         var firstMod = data.firstWhere((m) => m['id'] == "m1");
 
+
         lastSubModules = firstMod['subModules'];
         lastReadName = firstMod['name'];
       } catch (e) {
@@ -77,6 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           moduleId: lastReadId,
           moduleName: lastReadName,
           subModules: lastSubModules,
+          initialIndex: lastTopicIndex,
         ),
       ),
     ).then((_) => loadLastRead()); // ফিরে আসলে যদি মডিউল চেঞ্জ হয় তবে আপডেট হবে

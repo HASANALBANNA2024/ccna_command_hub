@@ -248,7 +248,8 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
         child: TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            "Return to Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} List",
+            // "Return to Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} List",
+            "Exit Result Screen",
             style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),
           ),
         ),

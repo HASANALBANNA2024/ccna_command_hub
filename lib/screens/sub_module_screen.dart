@@ -10,12 +10,14 @@ class SubModuleScreen extends StatefulWidget {
   final String moduleId;
   final String moduleName;
   final List<dynamic> subModules;
+  final int? initialIndex;
 
   const SubModuleScreen({
     super.key,
     required this.moduleId,
     required this.moduleName,
     required this.subModules,
+    this.initialIndex,
   });
 
   @override
@@ -28,7 +30,28 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
   @override
   void initState() {
     super.initState();
-    _saveLastRead();
+
+    // এটি নিশ্চিত করে যে স্ক্রিন লোড হওয়ার পর লজিকটি চলবে
+    if (widget.initialIndex != null && widget.initialIndex! >= 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+
+        // আপনার সাব-মডিউল লিস্ট থেকে ওই নির্দিষ্ট টপিকটি খুঁজে বের করা
+        final selectedSubModule = widget.subModules[widget.initialIndex!];
+
+        // সরাসরি DetailsScreen-এ পাঠিয়ে দেওয়া
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailsScreen(
+              moduleId: widget.moduleId,
+              subId: selectedSubModule['id'],    // আপনার JSON অনুযায়ী কি (Key) নাম চেক করুন
+              title: selectedSubModule['title'], // আপনার JSON অনুযায়ী কি (Key) নাম চেক করুন
+              initialIndex: widget.initialIndex, // এটি পাঠালে ব্যাক বাটন ঠিকঠাক কাজ করবে
+            ),
+          ),
+        );
+      });
+    }
   }
   // Refresh on
   void refresh() => setState(() {});
@@ -130,11 +153,16 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
 
                     if (canAccess) {
                       await UnlockService.markSubAsRead(sub['id']);
+                      final prefs = await SharedPreferences.getInstance();
+                      // last sub module
+                      await prefs.setInt('last_topic_index', index);
+
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) => DetailsScreen(
-                              moduleId: sub['id'].toString().substring(0, 2),
-                              subId: sub['id'],
-                              title: sub['title']
+                            moduleId: widget.moduleId,
+                            subId: widget.subModules[index]['id'],
+                            title: widget.subModules[index]['title'],
+                            initialIndex: index,
                           )
                       )).then((_) => refresh());
                     } else {

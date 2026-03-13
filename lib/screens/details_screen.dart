@@ -9,12 +9,14 @@ class DetailsScreen extends StatefulWidget
   final String moduleId;
   final String subId;
   final String title;
+  final int? initialIndex;
 
   const DetailsScreen({
     super.key,
     required this.moduleId,
     required this.subId,
     required this.title,
+    required this.initialIndex,
 });
 
 @override
