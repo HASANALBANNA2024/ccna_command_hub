@@ -1,3 +1,4 @@
+import 'package:ccna_command_hub/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:ccna_command_hub/services/share_service.dart';
@@ -28,7 +29,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           onPressed: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
                   (route) => false,
             );
           },

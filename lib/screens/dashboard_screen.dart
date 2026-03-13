@@ -117,13 +117,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const Text("Track your CCNA journey", style: TextStyle(fontSize: 11.5, color: Colors.grey)),
                     ],
                   ),
-                  // const CircleAvatar(
-                  //   radius: 19, // ১৮ থেকে ১৯ করা হয়েছে
-                  //   backgroundColor: Colors.blueAccent,
-                  //   child: Icon(Icons.person, color: Colors.white, size: 19),
-                  // ),
-                  
-                  // drawer call 
+                  // call to drawer
                   Builder(
                       builder: (context) => GestureDetector(
                         onTap: (){
