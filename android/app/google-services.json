@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "945861460008",
+    "project_id": "ccna-command-hub-2026",
+    "storage_bucket": "ccna-command-hub-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945861460008:android:e5accba8b75dfe38fef51d",
+        "android_client_info": {
+          "package_name": "com.example.ccna_command_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKfAuRmnvmKfHJ2wxYOyZgbDun90fUOt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
