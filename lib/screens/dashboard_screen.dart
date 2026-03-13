@@ -32,14 +32,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   Future<void> updateOverallProgress() async {
-    // সার্ভিস থেকে পাস করা মডিউলের সংখ্যা আনা
     int passed = await UnlockService.getPassedQuizCount();
+    print("Passed Count Found: $passed"); // Console-e check korar jonno
 
     if (mounted) {
       setState(() {
         passedModulesCount = passed;
-        // ক্যালকুলেশন: (পাস করা মডিউল / ৩২) * ১০০
-        progressPercentage = (passedModulesCount / totalModules) * 100;
+        progressPercentage = (passed.toDouble() / 32) * 100;
       });
     }
   }
@@ -270,38 +269,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   // --- হেল্পার উইজেটস (Size Adjusted) ---
+  // DashboardScreen-er niche ei function-ti thik korun
   Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
-      padding: const EdgeInsets.all(12), // ১০ থেকে ১২
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(13),
       ),
       child: Row(
         children: [
+          // Circular Progress
           Stack(
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 52, // ৫০ থেকে ৫২
+                width: 52,
                 height: 52,
                 child: CircularProgressIndicator(
                   value: percentage / 100,
-                  strokeWidth: 5.5, // ৫ থেকে ৫.৫
+                  strokeWidth: 5.5,
                   backgroundColor: Colors.grey.withOpacity(0.1),
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                 ),
               ),
-              Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)), // ১২ থেকে ১৩
+              Text("${percentage.toInt()}%", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
             ],
           ),
           const SizedBox(width: 16),
+          // Text Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text("Overall Progress", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                Text("${(percentage/100 * 32).toInt()} / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                // SUDHU EI LINE-TA RAKHUN, baki extra kono text thakle muche den
+                Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)),
               ],
             ),
           ),
@@ -309,7 +312,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
   Widget _buildStatCard(String title, String count, Color color, bool isDark) {
     return Expanded(
       child: Container(

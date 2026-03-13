@@ -45,7 +45,7 @@ class _MainDrawerState extends State<MainDrawer>
 
           ListTile(
             leading: const Icon(Icons.menu_rounded),
-            title: const Text("Home"),
+            title: const Text("Dashboard"),
             onTap: (){
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder:

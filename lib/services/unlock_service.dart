@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 
 class UnlockService {
   static const String _subKey = "unlocked_sub_";
@@ -43,12 +44,11 @@ class UnlockService {
   static Future<int> getPassedQuizCount() async {
     final prefs = await SharedPreferences.getInstance();
     int totalPassed = 0;
-
     for (int i = 1; i <= 32; i++) {
-      // নিশ্চিত করুন যে সেভ করার সময় 'quiz_passed_m1' এই ফরম্যাটেই সেভ হচ্ছে
       bool isPassed = prefs.getBool('quiz_passed_m$i') ?? false;
       if (isPassed) {
         totalPassed++;
+       print("Found Passed Module: m$i"); // এটি কনসোলে আসে কি না দেখুন
       }
     }
     return totalPassed;

@@ -63,30 +63,29 @@ class QuizResultScreen extends StatelessWidget {
     // পপআপ ওভারলে দেখানোর লজিক
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
       if (passed) {
-        // ১. ড্যাশবোর্ডের প্রগ্রেস সেভ করার জন্য এই দুই লাইন যোগ করা হয়েছে
         final prefs = await SharedPreferences.getInstance();
+        // ডাটা সেভ হওয়া পর্যন্ত অপেক্ষা করুন
         await prefs.setBool('quiz_passed_$moduleId', true);
 
-        // ২. আপনার আগের আনলক লজিক (অপরিবর্তিত)
+        debugPrint("Progress Saved for $moduleId");
+
         int currentNum = int.parse(moduleId.replaceAll('m', ''));
         String nextModuleId = "m${currentNum + 1}";
         await UnlockService.unlockModule(nextModuleId);
       }
 
-      // ৩. বাকি ওভারলে লজিক সব আগের মতোই থাকবে
+      // বাকি পপআপ লজিক (অপরিবর্তিত)
       OverlayWidgets.showResultOverlay(
         context: context,
         passed: passed,
         onPrimary: () {
           Navigator.of(context, rootNavigator: true).pop();
           if (passed) {
-            // all update before next module
             Navigator.of(context).popUntil((route) => route.isFirst);
-            // সরাসরি নেক্সট মডিউলে যাবে
             _navigateToNextModule(context);
           } else {
-            // ট্রাই এগেইন: কুইজ স্ক্রিন আবার চালু হবে
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => QuizScreen(moduleId: moduleId)),
@@ -94,13 +93,15 @@ class QuizResultScreen extends StatelessWidget {
           }
         },
         onSecondary: () {
-          // শুধু পপআপ বন্ধ হবে, ইউজার রেজাল্ট এনালাইসিস দেখবে
           if (Navigator.canPop(context)) {
             Navigator.of(context, rootNavigator: true).pop();
           }
         },
       );
     });
+
+
+
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
       appBar: AppBar(
