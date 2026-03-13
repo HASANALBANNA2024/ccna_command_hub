@@ -160,7 +160,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- ১. হেডার (Slightly Scaled Up) ---
+              // ---(Slightly Scaled Up) ---
+              SizedBox(height: 10,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -194,7 +195,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 15),
 
               // --- ২. ফাংশনাল সার্চ বার ---
               InkWell(
@@ -211,7 +212,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   }
                 },
                 child: Container(
-                  height: 48, // ৪৫ থেকে ৪৮ করা হয়েছে
+                  height: 50, // ৪৫ থেকে ৪৮ করা হয়েছে
                   padding: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
                     color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -230,12 +231,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
               // --- Overall progress---
               _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
               // --- ৪. স্ট্যাটস কার্ড ---
               Row(
@@ -254,11 +255,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ]
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
 
               // --- ৫. লার্নিং হাব ---
               const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), // ১৪ থেকে ১৫
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
 
               GridView.count(
                 shrinkWrap: true,
