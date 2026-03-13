@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 import 'package:ccna_command_hub/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +32,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int passedModulesCount = 0;
   double progressPercentage = 0.0;
 
+  String lastReadId = "m1";
+  String lastReadName = "Introduction to CCNA";
+  List<dynamic> lastSubModules = [];
+
+  Future<void> loadLastRead() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        lastReadId = prefs.getString('last_mod_id') ?? "m1";
+        lastReadName = prefs.getString('last_mod_name') ?? "Introduction to CCNA";
+
+        String? subJson = prefs.getString('last_sub_modules');
+        if (subJson != null) {
+          lastSubModules = json.decode(subJson);
+        }
+      });
+    }
+  }
+
+  void navigateToLastRead() async {
+    // যদি একদম নতুন ইউজার হয় এবং lastSubModules খালি থাকে
+    if (lastSubModules.isEmpty) {
+      try {
+        final String response = await rootBundle.loadString('assets/data/modules.json');
+        final List<dynamic> data = json.decode(response);
+        // প্রথম মডিউলটি খুঁজে বের করা
+        var firstMod = data.firstWhere((m) => m['id'] == "m1");
+
+        lastSubModules = firstMod['subModules'];
+        lastReadName = firstMod['name'];
+      } catch (e) {
+        debugPrint("Error loading default module: $e");
+      }
+    }
+
+    if (!mounted) return;
+
+    // সরাসরি SubModuleScreen এ পাঠিয়ে দেওয়া
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SubModuleScreen(
+          moduleId: lastReadId,
+          moduleName: lastReadName,
+          subModules: lastSubModules,
+        ),
+      ),
+    ).then((_) => loadLastRead()); // ফিরে আসলে যদি মডিউল চেঞ্জ হয় তবে আপডেট হবে
+  }
 
   Future<void> updateOverallProgress() async {
     int passed = await UnlockService.getPassedQuizCount();
@@ -53,9 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (mounted) {
       setState(() {
         bookmarkCount = bookmarks.length;
-        // যদি মডেল কনভার্ট করতে রেড লাইন দেয়, তবে এই লাইনটি আপাতত কমেন্ট করে রাখুন
-        // myGlobalBookmarkList = bookmarks.map((item) => ModuleModel.fromJson(item)).toList();
-      });
+   });
     }
   }
 
@@ -65,6 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     loadDashboardData();
     updateBookmarkCount();
     updateOverallProgress();
+    loadLastRead();
   }
   @override
   void didChangeDependencies() {
@@ -72,6 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // কুইজ বা মডিউল থেকে ফিরে আসলে এটি অটো রিফ্রেশ করবে
     updateOverallProgress();
     updateBookmarkCount();
+    loadLastRead();
   }
 
   Future<void> loadDashboardData() async {
@@ -229,19 +279,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                   ),
 
-
-
-                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
-                  //   Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))
-                  //   ).then((value) {
-                  //
-                  //     // স্ক্রিন থেকে ফিরে আসার পর UI রিফ্রেশ করার জন্য
-                  //     setState(() {});
-                  //   });
-                  // }),
-
                   _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
                     Navigator.push(
                       context,
@@ -249,9 +286,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
                       ),
                     ).then((value) {
-                      // এই অংশটুকু ম্যাজিকের মতো কাজ করবে!
-                      // বুকমার্ক স্ক্রিন থেকে ব্যাক করলেই নিচের ফাংশনগুলো আবার চলবে
-                      updateBookmarkCount();
+                  updateBookmarkCount();
                       updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
                     });
                   }),
@@ -265,8 +300,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     int targetModule = 1;
 
                     for (int i = 32; i >= 1; i--) {
-                      // উল্টো দিক থেকে চেক করছি কোনটি সবার শেষ আনলক হয়েছে
-                      if (prefs.getBool('unlocked_mod_m$i') ?? false) {
+                    if (prefs.getBool('unlocked_mod_m$i') ?? false) {
                         targetModule = i;
                         break;
                       }
@@ -290,8 +324,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // --- ৬. রিসেন্ট অ্যাক্টিভিটি ---
               const Text("Continue Learning", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              _buildRecentItem("OSI Model", "Module 1", isDark),
-              _buildRecentItem("VLAN Config", "Module 3", isDark),
+
+              GestureDetector(
+                onTap: navigateToLastRead, // আমাদের তৈরি করা নেভিগেশন ফাংশন
+                child: _buildRecentItem(
+                  lastReadName, // সেভ করা মডিউলের নাম
+                  "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}", // মডিউল আইডি
+                  isDark,
+                ),
+              ),
+
             ],
           ),
         ),
@@ -299,8 +341,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // --- হেল্পার উইজেটস (Size Adjusted) ---
-  // DashboardScreen-er niche ei function-ti thik korun
+
   Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(12),

@@ -3,6 +3,8 @@ import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SubModuleScreen extends StatefulWidget {
   final String moduleId;
@@ -22,8 +24,25 @@ class SubModuleScreen extends StatefulWidget {
 
 class _SubModuleScreenState extends State<SubModuleScreen> {
 
-  // Refresh korar jonno setState lagbe
+
+  @override
+  void initState() {
+    super.initState();
+    _saveLastRead();
+  }
+  // Refresh on
   void refresh() => setState(() {});
+
+  Future<void> _saveLastRead() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('last_mod_id', widget.moduleId);
+    await prefs.setString('last_mod_name', widget.moduleName);
+
+    // সাব-মডিউলের লিস্টটি JSON স্ট্রিং হিসেবে সেভ করছি
+    String subModulesJson = json.encode(widget.subModules);
+    await prefs.setString('last_sub_modules', subModulesJson);
+  }
+
 
   @override
   Widget build(BuildContext context) {
