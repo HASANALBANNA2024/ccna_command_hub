@@ -187,7 +187,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
 
                   _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
-                 ]
+
+
+
+                ]
               ),
 
               const SizedBox(height: 15),
@@ -219,21 +222,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                   ),
 
-                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark,
-                  //         () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BookmarkScreen()))),
-                  
-                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, (){
-                  //   Navigator.push(context, MaterialPageRoute(builder: (context)=> const BookmarkScreen(bookmarkedItems: [])));
+
+
+                  // _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
+                  //   Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))
+                  //   ).then((value) {
+                  //
+                  //     // স্ক্রিন থেকে ফিরে আসার পর UI রিফ্রেশ করার জন্য
+                  //     setState(() {});
+                  //   });
                   // }),
 
                   _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
+                      ),
                     ).then((value) {
-
-                      // স্ক্রিন থেকে ফিরে আসার পর UI রিফ্রেশ করার জন্য
-                      setState(() {});
+                      // এই অংশটুকু ম্যাজিকের মতো কাজ করবে!
+                      // বুকমার্ক স্ক্রিন থেকে ব্যাক করলেই নিচের ফাংশনগুলো আবার চলবে
+                      updateBookmarkCount();
+                      updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
                     });
                   }),
 
