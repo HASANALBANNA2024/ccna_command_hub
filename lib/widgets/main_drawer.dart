@@ -39,28 +39,10 @@ class _MainDrawerState extends State<MainDrawer>
             ),
 
             // in future user control for database get information
-            accountName: const Text("CCNA Command Hub", style: TextStyle(fontWeight: FontWeight.bold)),
-            accountEmail: const Text("Master Networking Step by Step"),
+            accountName: const Text("MD. Hasan Al Banna", style: TextStyle(fontWeight: FontWeight.bold)),
+            accountEmail: const Text("albannamdhasan48@gmail.com"),
           ),
 
-          ListTile(
-            leading: const Icon(Icons.menu_rounded),
-            title: const Text("Dashboard"),
-            onTap: (){
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder:
-              (_)=> DashboardScreen()));
-            },
-          ),
-          // ListTile(
-          //   leading: const Icon(Icons.bookmark),
-          //   title: Text("Bookmark"),
-          //   onTap: (){
-          //     Navigator.pop(context);
-          //
-          //     Navigator.push(context, MaterialPageRoute(builder: (_)=> BookmarkScreen(bookmarkedItems: [],)));
-          //   },
-          // ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings_outlined),

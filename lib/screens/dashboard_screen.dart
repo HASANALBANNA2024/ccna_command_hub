@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ccna_command_hub/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/screens/home_screen.dart';
@@ -87,6 +88,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+
+      endDrawer: const MainDrawer(),
+
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
@@ -113,11 +117,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const Text("Track your CCNA journey", style: TextStyle(fontSize: 11.5, color: Colors.grey)),
                     ],
                   ),
-                  const CircleAvatar(
-                    radius: 19, // ১৮ থেকে ১৯ করা হয়েছে
-                    backgroundColor: Colors.blueAccent,
-                    child: Icon(Icons.person, color: Colors.white, size: 19),
-                  ),
+                  // const CircleAvatar(
+                  //   radius: 19, // ১৮ থেকে ১৯ করা হয়েছে
+                  //   backgroundColor: Colors.blueAccent,
+                  //   child: Icon(Icons.person, color: Colors.white, size: 19),
+                  // ),
+                  
+                  // drawer call 
+                  Builder(
+                      builder: (context) => GestureDetector(
+                        onTap: (){
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                        child: const CircleAvatar(
+                          radius: 19,
+                          backgroundColor: Colors.blueAccent,
+                          child: Icon(Icons.person, color: Colors.white, size: 19),
+                        ),
+                      )
+                  )
                 ],
               ),
 

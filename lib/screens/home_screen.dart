@@ -22,11 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<List<ModuleModel>> loadModules() async {
     final String response = await rootBundle.loadString('assets/data/modules.json');
     final List<dynamic> data = json.decode(response);
-    // return data.map((json) => ModuleModel.fromJson(json)).toList();
-// ডাটা লোড করে লিস্টে রূপান্তর করা
+
+    // data call of list
     List<ModuleModel> modules = data.map((json) => ModuleModel.fromJson(json)).toList();
 
-    // ২. ডাটাগুলো allModules ভেরিয়েবলে রেখে দেওয়া হচ্ছে
+    // all modules data receiving
     allModules = modules;
 
     return modules;
@@ -35,28 +35,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ডার্ক মোড চেক করার জন্য লজিক
+    // Dark mode logic
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      // ডার্ক মোডে মিডনাইট ব্লু এবং লাইট মোডে হালকা গ্রে ব্যাকগ্রাউন্ড
+      // dark green checking
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
 
       appBar: AppBar(
         title: const Text("CCNA Modules", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0,
-        // অ্যাপবারে হালকা গ্রাডিয়েন্ট ইফেক্ট (ঐচ্ছিক, আপনার থিমের সাথে মিলবে)
         backgroundColor: isDark ? Colors.transparent : Colors.blueAccent,
-
-        actions: [
-          IconButton(onPressed: (){
-            showSearch(context: context, delegate: GlobalSearchDelegate(allModules));
-          }, icon: Icon(Icons.search))
-        ],
       ),
 
-      drawer: const MainDrawer(),
+
 
       body: FutureBuilder<List<ModuleModel>>(
         future: loadModules(),
@@ -75,10 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 bool isDark = Theme.of(context).brightness == Brightness.dark;
 
                 return FutureBuilder<bool>(
-                  // UnlockService থেকে রিয়েল-টাইম স্ট্যাটাস চেক করা হচ্ছে
+                  // UnlockService real time
                   future: UnlockService.isModuleUnlocked(module.id),
                   builder: (context, snapshot) {
-                    // ডাটা না আসা পর্যন্ত ডিফল্ট বা JSON এর ডাটা দেখাবে
+                    // display default data not receiving from Json
                     bool isUnlocked = snapshot.data ?? (module.id == "m1");
 
                     return Container(
@@ -97,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
-                        // ১. বাম পাশের আইকন ডিজাইন (রিয়েল-টাইম আনলক চেক)
+                        // Real time Check of Icon of Lock
                         leading: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -113,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
 
-                        // ২. মাঝখানের কন্টেন্ট (UI একই আছে)
+                        // content of UI
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -166,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ).then((_) {
-                            // কুইজ স্ক্রিন বা সাব-মডিউল থেকে ব্যাক করলে যাতে আইকন আপডেট হয়
+                            // after back to quiz and sub module update lock icon of module icon
                             setState(() {});
                           });
                         },
