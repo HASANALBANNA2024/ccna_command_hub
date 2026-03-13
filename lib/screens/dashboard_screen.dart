@@ -66,6 +66,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     updateBookmarkCount();
     updateOverallProgress();
   }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // কুইজ বা মডিউল থেকে ফিরে আসলে এটি অটো রিফ্রেশ করবে
+    updateOverallProgress();
+    updateBookmarkCount();
+  }
 
   Future<void> loadDashboardData() async {
     try {
