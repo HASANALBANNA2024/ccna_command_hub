@@ -107,7 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (mounted) {
       setState(() {
         bookmarkCount = bookmarks.length;
-   });
+      });
     }
   }
 
@@ -161,7 +161,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ---(Slightly Scaled Up) ---
-              SizedBox(height: 10,),
+              SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -240,19 +240,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               // --- ৪. স্ট্যাটস কার্ড ---
               Row(
-                children: [
-                  // ১. মডিউল মেনু কার্ড (বাম পাশে)
-                  _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
+                  children: [
+                    // ১. মডিউল মেনু কার্ড (বাম পাশে)
+                    _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
 
-                  const SizedBox(width: 12),
+                    const SizedBox(width: 12),
 
-                  // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
+                    // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
 
-                  _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
+                    _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
 
 
 
-                ]
+                  ]
               ),
 
               const SizedBox(height: 20),
@@ -291,7 +291,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
                       ),
                     ).then((value) {
-                  updateBookmarkCount();
+                      updateBookmarkCount();
                       updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
                     });
                   }),
@@ -305,7 +305,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     int targetModule = 1;
 
                     for (int i = 32; i >= 1; i--) {
-                    if (prefs.getBool('unlocked_mod_m$i') ?? false) {
+                      if (prefs.getBool('unlocked_mod_m$i') ?? false) {
                         targetModule = i;
                         break;
                       }
@@ -436,8 +436,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
       child: ListTile(
         dense: true,
-        visualDensity: const VisualDensity(vertical: -2), // -৩ থেকে -২ যাতে একটু বড় দেখায়
-        leading: const Icon(Icons.history, color: Colors.blueAccent, size: 20), // ১৮ থেকে ২০
+        visualDensity: const VisualDensity(vertical: -2),
+        leading: const Icon(Icons.history, color: Colors.blueAccent, size: 20),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)), // ১২ থেকে ১৩
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)), // ১০ থেকে ১১
         trailing: const Icon(Icons.arrow_forward_ios, size: 11), // ১০ থেকে ১১
