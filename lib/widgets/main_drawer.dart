@@ -43,7 +43,7 @@ class _MainDrawerState extends State<MainDrawer>
             accountEmail: const Text("albannamdhasan48@gmail.com"),
           ),
 
-          const Divider(),
+
           ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: const Text("Settings"),

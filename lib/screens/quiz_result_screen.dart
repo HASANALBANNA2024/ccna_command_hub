@@ -8,30 +8,91 @@ import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class QuizResultScreen extends StatelessWidget {
+class QuizResultScreen extends StatefulWidget {
   final List<QuizQuestion> questions;
   final String moduleId;
+
   const QuizResultScreen({super.key, required this.questions, required this.moduleId});
 
-  // সরাসরি পরবর্তী মডিউলের ডাটা লোড করে সেখানে যাওয়ার ফাংশন
+  @override
+  State<QuizResultScreen> createState() => _QuizResultScreenState();
+}
+
+class _QuizResultScreenState extends State<QuizResultScreen> {
+  bool _isOverlayShown = false; // ওভারলে বারবার আসা বন্ধ করার জন্য ফ্ল্যাগ
+
+  @override
+  void initState() {
+    super.initState();
+
+    // স্ক্রিন লোড হওয়ার পর একবার ওভারলে দেখানোর লজিক
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!_isOverlayShown) {
+        await _handleResultAndOverlay();
+        if (mounted) {
+          setState(() {
+            _isOverlayShown = true;
+          });
+        }
+      }
+    });
+  }
+
+  // রেজাল্ট সেভ এবং ওভারলে দেখানোর লজিক
+  Future<void> _handleResultAndOverlay() async {
+    int score = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
+    bool passed = score >= 18;
+
+    if (passed) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('quiz_passed_${widget.moduleId}', true);
+      debugPrint("Progress Saved for ${widget.moduleId}");
+
+      int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
+      String nextModuleId = "m${currentNum + 1}";
+      await UnlockService.unlockModule(nextModuleId);
+    }
+
+    if (!mounted) return;
+
+    OverlayWidgets.showResultOverlay(
+      context: context,
+      passed: passed,
+      onPrimary: () {
+        Navigator.of(context, rootNavigator: true).pop();
+        if (passed) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          _navigateToNextModule(context);
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId)),
+          );
+        }
+      },
+      onSecondary: () {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+      },
+    );
+  }
+
   Future<void> _navigateToNextModule(BuildContext context) async {
     try {
-      // ১. JSON ফাইলটি লোড করা
       final String response = await rootBundle.loadString('assets/data/modules.json');
       final List<dynamic> data = json.decode(response);
 
-      // ২. পরবর্তী মডিউল আইডি বের করা
-      int currentNum = int.parse(moduleId.replaceAll('m', ''));
+      int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
       String nextModId = "m${currentNum + 1}";
 
-      // ৩. লিস্ট থেকে পরবর্তী মডিউলের অবজেক্টটি খুঁজে বের করা
       var nextModuleData = data.firstWhere(
             (m) => m['id'] == nextModId,
         orElse: () => null,
       );
 
       if (nextModuleData != null) {
-        // ৪. সরাসরি পরবর্তী মডিউলের সাব-মডিউল স্ক্রিনে পাঠিয়ে দেওয়া
+        if (!context.mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -43,7 +104,6 @@ class QuizResultScreen extends StatelessWidget {
           ),
         );
       } else {
-        // যদি আর কোন মডিউল না থাকে তবে হোমে পাঠিয়ে দেওয়া
         Navigator.popUntil(context, (route) => route.isFirst);
       }
     } catch (e) {
@@ -52,55 +112,11 @@ class QuizResultScreen extends StatelessWidget {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    int score = questions.where((q) => q.selectedAnswer == q.answer).length;
+    int score = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
     bool passed = score >= 18;
-
-    // পপআপ ওভারলে দেখানোর লজিক
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-
-      if (passed) {
-        final prefs = await SharedPreferences.getInstance();
-        // ডাটা সেভ হওয়া পর্যন্ত অপেক্ষা করুন
-        await prefs.setBool('quiz_passed_$moduleId', true);
-
-        debugPrint("Progress Saved for $moduleId");
-
-        int currentNum = int.parse(moduleId.replaceAll('m', ''));
-        String nextModuleId = "m${currentNum + 1}";
-        await UnlockService.unlockModule(nextModuleId);
-      }
-
-      // বাকি পপআপ লজিক (অপরিবর্তিত)
-      OverlayWidgets.showResultOverlay(
-        context: context,
-        passed: passed,
-        onPrimary: () {
-          Navigator.of(context, rootNavigator: true).pop();
-          if (passed) {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-            _navigateToNextModule(context);
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => QuizScreen(moduleId: moduleId)),
-            );
-          }
-        },
-        onSecondary: () {
-          if (Navigator.canPop(context)) {
-            Navigator.of(context, rootNavigator: true).pop();
-          }
-        },
-      );
-    });
-
-
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
@@ -113,10 +129,9 @@ class QuizResultScreen extends StatelessWidget {
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25), // প্যাডিং কমিয়ে হাইট কন্ট্রোল করা হয়েছে
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
             width: double.infinity,
             decoration: BoxDecoration(
-              // সলিড কালারের বদলে ডিজাইনফুল গ্রেডিয়েন্ট ব্যবহার করা হয়েছে
               gradient: LinearGradient(
                 colors: passed
                     ? [Colors.green.shade800, Colors.green.shade500]
@@ -136,10 +151,9 @@ class QuizResultScreen extends StatelessWidget {
                 )
               ],
             ),
-            child: Row( // কলামের বদলে রো (Row) ব্যবহার করে হাইট কমানো হয়েছে
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // বাম পাশে আইকন
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -153,8 +167,6 @@ class QuizResultScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 20),
-
-                // মাঝখানে টেক্সট এবং স্কোর
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +181,6 @@ class QuizResultScreen extends StatelessWidget {
                         )
                     ),
                     const SizedBox(height: 4),
-                    // ছোট করে স্কোর বক্স ডিজাইন
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                       decoration: BoxDecoration(
@@ -193,9 +204,9 @@ class QuizResultScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              itemCount: questions.length,
+              itemCount: widget.questions.length,
               itemBuilder: (context, index) {
-                final q = questions[index];
+                final q = widget.questions[index];
                 bool isCorrect = q.selectedAnswer == q.answer;
 
                 return Card(
@@ -237,7 +248,7 @@ class QuizResultScreen extends StatelessWidget {
         child: TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            "Return to Module ${moduleId.replaceAll('m', '').padLeft(2, '0')} List",
+            "Return to Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} List",
             style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),
           ),
         ),
