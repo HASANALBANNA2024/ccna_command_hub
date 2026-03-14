@@ -1,105 +1,83 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // UID ব্যবহারের জন্য
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UnlockService {
-  // ১. ডাইনামিক প্রিফিক্স (Prefix) তৈরি করা
+  // ১. ইউজার প্রিফিক্স
   static String get _userPrefix {
     final User? user = FirebaseAuth.instance.currentUser;
     return user != null ? "${user.uid}_" : "guest_";
   }
 
-  // কী (Key) গুলোর নাম আগের মতোই থাকছে, শুধু তার আগে UID বসবে
+  // কী (Keys)
   static const String _subKey = "unlocked_sub_";
   static const String _modKey = "unlocked_mod_";
   static const String _quizKey = "quiz_passed_";
 
-  // সাব-মডিউল আনলক কিনা চেক করা
+  // ২. সাব-মডিউল আনলক কিনা চেক করা (আইকন এবং এক্সেস এর জন্য)
   static Future<bool> isSubUnlocked(String subId) async {
+    // প্রথম সাব-মডিউল সবসময় আনলক থাকবে
     if (subId.endsWith('_s1')) return true;
     final prefs = await SharedPreferences.getInstance();
-    // UID অনুযায়ী আলাদা কী চেক করা হচ্ছে
     return prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
   }
 
-  // সাব-মডিউল আনলক করা (পড়া শেষ হলে)
+  // ৩. সাব-মডিউল পড়া শেষ হলে মার্ক করা
   static Future<void> markSubAsRead(String subId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('${_userPrefix}${_subKey}$subId', true);
   }
 
-  // মডিউল আনলক কিনা চেক করা
+  // ৪. মডিউল আনলক কিনা চেক করা
   static Future<bool> isModuleUnlocked(String moduleId) async {
     if (moduleId == 'm1') return true;
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('${_userPrefix}${_modKey}$moduleId') ?? false;
   }
 
-  // মডিউল আনলক করা (পাস করলে বা অ্যাড দেখলে)
+  // ৫. নতুন মডিউল আনলক করা
   static Future<void> unlockModule(String moduleId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
   }
 
-// এই ফাংশনটি এখন moduleId এবং subModules দুটিই গ্রহণ করবে
+  // ৬. কুইজ পাস করলে মার্ক করা
+  static Future<void> markQuizAsPassed(String moduleId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('${_userPrefix}${_quizKey}$moduleId', true);
+  }
+
+  // ৭. নির্দিষ্ট কুইজ পাস হয়েছে কি না চেক
+  static Future<bool> isQuizPassed(String moduleId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('${_userPrefix}${_quizKey}$moduleId') ?? false;
+  }
+
+  // ৮. ড্যাশবোর্ডের জন্য কুইজ পাসের মোট সংখ্যা
+  static Future<int> getPassedQuizCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    int totalPassed = 0;
+    for (int i = 1; i <= 32; i++) {
+      bool isPassed = prefs.getBool('${_userPrefix}${_quizKey}m$i') ?? false;
+      if (isPassed) totalPassed++;
+    }
+    return totalPassed;
+  }
+
+  // ৯. কুইজ দেওয়ার আগে সব পড়া হয়েছে কি না চেক (আপনার বর্তমান সমস্যা সমাধান করবে)
   static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
     final prefs = await SharedPreferences.getInstance();
-    final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
-
-    // ১. চেক: এই মডিউলের সব সাব-মডিউল পড়া হয়েছে কি না
     for (var sub in subModules) {
-      // এখানে আপনার ব্যবহৃত কি (Key) ফরম্যাট অনুযায়ী চেক করুন
-      bool isRead = prefs.getBool('${uid}_sub_unlocked_${sub['id']}') ?? false;
+      String subId = sub['id'].toString();
+      bool isRead = prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
       if (!isRead) return false;
     }
-
-    // ২. চেক: আগের মডিউলের কুইজ পাস করা কি না (m1 বাদে)
-    int currentModNum = int.parse(moduleId.replaceAll('m', ''));
-    if (currentModNum > 1) {
-      bool prevPassed = prefs.getBool('${uid}_quiz_passed_m${currentModNum - 1}') ?? false;
-      if (!prevPassed) return false;
-    }
-
     return true;
   }
 
-  // কুইজ পাসের সংখ্যা এবং ড্যাশবোর্ড প্রগ্রেস আপডেট
-  static Future<int> getPassedQuizCount() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-
-      // ১. বর্তমান ইউজারের UID নেওয়া (এটি static মেথড তাই সরাসরি FirebaseAuth থেকে নেওয়া নিরাপদ)
-      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
-
-      // ২. আপনার কুইজ কি (Key) যদি অন্য কোথাও ডিফাইন করা থাকে তবে সেটি এখানে ব্যবহার করুন
-      // অন্যথায় সরাসরি '_quiz_passed_' স্ট্রিংটি ব্যবহার করা ভালো
-      const String quizKey = "_quiz_passed_";
-
-      int totalPassed = 0;
-
-      // ৩. ১ থেকে ৩২ পর্যন্ত লুপ চালিয়ে চেক করা
-      for (int i = 1; i <= 32; i++) {
-        // এখানে কী (Key) টি তৈরি হচ্ছে এইভাবে: UserID_quiz_passed_m1
-        bool isPassed = prefs.getBool('${uid}${quizKey}m$i') ?? false;
-
-        if (isPassed) {
-          totalPassed++;
-        }
-      }
-
-      print("Total Passed Quizzes for $uid: $totalPassed");
-      return totalPassed;
-
-    } catch (e) {
-      print("Error in getPassedQuizCount: $e");
-      return 0;
-    }
-  }
-
-  // সর্বশেষ আনলক হওয়া মডিউল আইডি বের করা
+  // ১০. সর্বশেষ আনলক হওয়া মডিউল আইডি বের করা
   static Future<String> getLastUnlockedModuleId() async {
     final prefs = await SharedPreferences.getInstance();
     int lastUnlocked = 1;
-
     for (int i = 1; i <= 32; i++) {
       bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}m$i') ?? false;
       if (isUnlocked) {
