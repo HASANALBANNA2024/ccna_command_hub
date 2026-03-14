@@ -1,5 +1,9 @@
+import 'package:ccna_command_hub/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/auth_service.dart';
+import 'package:ccna_command_hub/screens/forgot_password.dart';
+import 'package:ccna_command_hub/screens/register_screen.dart';
+
 
 class LoginScreen extends StatefulWidget
 {
@@ -29,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen>
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(onPressed: (){
-                // Navigator.push(context, MaterialPageRoute(builder: (_) => ForgotPasswordScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (_) => ForgotPasswordScreen()));
               }, child: Text("Forgot Password?")
               ),
             ),
@@ -40,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen>
                   if(user!=null)
                     {
                       print("Login Successful");
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> DashboardScreen()));
                     }
                   else
                     {
@@ -50,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             
             TextButton(onPressed: (){
-              // onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
             }, child: Text("Don't have an account? Register Here.."))
 
           ],

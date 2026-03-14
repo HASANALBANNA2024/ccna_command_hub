@@ -2,6 +2,7 @@ import 'package:ccna_command_hub/main.dart';
 import 'package:ccna_command_hub/screens/bookmark_screen.dart';
 import 'package:ccna_command_hub/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:ccna_command_hub/screens/login_screen.dart';
 
 
 class MainDrawer extends StatefulWidget
@@ -49,6 +50,16 @@ class _MainDrawerState extends State<MainDrawer>
             title: const Text("Settings"),
             onTap: () {},
           ),
+          ListTile(
+            leading: Icon(Icons.login),
+            title: Text('Login Screen Test'),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+            },
+          ),
+
+
+
           // থিম পরিবর্তন করার সুইচ
           ValueListenableBuilder<ThemeMode>(
             valueListenable: themeNotifier,
