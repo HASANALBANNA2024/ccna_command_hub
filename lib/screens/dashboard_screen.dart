@@ -149,234 +149,244 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-
-      endDrawer: const MainDrawer(),
-
-      body: SafeArea(
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12), // সামান্য বাড়ানো হয়েছে
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ---(Slightly Scaled Up) ---
-              SizedBox(height: 20,),
-              StreamBuilder<DocumentSnapshot>(
-                stream: DatabaseService().getPersonalData,
-                builder: (context, snapshot) {
-                  String displayName = "Engineer"; // ডিফল্ট নাম
-                  String? imageBase64;
-
-                  if (snapshot.hasData && snapshot.data!.exists) {
-                    var userData = snapshot.data!.data() as Map<String, dynamic>;
-                    displayName = userData['name'] ?? "Engineer";
-                    imageBase64 = userData['image'];
-                  }
-
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded( // নাম বড় হলে জায়গা করে দেওয়ার জন্য
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // FittedBox নাম বড় হলে অটোমেটিক সাইজ ছোট করে দেবে
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Hello, $displayName!",
-                                style: TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? Colors.white : Colors.blueGrey.shade900,
-                                ),
-                              ),
-                            ),
-                            const Text(
-                              "Track your CCNA journey",
-                              style: TextStyle(fontSize: 11.5, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 10), // নাম এবং ছবির মাঝে গ্যাপ
-
-                      // Profile Icon / Image
-                      Builder(
-                        builder: (context) => GestureDetector(
-                          onTap: () {
-                            Scaffold.of(context).openEndDrawer(); // End Drawer ওপেন হবে
-                          },
-                          child: CircleAvatar(
-                            radius: 20, // আপনার ১৯ থেকে ১ বাড়িয়ে ২০ করলাম ড্রয়ারের সাথে মানানোর জন্য
-                            backgroundColor: Colors.blueAccent,
-                            backgroundImage: (imageBase64 != null && imageBase64.isNotEmpty)
-                                ? MemoryImage(base64Decode(imageBase64.split(',').last))
-                                : null,
-                            child: (imageBase64 == null || imageBase64.isEmpty)
-                                ? const Icon(Icons.person, color: Colors.white, size: 20)
-                                : null,
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              ),
-
-              const SizedBox(height: 15),
-
-              // --- ২. ফাংশনাল সার্চ বার ---
-              InkWell(
-                onTap: () {
-                  if (allModulesList.isNotEmpty) {
-                    showSearch(
-                      context: context,
-                      delegate: GlobalSearchDelegate(allModulesList),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Data is still loading...")),
-                    );
-                  }
-                },
-                child: Container(
-                  height: 50, // ৪৫ থেকে ৪৮ করা হয়েছে
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.search, color: Colors.blueAccent, size: 20), // ১৮ থেকে ২০
-                      const SizedBox(width: 10),
-                      Text(
-                        "Search commands...",
-                        style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600), // ১৩ থেকে ১৪
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // --- Overall progress---
-              _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
-
-              const SizedBox(height: 20),
-
-              // --- ৪. স্ট্যাটস কার্ড ---
-              Row(
-                  children: [
-                    // ১. মডিউল মেনু কার্ড (বাম পাশে)
-                    _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
-
-                    const SizedBox(width: 12),
-
-                    // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
-
-                    _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
 
 
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+     value: SystemUiOverlayStyle(
+       statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+       statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+       statusBarColor: Colors.transparent,
+     ),
+      child:Scaffold(
+        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
 
-                  ]
-              ),
+        endDrawer: const MainDrawer(),
 
-              const SizedBox(height: 20),
+        body: SafeArea(
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12), // সামান্য বাড়ানো হয়েছে
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ---(Slightly Scaled Up) ---
+                SizedBox(height: 20,),
+                StreamBuilder<DocumentSnapshot>(
+                  stream: DatabaseService().getPersonalData,
+                  builder: (context, snapshot) {
+                    String displayName = "Engineer"; // ডিফল্ট নাম
+                    String? imageBase64;
 
-              // --- ৫. লার্নিং হাব ---
-              const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), // ১৪ থেকে ১৫
-              const SizedBox(height: 15),
-
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.5,
-                children: [
-
-                  _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark,
-                        () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      ).then((_) {
-
-                        loadDashboardData();
-                        updateBookmarkCount();
-                        updateOverallProgress();
-                      });
-                    },
-                  ),
-
-                  _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
-                      ),
-                    ).then((value) {
-                      updateBookmarkCount();
-                      updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
-                    });
-                  }),
-
-                  _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
-
-
-
-                  _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    int targetModule = 1;
-
-                    for (int i = 32; i >= 1; i--) {
-                      if (prefs.getBool('unlocked_mod_m$i') ?? false) {
-                        targetModule = i;
-                        break;
-                      }
+                    if (snapshot.hasData && snapshot.data!.exists) {
+                      var userData = snapshot.data!.data() as Map<String, dynamic>;
+                      displayName = userData['name'] ?? "Engineer";
+                      imageBase64 = userData['image'];
                     }
 
-                    if (!mounted) return;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded( // নাম বড় হলে জায়গা করে দেওয়ার জন্য
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // FittedBox নাম বড় হলে অটোমেটিক সাইজ ছোট করে দেবে
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Hello, $displayName!",
+                                  style: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.blueGrey.shade900,
+                                  ),
+                                ),
+                              ),
+                              const Text(
+                                "Track your CCNA journey",
+                                style: TextStyle(fontSize: 11.5, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 10), // নাম এবং ছবির মাঝে গ্যাপ
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule")),
-                    ).then((_) {
-                      updateOverallProgress();
-                      setState(() {});
-                    });
-                  }),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-
-              // --- ৬. রিসেন্ট অ্যাক্টিভিটি ---
-              const Text("Continue Learning", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-
-              GestureDetector(
-                onTap: navigateToLastRead, // আমাদের তৈরি করা নেভিগেশন ফাংশন
-                child: _buildRecentItem(
-                  lastReadName, // সেভ করা মডিউলের নাম
-                  "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}", // মডিউল আইডি
-                  isDark,
+                        // Profile Icon / Image
+                        Builder(
+                          builder: (context) => GestureDetector(
+                            onTap: () {
+                              Scaffold.of(context).openEndDrawer(); // End Drawer ওপেন হবে
+                            },
+                            child: CircleAvatar(
+                              radius: 20, // আপনার ১৯ থেকে ১ বাড়িয়ে ২০ করলাম ড্রয়ারের সাথে মানানোর জন্য
+                              backgroundColor: Colors.blueAccent,
+                              backgroundImage: (imageBase64 != null && imageBase64.isNotEmpty)
+                                  ? MemoryImage(base64Decode(imageBase64.split(',').last))
+                                  : null,
+                              child: (imageBase64 == null || imageBase64.isEmpty)
+                                  ? const Icon(Icons.person, color: Colors.white, size: 20)
+                                  : null,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  },
                 ),
-              ),
 
-            ],
+                const SizedBox(height: 15),
+
+                // --- ২. ফাংশনাল সার্চ বার ---
+                InkWell(
+                  onTap: () {
+                    if (allModulesList.isNotEmpty) {
+                      showSearch(
+                        context: context,
+                        delegate: GlobalSearchDelegate(allModulesList),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Data is still loading...")),
+                      );
+                    }
+                  },
+                  child: Container(
+                    height: 50, // ৪৫ থেকে ৪৮ করা হয়েছে
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, color: Colors.blueAccent, size: 20), // ১৮ থেকে ২০
+                        const SizedBox(width: 10),
+                        Text(
+                          "Search commands...",
+                          style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600), // ১৩ থেকে ১৪
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // --- Overall progress---
+                _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
+
+                const SizedBox(height: 20),
+
+                // --- ৪. স্ট্যাটস কার্ড ---
+                Row(
+                    children: [
+                      // ১. মডিউল মেনু কার্ড (বাম পাশে)
+                      _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
+
+                      const SizedBox(width: 12),
+
+                      // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
+
+                      _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
+
+
+
+                    ]
+                ),
+
+                const SizedBox(height: 20),
+
+                // --- ৫. লার্নিং হাব ---
+                const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), // ১৪ থেকে ১৫
+                const SizedBox(height: 15),
+
+                GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.5,
+                  children: [
+
+                    _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark,
+                          () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomeScreen()),
+                        ).then((_) {
+
+                          loadDashboardData();
+                          updateBookmarkCount();
+                          updateOverallProgress();
+                        });
+                      },
+                    ),
+
+                    _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
+                        ),
+                      ).then((value) {
+                        updateBookmarkCount();
+                        updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
+                      });
+                    }),
+
+                    _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
+
+
+
+                    _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      int targetModule = 1;
+
+                      for (int i = 32; i >= 1; i--) {
+                        if (prefs.getBool('unlocked_mod_m$i') ?? false) {
+                          targetModule = i;
+                          break;
+                        }
+                      }
+
+                      if (!mounted) return;
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule")),
+                      ).then((_) {
+                        updateOverallProgress();
+                        setState(() {});
+                      });
+                    }),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // --- ৬. রিসেন্ট অ্যাক্টিভিটি ---
+                const Text("Continue Learning", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+
+                GestureDetector(
+                  onTap: navigateToLastRead, // আমাদের তৈরি করা নেভিগেশন ফাংশন
+                  child: _buildRecentItem(
+                    lastReadName, // সেভ করা মডিউলের নাম
+                    "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}", // মডিউল আইডি
+                    isDark,
+                  ),
+                ),
+
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      ) ,
+
+   );
   }
 
 
