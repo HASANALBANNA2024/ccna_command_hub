@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:ccna_command_hub/main.dart';
+import 'package:ccna_command_hub/screens/login_screen.dart';
 import 'package:ccna_command_hub/screens/profile_setup_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/database_service.dart';
+import 'package:ccna_command_hub/services/auth_service.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -117,8 +119,37 @@ class _MainDrawerState extends State<MainDrawer> {
             icon: Icons.logout,
             title: "Logout",
             color: Colors.redAccent,
-            onTap: () {
-              // Add your logout logic here
+            onTap: () async {
+              // ১. একটি কনফার্মেশন ডায়ালগ দেখানো ভালো (অপশনাল কিন্তু প্রফেশনাল)
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Logout"),
+                  content: const Text("Are you sure you want to logout?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context), // ক্যানসেল
+                      child: const Text("No"),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        // ২. ফায়ারবেস থেকে সাইন আউট
+                        await AuthService().signOut();
+
+                        if (!context.mounted) return;
+
+                        // ৩. সব স্ক্রিন রিমুভ করে লগইন স্ক্রিনে পাঠিয়ে দেওয়া
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginScreen()),
+                              (route) => false,
+                        );
+                      },
+                      child: const Text("Yes", style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
 
