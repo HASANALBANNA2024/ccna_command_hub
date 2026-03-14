@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ccna_command_hub/screens/dashboard_screen.dart';
 import 'package:ccna_command_hub/screens/home_screen.dart';
+import 'package:ccna_command_hub/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/themes/app_theme.dart';
 
@@ -24,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
       // navigation to home screen
 
       Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => const DashboardScreen()
+        builder: (context) => LoginScreen()
       ));
 
       debugPrint("Navigating to Home...");

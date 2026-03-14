@@ -1,6 +1,7 @@
 import 'package:ccna_command_hub/main.dart';
 import 'package:ccna_command_hub/screens/bookmark_screen.dart';
 import 'package:ccna_command_hub/screens/dashboard_screen.dart';
+import 'package:ccna_command_hub/screens/profile_setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/screens/login_screen.dart';
 
@@ -43,24 +44,21 @@ class _MainDrawerState extends State<MainDrawer>
             accountName: const Text("MD. Hasan Al Banna", style: TextStyle(fontWeight: FontWeight.bold)),
             accountEmail: const Text("albannamdhasan48@gmail.com"),
           ),
+          ListTile(
+            leading: const Icon(Icons.person_outline),
+            title: const Text("Profile Settings"),
+            onTap: () {
 
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileSetupScreen()));
+            },
+          ),
 
           ListTile(
             leading: const Icon(Icons.settings_outlined),
             title: const Text("Settings"),
             onTap: () {},
           ),
-          ListTile(
-            leading: Icon(Icons.login),
-            title: Text('Login Screen Test'),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-            },
-          ),
-
-
-
-          // থিম পরিবর্তন করার সুইচ
+                   // Theme Checking
           ValueListenableBuilder<ThemeMode>(
             valueListenable: themeNotifier,
             builder: (context, mode, _) {
