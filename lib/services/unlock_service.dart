@@ -50,16 +50,35 @@ class UnlockService {
 
   // কুইজ পাসের সংখ্যা এবং ড্যাশবোর্ড প্রগ্রেস আপডেট
   static Future<int> getPassedQuizCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    int totalPassed = 0;
-    for (int i = 1; i <= 32; i++) {
-      // UID ভিত্তিক কুইজ কি ব্যবহার করা হচ্ছে
-      bool isPassed = prefs.getBool('${_userPrefix}${_quizKey}m$i') ?? false;
-      if (isPassed) {
-        totalPassed++;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // ১. বর্তমান ইউজারের UID নেওয়া (এটি static মেথড তাই সরাসরি FirebaseAuth থেকে নেওয়া নিরাপদ)
+      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
+
+      // ২. আপনার কুইজ কি (Key) যদি অন্য কোথাও ডিফাইন করা থাকে তবে সেটি এখানে ব্যবহার করুন
+      // অন্যথায় সরাসরি '_quiz_passed_' স্ট্রিংটি ব্যবহার করা ভালো
+      const String quizKey = "_quiz_passed_";
+
+      int totalPassed = 0;
+
+      // ৩. ১ থেকে ৩২ পর্যন্ত লুপ চালিয়ে চেক করা
+      for (int i = 1; i <= 32; i++) {
+        // এখানে কী (Key) টি তৈরি হচ্ছে এইভাবে: UserID_quiz_passed_m1
+        bool isPassed = prefs.getBool('${uid}${quizKey}m$i') ?? false;
+
+        if (isPassed) {
+          totalPassed++;
+        }
       }
+
+      print("Total Passed Quizzes for $uid: $totalPassed");
+      return totalPassed;
+
+    } catch (e) {
+      print("Error in getPassedQuizCount: $e");
+      return 0;
     }
-    return totalPassed;
   }
 
   // সর্বশেষ আনলক হওয়া মডিউল আইডি বের করা

@@ -63,20 +63,46 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
     OverlayWidgets.showResultOverlay(
       context: context,
       passed: passed,
-      onPrimary: () {
+      onPrimary: () async {
         if (passed) {
-          // যদি পাস করে, তবেই পরের মডিউলে (m + 1) যাবে
+          // ১. বর্তমান মডিউল নম্বর থেকে পরের আইডি বের করা (m1 -> m2)
           int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
           String nextModuleId = "m${currentNum + 1}";
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => QuizScreen(moduleId: nextModuleId),
-            ),
-          );
+          try {
+            // ২. আপনার JSON ডাটা লোড করা (যাতে পরের মডিউলের নাম ও সাব-মডিউল পাওয়া যায়)
+            final String response = await rootBundle.loadString('assets/data/modules.json');
+            final List<dynamic> allModules = json.decode(response);
+
+            // ৩. লিস্ট থেকে পরের মডিউলটি খুঁজে বের করা
+            var nextModule = allModules.firstWhere(
+                  (m) => m['id'] == nextModuleId,
+              orElse: () => null,
+            );
+
+            if (nextModule != null && mounted) {
+              // ৪. সরাসরি SubModuleScreen-এ পাঠিয়ে দেওয়া
+              // এখানে কোনো initialIndex পাঠানো হচ্ছে না, তাই এটি শুধু লিস্ট দেখাবে
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubModuleScreen(
+                    moduleId: nextModule['id'],
+                    moduleName: nextModule['name'],
+                    subModules: nextModule['subModules'],
+                  ),
+                ),
+              );
+            } else {
+              // যদি আর কোনো মডিউল না থাকে তবে ড্যাশবোর্ডে ফিরে যাওয়া
+              if (mounted) Navigator.pop(context);
+            }
+          } catch (e) {
+            debugPrint("Error: $e");
+            if (mounted) Navigator.pop(context);
+          }
         } else {
-          // যদি ফেল করে (Try Again), তবে বর্তমান মডিউলেই (Same moduleId) আবার পরীক্ষা নেবে
+          // ফেল করলে আবার কুইজ ট্রাই করা
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -86,8 +112,10 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
         }
       },
       onSecondary: () {
-        // Skip বা View Details দিলে ড্যাশবোর্ডে ফিরে যাবে
-        Navigator.pop(context);
+        // এটি বর্তমান ওভারলে বা কার্ডটি বন্ধ করে রেজাল্ট স্ক্রিনে রাখবে
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
       },
     );
 

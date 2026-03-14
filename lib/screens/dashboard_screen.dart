@@ -87,19 +87,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
           initialIndex: lastTopicIndex, // এটি ইউজারকে সঠিক টপিকে নিয়ে যাবে
         ),
       ),
-    ).then((_) => loadLastRead());
+    ).then((_)
+    {
+      loadLastRead();
+      updateOverallProgress();
+    });
   }
 
 
   Future<void> updateOverallProgress() async {
-    // UnlockService অলরেডি UID ভিত্তিক আপডেট করা হয়েছে
-    int passed = await UnlockService.getPassedQuizCount();
+    try {
+      // ১. বর্তমানে কোন ইউজার লগইন আছে তার UID নেওয়া
+      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
 
-    if (mounted) {
-      setState(() {
-        passedModulesCount = passed;
-        progressPercentage = (passed.toDouble() / 32) * 100;
-      });
+      // ২. UnlockService থেকে পাস করা কুইজের সংখ্যা নিয়ে আসা
+      // নিশ্চিত করুন UnlockService.getPassedQuizCount() মেথডটি UID ব্যবহার করে ডাটা আনছে
+      int passed = await UnlockService.getPassedQuizCount();
+
+      if (mounted) {
+        setState(() {
+          passedModulesCount = passed;
+
+          // ৩. প্রগ্রেস ক্যালকুলেশন (পাস করা মডিউল / মোট ৩২টি মডিউল)
+          // আমরা double এ কনভার্ট করে নিচ্ছি যাতে নিখুঁত রেজাল্ট আসে
+          double calcProgress = (passed.toDouble() / 32);
+
+          // ৪. পারসেন্টেজ বের করা (যেমন: ০.৫ * ১০০ = ৫০%)
+          progressPercentage = calcProgress * 100;
+
+          // ৫. যদি আপনার UI-তে Linear/Circular Progress Indicator থাকে,
+          // তবে সেটিতে overallProgress = calcProgress (০.০ থেকে ১.০) ব্যবহার করবেন।
+        });
+
+        debugPrint("Progress Updated for User: $uid | Passed: $passed | Percentage: ${progressPercentage.toStringAsFixed(2)}%");
+      }
+    } catch (e) {
+      debugPrint("Error updating progress: $e");
     }
   }
 
@@ -290,6 +313,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       });
                     }),
                     _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
+
                     _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
                       final prefs = await SharedPreferences.getInstance();
                       int targetModule = 1;
@@ -301,7 +325,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         }
                       }
                       if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule"))).then((_) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                          QuizScreen(moduleId: "m$targetModule"))).then((_) {
                         updateOverallProgress();
                       });
                     }),
