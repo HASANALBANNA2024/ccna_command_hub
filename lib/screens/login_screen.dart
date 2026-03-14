@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen>
                   if(user!=null)
                     {
                       print("Login Successful");
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> DashboardScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=> DashboardScreen()));
                     }
                   else
                     {
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             
             TextButton(onPressed: (){
-             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
             }, child: Text("Don't have an account? Register Here.."))
 
           ],

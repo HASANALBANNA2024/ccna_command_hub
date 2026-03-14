@@ -1,3 +1,4 @@
+import 'package:ccna_command_hub/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/auth_service.dart';
 
@@ -33,7 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen>
              var user = await _auth.registerWithEmail(_emailController.text, _passwordController.text);
              if(user!=null)
                {
-                 Navigator.pop(context);
+                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> LoginScreen()));
                  print("Register Done");
                }
            }, child: Text("Register")),
