@@ -11,6 +11,8 @@ import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
+import 'package:ccna_command_hub/services/database_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -162,37 +164,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               // ---(Slightly Scaled Up) ---
               SizedBox(height: 20,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              StreamBuilder<DocumentSnapshot>(
+                stream: DatabaseService().getPersonalData,
+                builder: (context, snapshot) {
+                  String displayName = "Engineer"; // ডিফল্ট নাম
+                  String? imageBase64;
+
+                  if (snapshot.hasData && snapshot.data!.exists) {
+                    var userData = snapshot.data!.data() as Map<String, dynamic>;
+                    displayName = userData['name'] ?? "Engineer";
+                    imageBase64 = userData['image'];
+                  }
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Hello, Engineer!",
-                        style: TextStyle(
-                          fontSize: 19, // ১৮ থেকে ১৯ করা হয়েছে
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.blueGrey.shade900,
+                      Expanded( // নাম বড় হলে জায়গা করে দেওয়ার জন্য
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // FittedBox নাম বড় হলে অটোমেটিক সাইজ ছোট করে দেবে
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Hello, $displayName!",
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.blueGrey.shade900,
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              "Track your CCNA journey",
+                              style: TextStyle(fontSize: 11.5, color: Colors.grey),
+                            ),
+                          ],
                         ),
                       ),
-                      const Text("Track your CCNA journey", style: TextStyle(fontSize: 11.5, color: Colors.grey)),
-                    ],
-                  ),
-                  // call to drawer
-                  Builder(
-                      builder: (context) => GestureDetector(
-                        onTap: (){
-                          Scaffold.of(context).openEndDrawer();
-                        },
-                        child: const CircleAvatar(
-                          radius: 19,
-                          backgroundColor: Colors.blueAccent,
-                          child: Icon(Icons.person, color: Colors.white, size: 19),
+                      const SizedBox(width: 10), // নাম এবং ছবির মাঝে গ্যাপ
+
+                      // Profile Icon / Image
+                      Builder(
+                        builder: (context) => GestureDetector(
+                          onTap: () {
+                            Scaffold.of(context).openEndDrawer(); // End Drawer ওপেন হবে
+                          },
+                          child: CircleAvatar(
+                            radius: 20, // আপনার ১৯ থেকে ১ বাড়িয়ে ২০ করলাম ড্রয়ারের সাথে মানানোর জন্য
+                            backgroundColor: Colors.blueAccent,
+                            backgroundImage: (imageBase64 != null && imageBase64.isNotEmpty)
+                                ? MemoryImage(base64Decode(imageBase64.split(',').last))
+                                : null,
+                            child: (imageBase64 == null || imageBase64.isEmpty)
+                                ? const Icon(Icons.person, color: Colors.white, size: 20)
+                                : null,
+                          ),
                         ),
                       )
-                  )
-                ],
+                    ],
+                  );
+                },
               ),
 
               const SizedBox(height: 15),
