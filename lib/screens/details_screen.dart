@@ -85,8 +85,7 @@ class _DetailsScreenState extends State<DetailsScreen>
             },
           ),
 
-          // Full Sub-Module Bookmark Button
-          // AppBar actions এর ভেতর বুকমার্ক বাটন
+
           FutureBuilder<bool>(
             future: BookmarkService.isBookmarked(widget.title),
             builder: (context, snapshot) {

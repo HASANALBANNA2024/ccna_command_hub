@@ -1,23 +1,38 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // UID পাওয়ার জন্য ইম্পোর্ট
 
 class BookmarkService {
-  // ১. সব জায়গায় এই একই Key ব্যবহার করতে হবে
-  static const String _key = "ccna_bookmarks";
+
+  // ১. ডাইনামিক কি (Key) তৈরি করার মেথড
+  // এটি ইউজারের UID অনুযায়ী আলাদা আলাদা কি (Key) রিটার্ন করবে
+  static String get _userSpecificKey {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return "bookmarks_${user.uid}"; // যেমন: bookmarks_abc123
+    }
+    return "bookmarks_guest"; // যদি লগইন না থাকে তবে গেস্ট হিসেবে থাকবে
+  }
 
   // ২. বুকমার্ক টগল (সেভ থাকলে ডিলিট হবে, না থাকলে নতুন করে সেভ হবে)
   static Future<void> toggleBookmark(Map<String, dynamic> subModule) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> bookmarks = prefs.getStringList(_key) ?? [];
+
+    // ডাইনামিক কি ব্যবহার করছি
+    List<String> bookmarks = prefs.getStringList(_userSpecificKey) ?? [];
 
     String title = subModule['title'] ?? "Untitled";
 
     int index = -1;
     for (int i = 0; i < bookmarks.length; i++) {
-      Map<String, dynamic> item = json.decode(bookmarks[i]);
-      if (item['title'] == title) {
-        index = i;
-        break;
+      try {
+        Map<String, dynamic> item = json.decode(bookmarks[i]);
+        if (item['title'] == title) {
+          index = i;
+          break;
+        }
+      } catch (e) {
+        continue;
       }
     }
 
@@ -28,14 +43,17 @@ class BookmarkService {
       bookmarks.add(json.encode(subModule));
     }
 
-    // আপডেট হওয়া লিস্টটি লোকাল স্টোরেজে সেভ করা
-    await prefs.setStringList(_key, bookmarks);
+    // আপডেট হওয়া লিস্টটি ইউজারের নির্দিষ্ট কি-তে সেভ করা
+    await prefs.setStringList(_userSpecificKey, bookmarks);
   }
 
   // ৩. চেক করা যে কোনো নির্দিষ্ট আইটেম বুকমার্ক করা আছে কি না
   static Future<bool> isBookmarked(String title) async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> bookmarks = prefs.getStringList(_key) ?? [];
+
+    // ডাইনামিক কি ব্যবহার করছি
+    List<String> bookmarks = prefs.getStringList(_userSpecificKey) ?? [];
+
     return bookmarks.any((item) {
       try {
         return json.decode(item)['title'] == title;
@@ -45,12 +63,13 @@ class BookmarkService {
     });
   }
 
-  // ৪. সব বুকমার্ক লিস্ট হিসেবে নিয়ে আসা (এটি ড্যাশবোর্ড এবং বুকমার্ক স্ক্রিন দুই জায়গাতেই কাজ করবে)
+  // ৪. সব বুকমার্ক লিস্ট হিসেবে নিয়ে আসা
   static Future<List<Map<String, dynamic>>> getAllBookmarks() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      // getStringList ব্যবহার করা হয়েছে কারণ সেভ করার সময় setStringList ব্যবহার করা হয়
-      List<String> bookmarks = prefs.getStringList(_key) ?? [];
+
+      // ডাইনামিক কি ব্যবহার করছি
+      List<String> bookmarks = prefs.getStringList(_userSpecificKey) ?? [];
 
       return bookmarks
           .map((e) => json.decode(e) as Map<String, dynamic>)
@@ -61,9 +80,9 @@ class BookmarkService {
     }
   }
 
-  // ৫. সবগুলো বুকমার্ক এক ক্লিকে ডিলিট করা
+  // ৫. শুধুমাত্র বর্তমান ইউজারের বুকমার্কগুলো ডিলিট করা
   static Future<void> clearAllBookmarks() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+    await prefs.remove(_userSpecificKey);
   }
 }

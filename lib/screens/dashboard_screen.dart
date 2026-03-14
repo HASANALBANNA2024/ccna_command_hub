@@ -13,6 +13,7 @@ import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/services/database_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // UID ব্যবহারের জন্য ইম্পোর্ট
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -26,10 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<ModuleModel> myGlobalBookmarkList = [];
   bool isLoading = true;
 
-  // update bookmark count
   int bookmarkCount = 0;
-
-  // overall progress bar
   int totalModules = 32;
   int passedModulesCount = 0;
   double progressPercentage = 0.0;
@@ -39,34 +37,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int lastTopicIndex = -1;
   List<dynamic> lastSubModules = [];
 
+  // --- নতুন মেথড: বর্তমান ইউজারের ইউনিক প্রিফিক্স তৈরি করা ---
+  String get _userPrefix => FirebaseAuth.instance.currentUser?.uid ?? "guest";
+
   Future<void> loadLastRead() async {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        lastReadId = prefs.getString('last_mod_id') ?? "m1";
-        lastReadName = prefs.getString('last_mod_name') ?? "Introduction to CCNA";
-        lastTopicIndex = prefs.getInt('last_topic_index') ?? -1;
+        // প্রতিটি Key-এর সাথে ইউজারের UID prefix যোগ করা হয়েছে
+        lastReadId = prefs.getString('${_userPrefix}_last_mod_id') ?? "m1";
+        lastReadName = prefs.getString('${_userPrefix}_last_mod_name') ?? "Introduction to CCNA";
+        lastTopicIndex = prefs.getInt('${_userPrefix}_last_topic_index') ?? -1;
 
-        String? subJson = prefs.getString('last_sub_modules');
+        String? subJson = prefs.getString('${_userPrefix}_last_sub_modules');
         if (subJson != null) {
           lastSubModules = json.decode(subJson);
+        } else {
+          lastSubModules = []; // নতুন ইউজারের জন্য খালি রাখা
         }
       });
     }
   }
 
   void navigateToLastRead() async {
-    // যদি একদম নতুন ইউজার হয় এবং lastSubModules খালি থাকে
+    // যদি সাব-মডিউল লিস্ট খালি থাকে তবে ডিফল্ট লোড করা (আপনার আগের লজিক)
     if (lastSubModules.isEmpty) {
       try {
         final String response = await rootBundle.loadString('assets/data/modules.json');
         final List<dynamic> data = json.decode(response);
-        // প্রথম মডিউলটি খুঁজে বের করা
         var firstMod = data.firstWhere((m) => m['id'] == "m1");
-
-
         lastSubModules = firstMod['subModules'];
         lastReadName = firstMod['name'];
+        lastReadId = "m1";
       } catch (e) {
         debugPrint("Error loading default module: $e");
       }
@@ -74,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (!mounted) return;
 
-    // সরাসরি SubModuleScreen এ পাঠিয়ে দেওয়া
+    // নেভিগেশনে 'initialIndex' যুক্ত করা হয়েছে
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -82,15 +84,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           moduleId: lastReadId,
           moduleName: lastReadName,
           subModules: lastSubModules,
-          initialIndex: lastTopicIndex,
+          initialIndex: lastTopicIndex, // এটি ইউজারকে সঠিক টপিকে নিয়ে যাবে
         ),
       ),
-    ).then((_) => loadLastRead()); // ফিরে আসলে যদি মডিউল চেঞ্জ হয় তবে আপডেট হবে
+    ).then((_) => loadLastRead());
   }
 
+
   Future<void> updateOverallProgress() async {
+    // UnlockService অলরেডি UID ভিত্তিক আপডেট করা হয়েছে
     int passed = await UnlockService.getPassedQuizCount();
-    print("Passed Count Found: $passed"); // Console-e check korar jonno
 
     if (mounted) {
       setState(() {
@@ -101,10 +104,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> updateBookmarkCount() async {
+    // BookmarkService অলরেডি UID ভিত্তিক আপডেট করা হয়েছে
     final List<Map<String, dynamic>> bookmarks = await BookmarkService.getAllBookmarks();
-
-    // কনসোলে চেক করুন সংখ্যাটি কত দেখাচ্ছে
-    debugPrint("Current Bookmarks in DB: ${bookmarks.length}");
 
     if (mounted) {
       setState(() {
@@ -121,10 +122,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     updateOverallProgress();
     loadLastRead();
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // কুইজ বা মডিউল থেকে ফিরে আসলে এটি অটো রিফ্রেশ করবে
     updateOverallProgress();
     updateBookmarkCount();
     loadLastRead();
@@ -149,33 +150,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-     value: SystemUiOverlayStyle(
-       statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-       statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-       statusBarColor: Colors.transparent,
-     ),
+      value: SystemUiOverlayStyle(
+        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        statusBarColor: Colors.transparent,
+      ),
       child:Scaffold(
         backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-
         endDrawer: const MainDrawer(),
-
         body: SafeArea(
           child: isLoading
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12), // সামান্য বাড়ানো হয়েছে
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ---(Slightly Scaled Up) ---
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 StreamBuilder<DocumentSnapshot>(
                   stream: DatabaseService().getPersonalData,
                   builder: (context, snapshot) {
-                    String displayName = "Engineer"; // ডিফল্ট নাম
+                    String displayName = "Engineer";
                     String? imageBase64;
 
                     if (snapshot.hasData && snapshot.data!.exists) {
@@ -187,11 +183,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded( // নাম বড় হলে জায়গা করে দেওয়ার জন্য
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // FittedBox নাম বড় হলে অটোমেটিক সাইজ ছোট করে দেবে
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.centerLeft,
@@ -211,16 +206,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 10), // নাম এবং ছবির মাঝে গ্যাপ
-
-                        // Profile Icon / Image
+                        const SizedBox(width: 10),
                         Builder(
                           builder: (context) => GestureDetector(
-                            onTap: () {
-                              Scaffold.of(context).openEndDrawer(); // End Drawer ওপেন হবে
-                            },
+                            onTap: () => Scaffold.of(context).openEndDrawer(),
                             child: CircleAvatar(
-                              radius: 20, // আপনার ১৯ থেকে ১ বাড়িয়ে ২০ করলাম ড্রয়ারের সাথে মানানোর জন্য
+                              radius: 20,
                               backgroundColor: Colors.blueAccent,
                               backgroundImage: (imageBase64 != null && imageBase64.isNotEmpty)
                                   ? MemoryImage(base64Decode(imageBase64.split(',').last))
@@ -235,10 +226,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     );
                   },
                 ),
-
                 const SizedBox(height: 15),
-
-                // --- ২. ফাংশনাল সার্চ বার ---
                 InkWell(
                   onTap: () {
                     if (allModulesList.isNotEmpty) {
@@ -246,14 +234,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         context: context,
                         delegate: GlobalSearchDelegate(allModulesList),
                       );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Data is still loading...")),
-                      );
                     }
                   },
                   child: Container(
-                    height: 50, // ৪৫ থেকে ৪৮ করা হয়েছে
+                    height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: BoxDecoration(
                       color: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -261,47 +245,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.search, color: Colors.blueAccent, size: 20), // ১৮ থেকে ২০
+                        const Icon(Icons.search, color: Colors.blueAccent, size: 20),
                         const SizedBox(width: 10),
                         Text(
                           "Search commands...",
-                          style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600), // ১৩ থেকে ১৪
+                          style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                         ),
                       ],
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // --- Overall progress---
                 _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
-
                 const SizedBox(height: 20),
-
-                // --- ৪. স্ট্যাটস কার্ড ---
                 Row(
                     children: [
-                      // ১. মডিউল মেনু কার্ড (বাম পাশে)
                       _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
-
                       const SizedBox(width: 12),
-
-                      // ২. বুকমার্ক স্ট্যাট কার্ড (ডান পাশে)
-
                       _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
-
-
-
                     ]
                 ),
-
                 const SizedBox(height: 20),
-
-                // --- ৫. লার্নিং হাব ---
-                const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)), // ১৪ থেকে ১৫
+                const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 15),
-
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -310,86 +276,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisSpacing: 12,
                   childAspectRatio: 1.5,
                   children: [
-
-                    _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark,
-                          () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
-                        ).then((_) {
-
-                          loadDashboardData();
-                          updateBookmarkCount();
-                          updateOverallProgress();
-                        });
-                      },
-                    ),
-
-                    _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList)
-                        ),
-                      ).then((value) {
+                    _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark, () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen())).then((_) {
                         updateBookmarkCount();
-                        updateOverallProgress(); // প্রগ্রেসও আপডেট হয়ে যাবে
+                        updateOverallProgress();
+                      });
+                    },
+                    ),
+                    _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))).then((value) {
+                        updateBookmarkCount();
+                        updateOverallProgress();
                       });
                     }),
-
                     _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
-
-
-
                     _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
                       final prefs = await SharedPreferences.getInstance();
                       int targetModule = 1;
-
                       for (int i = 32; i >= 1; i--) {
-                        if (prefs.getBool('unlocked_mod_m$i') ?? false) {
+                        // UID prefix ব্যবহার করে আনলক স্ট্যাটাস চেক
+                        if (prefs.getBool('${_userPrefix}_unlocked_mod_m$i') ?? false) {
                           targetModule = i;
                           break;
                         }
                       }
-
                       if (!mounted) return;
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule")),
-                      ).then((_) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: "m$targetModule"))).then((_) {
                         updateOverallProgress();
-                        setState(() {});
                       });
                     }),
                   ],
                 ),
-
                 const SizedBox(height: 20),
-
-                // --- ৬. রিসেন্ট অ্যাক্টিভিটি ---
                 const Text("Continue Learning", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-
                 GestureDetector(
-                  onTap: navigateToLastRead, // আমাদের তৈরি করা নেভিগেশন ফাংশন
+                  onTap: navigateToLastRead,
                   child: _buildRecentItem(
-                    lastReadName, // সেভ করা মডিউলের নাম
-                    "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}", // মডিউল আইডি
+                    lastReadName,
+                    "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}",
                     isDark,
                   ),
                 ),
-
               ],
             ),
           ),
         ),
       ) ,
-
-   );
+    );
   }
 
-
+  // --- UI Helper মেথডগুলো অপরিবর্তিত রাখা হয়েছে ---
   Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -399,7 +336,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       child: Row(
         children: [
-          // Circular Progress
           Stack(
             alignment: Alignment.center,
             children: [
@@ -417,13 +353,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
           const SizedBox(width: 16),
-          // Text Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text("Overall Progress", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                // SUDHU EI LINE-TA RAKHUN, baki extra kono text thakle muche den
                 Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)),
               ],
             ),
@@ -432,6 +366,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
   Widget _buildStatCard(String title, String count, Color color, bool isDark) {
     return Expanded(
       child: Container(
@@ -442,8 +377,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         child: Column(
           children: [
-            Text(count, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: color)), // ১৬ থেকে ১৭
-            Text(title, style: const TextStyle(fontSize: 11)), // ১০ থেকে ১১
+            Text(count, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: color)),
+            Text(title, style: const TextStyle(fontSize: 11)),
           ],
         ),
       ),
@@ -462,9 +397,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 24), // ২২ থেকে ২৪
+            Icon(icon, color: color, size: 24),
             const SizedBox(height: 6),
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)), // ১২ থেকে ১৩
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
           ],
         ),
       ),
@@ -481,9 +416,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         dense: true,
         visualDensity: const VisualDensity(vertical: -2),
         leading: const Icon(Icons.history, color: Colors.blueAccent, size: 20),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)), // ১২ থেকে ১৩
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)), // ১০ থেকে ১১
-        trailing: const Icon(Icons.arrow_forward_ios, size: 11), // ১০ থেকে ১১
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 11),
       ),
     );
   }

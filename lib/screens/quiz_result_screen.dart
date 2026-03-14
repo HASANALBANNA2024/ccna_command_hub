@@ -5,8 +5,10 @@ import 'package:ccna_command_hub/models/quiz_model.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
+import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class QuizResultScreen extends StatefulWidget {
   final List<QuizQuestion> questions;
@@ -41,42 +43,59 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
   // রেজাল্ট সেভ এবং ওভারলে দেখানোর লজিক
   Future<void> _handleResultAndOverlay() async {
     int score = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = score >= 18;
+    bool passed = score >= 18; // আপনার পাসিং মার্ক অনুযায়ী
 
     if (passed) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('quiz_passed_${widget.moduleId}', true);
-      debugPrint("Progress Saved for ${widget.moduleId}");
+      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
 
+      // ✅ এখানে UID সহ Key ব্যবহার করতে হবে যাতে Dashboard এটি খুঁজে পায়
+      await prefs.setBool('${uid}_quiz_passed_${widget.moduleId}', true);
+
+      // মডিউল আনলক করার জন্য সার্ভিস কল করুন (এটি অলরেডি UID হ্যান্ডেল করছে)
       int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
       String nextModuleId = "m${currentNum + 1}";
       await UnlockService.unlockModule(nextModuleId);
     }
 
+    // ওভারলে দেখানোর লজিক
     if (!mounted) return;
-
     OverlayWidgets.showResultOverlay(
       context: context,
       passed: passed,
       onPrimary: () {
-        Navigator.of(context, rootNavigator: true).pop();
         if (passed) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          _navigateToNextModule(context);
-        } else {
+          // যদি পাস করে, তবেই পরের মডিউলে (m + 1) যাবে
+          int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
+          String nextModuleId = "m${currentNum + 1}";
+
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId)),
+            MaterialPageRoute(
+              builder: (context) => QuizScreen(moduleId: nextModuleId),
+            ),
+          );
+        } else {
+          // যদি ফেল করে (Try Again), তবে বর্তমান মডিউলেই (Same moduleId) আবার পরীক্ষা নেবে
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizScreen(moduleId: widget.moduleId),
+            ),
           );
         }
       },
       onSecondary: () {
-        if (Navigator.canPop(context)) {
-          Navigator.of(context, rootNavigator: true).pop();
-        }
+        // Skip বা View Details দিলে ড্যাশবোর্ডে ফিরে যাবে
+        Navigator.pop(context);
       },
     );
+
+
   }
+
+
+
 
   Future<void> _navigateToNextModule(BuildContext context) async {
     try {
