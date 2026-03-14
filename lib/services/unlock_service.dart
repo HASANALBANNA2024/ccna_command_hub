@@ -66,6 +66,7 @@ class UnlockService {
   // ৯. কুইজ দেওয়ার আগে সব পড়া হয়েছে কি না চেক (আপনার বর্তমান সমস্যা সমাধান করবে)
   static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
     final prefs = await SharedPreferences.getInstance();
+    // গুরুত্বপূর্ণ: আপনি markSubAsRead এ যে Key ব্যবহার করেছেন, এখানেও তাই হতে হবে
     for (var sub in subModules) {
       String subId = sub['id'].toString();
       bool isRead = prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
@@ -87,5 +88,24 @@ class UnlockService {
       }
     }
     return "m$lastUnlocked";
+  }
+
+  static Future<int> getPassedModulesCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    int passedCount = 0;
+
+    // আপনার লজিক অনুযায়ী ৩২টি মডিউল লুপ চালিয়ে চেক করা হচ্ছে
+    for (int i = 1; i <= 32; i++) {
+      // এখানে আপনার প্রিফিক্স এবং কী (Key) ঠিক থাকলে এটি কাজ করবে
+      // আমরা ধরে নিচ্ছি পাস করা মডিউলগুলো true হিসেবে সেভ আছে
+      bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}m$i') ?? false;
+
+      if (isUnlocked) {
+        passedCount = i;
+      } else {
+        break; // যেখানে false পাবে সেখানেই লুপ থেমে যাবে
+      }
+    }
+    return passedCount;
   }
 }
