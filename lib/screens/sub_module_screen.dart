@@ -185,7 +185,8 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
               return;
             }
 
-            bool allRead = await UnlockService.canTakeQuiz(widget.subModules);
+            // এখানে moduleId এবং subModules দুটোই পাঠাতে হবে
+            bool allRead = await UnlockService.canTakeQuiz(widget.moduleId, widget.subModules);
             if (allRead) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId))).then((_) => refresh());
             } else {

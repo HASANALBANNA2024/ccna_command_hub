@@ -40,11 +40,25 @@ class UnlockService {
     await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
   }
 
-  // সব সাব-মডিউল পড়া হয়েছে কি না চেক (কুইজের আগে দরকার)
-  static Future<bool> canTakeQuiz(List<dynamic> subModules) async {
+// এই ফাংশনটি এখন moduleId এবং subModules দুটিই গ্রহণ করবে
+  static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
+
+    // ১. চেক: এই মডিউলের সব সাব-মডিউল পড়া হয়েছে কি না
     for (var sub in subModules) {
-      if (!await isSubUnlocked(sub['id'])) return false;
+      // এখানে আপনার ব্যবহৃত কি (Key) ফরম্যাট অনুযায়ী চেক করুন
+      bool isRead = prefs.getBool('${uid}_sub_unlocked_${sub['id']}') ?? false;
+      if (!isRead) return false;
     }
+
+    // ২. চেক: আগের মডিউলের কুইজ পাস করা কি না (m1 বাদে)
+    int currentModNum = int.parse(moduleId.replaceAll('m', ''));
+    if (currentModNum > 1) {
+      bool prevPassed = prefs.getBool('${uid}_quiz_passed_m${currentModNum - 1}') ?? false;
+      if (!prevPassed) return false;
+    }
+
     return true;
   }
 

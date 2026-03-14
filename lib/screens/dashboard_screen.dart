@@ -315,20 +315,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
 
                     _buildMenuCard(context, "Quiz", Icons.quiz, Colors.purple, isDark, () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      int targetModule = 1;
-                      for (int i = 32; i >= 1; i--) {
-                        // UID prefix ব্যবহার করে আনলক স্ট্যাটাস চেক
-                        if (prefs.getBool('${_userPrefix}_unlocked_mod_m$i') ?? false) {
-                          targetModule = i;
-                          break;
+                      try {
+                        // ১. JSON লোড করা
+                        final String response = await rootBundle.loadString('assets/data/modules.json');
+                        final List<dynamic> allModules = json.decode(response);
+
+                        // ২. সর্বশেষ আনলক মডিউল আইডি বের করা
+                        String targetId = await UnlockService.getLastUnlockedModuleId();
+
+                        // ৩. মডিউল ডাটা খুঁজে বের করা
+                        var targetData = allModules.firstWhere(
+                              (m) => m['id'] == targetId,
+                          orElse: () => null,
+                        );
+
+                        if (targetData != null) {
+                          // এখানে ভেরিয়েবলগুলো সঠিকভাবে ডিফাইন করা হয়েছে
+                          String moduleId = targetData['id'];
+                          List<dynamic> subs = targetData['subModules'];
+                          String moduleName = targetData['name'];
+
+                          // ৪. চেক করা (সব পড়া শেষ কি না)
+                          bool canStart = await UnlockService.canTakeQuiz(moduleId, subs);
+
+                          if (!mounted) return;
+
+                          if (canStart) {
+                            // ৫. পড়া শেষ থাকলে কুইজে যাবে
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => QuizScreen(moduleId: moduleId)),
+                            ).then((_) => updateOverallProgress());
+                          } else {
+                            // ৬. পড়া বাকি থাকলে সাব-মডিউল লিস্টে যাবে
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("$moduleName এর পড়া শেষ না করে কুইজ দেওয়া যাবে না!"),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubModuleScreen(
+                                  moduleId: moduleId,
+                                  moduleName: moduleName,
+                                  subModules: subs,
+                                ),
+                              ),
+                            ).then((_) => updateOverallProgress());
+                          }
                         }
+                      } catch (e) {
+                        debugPrint("Quiz logic error: $e");
                       }
-                      if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                          QuizScreen(moduleId: "m$targetModule"))).then((_) {
-                        updateOverallProgress();
-                      });
                     }),
                   ],
                 ),
