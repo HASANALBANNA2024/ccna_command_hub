@@ -11,8 +11,6 @@ import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
-// import 'package:firebase_auth/firebase_auth.dart'; // আর দরকার নেই
-// import 'package:ccna_command_hub/services/cloud_sync_service.dart'; // আর দরকার নেই
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -36,18 +34,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int lastTopicIndex = -1;
   List<dynamic> lastSubModules = [];
 
-  // অফলাইন প্রিফিক্স (Firebase এর বদলে ফিক্সড আইডি)
-  String get _userPrefix => "guest_user_";
+  // ✅ আপডেট: সরাসরি UnlockService থেকে ডাইনামিক প্রিফিক্স নেওয়া হচ্ছে
+  String get _userPrefix => UnlockService.userPrefix;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeDashboard();
+  }
+
+  // স্ক্রিনে ফিরে আসলে বা কোনো পরিবর্তন হলে অটো-রিফ্রেশ করার জন্য
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _refreshStats();
+  }
+
+  Future<void> _initializeDashboard() async {
+    await loadDashboardData(); // JSON থেকে মডিউল লিস্ট লোড
+    await _refreshStats();
+    debugPrint("Dashboard Initialized for User: $_userPrefix");
+  }
+
+  Future<void> _refreshStats() async {
+    await updateOverallProgress();
+    await updateBookmarkCount();
+    await loadLastRead();
+  }
 
   Future<void> loadLastRead() async {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        lastReadId = prefs.getString('${_userPrefix}_last_mod_id') ?? "m1";
-        lastReadName = prefs.getString('${_userPrefix}_last_mod_name') ?? "Introduction to CCNA";
-        lastTopicIndex = prefs.getInt('${_userPrefix}_last_topic_index') ?? -1;
+        // ✅ আপডেট: UnlockService এর কী ফরম্যাট অনুযায়ী আন্ডারস্কোর ফিক্স করা হয়েছে
+        lastReadId = prefs.getString('${_userPrefix}last_mod_id') ?? "m1";
+        lastReadName = prefs.getString('${_userPrefix}last_mod_name') ?? "Introduction to CCNA";
+        lastTopicIndex = prefs.getInt('${_userPrefix}last_topic_index') ?? -1;
 
-        String? subJson = prefs.getString('${_userPrefix}_last_sub_modules');
+        String? subJson = prefs.getString('${_userPrefix}last_sub_modules');
         if (subJson != null) {
           lastSubModules = json.decode(subJson);
         } else {
@@ -58,6 +82,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void navigateToLastRead() async {
+    // যদি লাস্ট পড়া মডিউলের ডেটা না থাকে, তবে ডিফল্ট m1 লোড করবে
     if (lastSubModules.isEmpty) {
       try {
         final String response = await rootBundle.loadString('assets/data/modules.json');
@@ -83,27 +108,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           initialIndex: lastTopicIndex,
         ),
       ),
-    ).then((_) {
-      loadLastRead();
-      updateOverallProgress();
-    });
+    ).then((_) => _refreshStats()); // ফিরে আসলে রিফ্রেশ হবে
   }
 
   Future<void> updateOverallProgress() async {
     try {
-      // অফলাইন সার্ভিস থেকে প্রগ্রেস আনা
       int passed = await UnlockService.getPassedModulesCount();
-
       if (mounted) {
         setState(() {
           passedModulesCount = passed;
-          double calcProgress = (passed.toDouble() / 32);
-          progressPercentage = calcProgress * 100;
+          progressPercentage = (passed / 32) * 100;
         });
-        debugPrint("Offline Progress Updated | Passed: $passed");
       }
     } catch (e) {
-      debugPrint("Error updating overall progress: $e");
+      debugPrint("Progress Update Error: $e");
     }
   }
 
@@ -116,40 +134,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // ক্লাউড সিঙ্ক বাদ দিয়ে সরাসরি অফলাইন লোড
-    _initializeOfflineDashboard();
-  }
-
-  Future<void> _initializeOfflineDashboard() async {
-    await loadDashboardData();
-    await updateBookmarkCount();
-    await updateOverallProgress();
-    await loadLastRead();
-    print("Offline Dashboard Ready!");
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    updateOverallProgress();
-    updateBookmarkCount();
-    loadLastRead();
-  }
-
   Future<void> loadDashboardData() async {
     try {
       final String response = await rootBundle.loadString("assets/data/modules.json");
       final List<dynamic> data = json.decode(response);
-
-      setState(() {
-        allModulesList = data.map((m) => ModuleModel.fromJson(m)).toList();
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          allModulesList = data.map((m) => ModuleModel.fromJson(m)).toList();
+          isLoading = false;
+        });
+      }
     } catch (e) {
-      debugPrint("Error: $e");
+      debugPrint("Data Loading Error: $e");
       setState(() => isLoading = false);
     }
   }
@@ -161,159 +157,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
         statusBarColor: Colors.transparent,
       ),
       child: Scaffold(
         drawer: const MainDrawer(),
-        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         endDrawer: const MainDrawer(),
+        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         body: SafeArea(
           child: isLoading
               ? const Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Hello, Network Engineer!",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                                color: isDark ? Colors.white : Colors.blueGrey.shade900,
-                              ),
-                            ),
-                          ),
-                          const Text(
-                            "Track your CCNA journey offline",
-                            style: TextStyle(fontSize: 11.5, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Builder(
-                      builder: (context) => GestureDetector(
-                        onTap: () => Scaffold.of(context).openEndDrawer(), // ডান পাশের ড্রয়ার
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.blueAccent.withOpacity(0.5),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.blueAccent,
-                            child: const Icon(
-                              Icons.terminal_rounded,
-                              size: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 15),
-                InkWell(
-                  onTap: () {
-                    if (allModulesList.isNotEmpty) {
-                      showSearch(
-                        context: context,
-                        delegate: GlobalSearchDelegate(allModulesList),
-                      );
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                      borderRadius: BorderRadius.circular(11),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.search, color: Colors.blueAccent, size: 20),
-                        const SizedBox(width: 10),
-                        Text(
-                          "Search commands...",
-                          style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
-                const SizedBox(height: 20),
-                Row(
+              : RefreshIndicator(
+            onRefresh: _refreshStats,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  _buildHeader(isDark),
+                  const SizedBox(height: 15),
+                  _buildSearchBar(isDark),
+                  const SizedBox(height: 20),
+                  _buildOverallProgress(progressPercentage, passedModulesCount, isDark),
+                  const SizedBox(height: 20),
+                  Row(
                     children: [
                       _buildStatCard("Modules", allModulesList.length.toString(), Colors.blue, isDark),
                       const SizedBox(width: 12),
                       _buildStatCard("Bookmarks", bookmarkCount.toString(), Colors.orange, isDark),
-                    ]
-                ),
-                const SizedBox(height: 20),
-                const Text("Learning Hub", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 15),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 1.5,
-                  children: [
-                    _buildMenuCard(context, "Modules", Icons.menu_book, Colors.indigo, isDark, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen())).then((_) {
-                        updateBookmarkCount();
-                        updateOverallProgress();
-                      });
-                    }),
-                    _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))).then((value) {
-                        updateBookmarkCount();
-                        updateOverallProgress();
-                      });
-                    }),
-                    _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
-                    _buildMenuCard(context, "Flashcard Game", Icons.bolt, Colors.orange, isDark, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const FlashcardGameScreen()),
-                      ).then((_) {
-                        updateOverallProgress();
-                      });
-                    }),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                const Text("Continue Learning", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: navigateToLastRead,
-                  child: _buildRecentItem(
-                    lastReadName,
-                    "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}",
-                    isDark,
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  const Text("Learning Hub", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 15),
+                  _buildLearningHubGrid(isDark),
+                  const SizedBox(height: 25),
+                  const Text("Continue Learning", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: navigateToLastRead,
+                    child: _buildRecentItem(
+                      lastReadName,
+                      "Module ${lastReadId.replaceAll('m', '').padLeft(2, '0')}",
+                      isDark,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
@@ -321,13 +213,84 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // UI Helpers (অপরিবর্তিত)
+  // --- UI Helper Widgets ---
+
+  Widget _buildHeader(bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hello, Network Engineer!",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.blueGrey.shade900,
+                ),
+              ),
+              const Text(
+                "Track your CCNA journey offline",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+        Builder(
+          builder: (context) => GestureDetector(
+            onTap: () => Scaffold.of(context).openEndDrawer(),
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.blueAccent.withOpacity(0.5), width: 1.5),
+              ),
+              child: const CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.blueAccent,
+                child: Icon(Icons.terminal_rounded, size: 18, color: Colors.white),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildSearchBar(bool isDark) {
+    return InkWell(
+      onTap: () => showSearch(context: context, delegate: GlobalSearchDelegate(allModulesList)),
+      child: Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [if (!isDark) BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Colors.blueAccent, size: 20),
+            const SizedBox(width: 10),
+            Text(
+              "Search commands...",
+              style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [if (!isDark) BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
       ),
       child: Row(
         children: [
@@ -335,11 +298,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             alignment: Alignment.center,
             children: [
               SizedBox(
-                width: 52,
-                height: 52,
+                width: 55,
+                height: 55,
                 child: CircularProgressIndicator(
                   value: percentage / 100,
-                  strokeWidth: 5.5,
+                  strokeWidth: 6,
                   backgroundColor: Colors.grey.withOpacity(0.1),
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.blueAccent),
                 ),
@@ -347,13 +310,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Text("${percentage.toInt()}%", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
             ],
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 18),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Overall Progress", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                const Text("Overall Progress", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text("$passedCount / 32 modules completed", style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
           ),
@@ -365,35 +329,60 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildStatCard(String title, String count, Color color, bool isDark) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(11),
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
-            Text(count, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: color)),
-            Text(title, style: const TextStyle(fontSize: 11)),
+            Text(count, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: color)),
+            const SizedBox(height: 4),
+            Text(title, style: TextStyle(fontSize: 12, color: isDark ? Colors.white70 : Colors.blueGrey)),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildLearningHubGrid(bool isDark) {
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 1.6,
+      children: [
+        _buildMenuCard(context, "Modules", Icons.menu_book, Colors.indigo, isDark, () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen())).then((_) => _refreshStats());
+        }),
+        _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade800, isDark, () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))).then((_) => _refreshStats());
+        }),
+        _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
+        _buildMenuCard(context, "Flashcards", Icons.bolt, Colors.orange, isDark, () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const FlashcardGameScreen())).then((_) => _refreshStats());
+        }),
+      ],
+    );
+  }
+
   Widget _buildMenuCard(BuildContext context, String title, IconData icon, Color color, bool isDark, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(13),
+      borderRadius: BorderRadius.circular(15),
       child: Container(
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1E293B) : Colors.white,
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [if (!isDark) BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 6),
+            Icon(icon, color: color, size: 28),
+            const SizedBox(height: 8),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
           ],
         ),
@@ -402,18 +391,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildRecentItem(String title, String subtitle, bool isDark) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      color: isDark ? const Color(0xFF1E293B) : Colors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
-      child: ListTile(
-        dense: true,
-        visualDensity: const VisualDensity(vertical: -2),
-        leading: const Icon(Icons.history, color: Colors.blueAccent, size: 20),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 11)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 11),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blueAccent.withOpacity(0.1)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(color: Colors.blueAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.play_circle_fill, color: Colors.blueAccent, size: 24),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+          ),
+          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+        ],
       ),
     );
   }

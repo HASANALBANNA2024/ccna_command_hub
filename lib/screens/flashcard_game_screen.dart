@@ -43,17 +43,49 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   Future<void> _setupGame() async {
-    // অফলাইন আনলক সার্ভিস থেকে ডাটা আনা
-    int passedCount = await UnlockService.getPassedModulesCount();
-    int nextLevel = passedCount + 1;
-    if (nextLevel > 32) nextLevel = 32;
-    _currentLevelId = "m$nextLevel";
-    _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
+    try {
+      // 1. User koita module pass koreche seta check kora
+      int passedCount = await UnlockService.getPassedModulesCount();
 
-    if (mounted) {
-      setState(() => _isLoading = false);
-      _startTimer();
+      // 2. Default level m1 set kora
+      String targetLevelId = "m1";
+
+      if (passedCount > 0) {
+        // Jodi user kono module pass kore thake, tobe tar porer level (last unlocked) load hobe
+        int nextLevelNum = passedCount + 1;
+        if (nextLevelNum > 32) nextLevelNum = 32;
+        targetLevelId = "m$nextLevelNum";
+      }
+
+      _currentLevelId = targetLevelId;
+
+      // 3. FlashcardService theke data ana
+      _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
+
+      // 4. Safety Check: Jodi target level-e question na thake, tobe m1 load hobe
+      if (_questions.isEmpty && _currentLevelId != "m1") {
+        _currentLevelId = "m1";
+        _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
+      }
+
+      if (mounted) {
+        if (_questions.isNotEmpty) {
+          setState(() => _isLoading = false);
+          _startTimer();
+        } else {
+          // Jodi ekdomi kono question na pawa jay (Data error)
+          _showErrorAndPop("Questions are currently unavailable.");
+        }
+      }
+    } catch (e) {
+      debugPrint("Flashcard Setup Error: $e");
+      if (mounted) _showErrorAndPop("An error occurred while loading the game.");
     }
+  }
+
+  void _showErrorAndPop(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    Navigator.pop(context);
   }
 
   void _startTimer() {

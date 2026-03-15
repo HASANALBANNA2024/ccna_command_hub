@@ -1,89 +1,80 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UnlockService {
-  // ১. ফিক্সড ইউজার আইডি (যেহেতু এখন অফলাইন, তাই Firebase এর দরকার নেই)
-  static const String _userPrefix = "guest_user_";
+  // ✅ Firebase নির্ভরতা সরিয়ে সরাসরি লোকাল প্রিফিক্স সেট করা হয়েছে
+  static String get userPrefix => "local_user_";
 
-  // কী (Keys)
   static const String _subKey = "unlocked_sub_";
   static const String _modKey = "unlocked_mod_";
   static const String _quizKey = "quiz_passed_";
 
-  // ২. সাব-মডিউল আনলক কিনা চেক করা
+  // --- সাব-মডিউল লজিক ---
   static Future<bool> isSubUnlocked(String subId) async {
-    // প্রথম সাব-মডিউল সবসময় আনলক থাকবে (যেমন: m1_s1)
-    if (subId.contains('_s1')) return true;
+    // যেকোনো মডিউলের প্রথম সাব-মডিউল (যেমন m1s1, m2s1) সবসময় খোলা থাকবে
+    if (subId.endsWith('s1')) return true;
+
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
+    return prefs.getBool('${userPrefix}${_subKey}$subId') ?? false;
   }
 
-  // ৩. সাব-মডিউল পড়া শেষ হলে মার্ক করা
   static Future<void> markSubAsRead(String subId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('${_userPrefix}${_subKey}$subId', true);
+    await prefs.setBool('${userPrefix}${_subKey}$subId', true);
   }
 
-  // ৪. মডিউল আনলক কিনা চেক করা
+  // --- মডিউল লজিক ---
   static Future<bool> isModuleUnlocked(String moduleId) async {
+    // মডিউল ১ (m1) সবসময় খোলা থাকবে
     if (moduleId == 'm1') return true;
+
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('${_userPrefix}${_modKey}$moduleId') ?? false;
+    // অন্য মডিউলগুলো (m2, m3...) তখনই খুলবে যদি আগেরটার কুইজ পাস করা থাকে
+    return prefs.getBool('${userPrefix}${_modKey}$moduleId') ?? false;
   }
 
-  // ৫. নতুন মডিউল আনলক করা
-  static Future<void> unlockModule(String moduleId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
-  }
-
-  // ৬. কুইজ আনলক করার লজিক (সব সাব-মডিউল পড়া হয়েছে কি না)
-  static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    // লুপ চালিয়ে চেক করা হচ্ছে সব সাব-মডিউল পড়া হয়েছে কি না
-    for (var sub in subModules) {
-      String subId = sub['id'].toString();
-      bool isRead = prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
-
-      // যদি কোনো একটি পড়া না হয়, তবে কুইজ লক থাকবে
-      if (!isRead) return false;
-    }
-    return true; // সব পড়া শেষ হলে কুইজ আনলক
-  }
-
-  // ৭. কুইজ পাস করলে মার্ক করা
+  // কুইজ পাস করলে বর্তমান মডিউল পাস মার্ক হবে এবং পরের মডিউলটি পার্মানেন্টলি আনলক হবে
   static Future<void> markQuizAsPassed(String moduleId) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('${_userPrefix}${_quizKey}$moduleId', true);
+    // বর্তমান মডিউলটিকে 'পাস' হিসেবে মার্ক করা
+    await prefs.setBool('${userPrefix}${_quizKey}$moduleId', true);
+
+    // পরের মডিউলের আইডি জেনারেট করে সেটি আনলক করা
+    try {
+      int currentNum = int.parse(moduleId.replaceAll('m', ''));
+      String nextModuleId = "m${currentNum + 1}";
+      await prefs.setBool('${userPrefix}${_modKey}$nextModuleId', true);
+    } catch (e) {
+      print("Error generating next module ID: $e");
+    }
   }
 
-  // ৮. কুইজ পাস হয়েছে কি না চেক
-  static Future<bool> isQuizPassed(String moduleId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('${_userPrefix}${_quizKey}$moduleId') ?? false;
-  }
-
-  // ৯. পাস করা মডিউলের সংখ্যা (ড্যাশবোর্ড প্রগ্রেসের জন্য)
   static Future<int> getPassedModulesCount() async {
     final prefs = await SharedPreferences.getInstance();
     int passedCount = 0;
+    // আপনার ৩২টি মডিউলের ওপর ভিত্তি করে লুপ
     for (int i = 1; i <= 32; i++) {
-      bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}m$i') ?? false;
-      if (isUnlocked) {
-        passedCount = i;
-      } else {
-        break;
-      }
+      if (prefs.getBool('${userPrefix}${_quizKey}m$i') ?? false) passedCount++;
     }
     return passedCount;
   }
-  static Future<String> getLastUnlockedModuleId() async {
+
+  static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
     final prefs = await SharedPreferences.getInstance();
-    int lastUnlocked = 1;
-    for (int i = 1; i <= 32; i++) {
-      bool isUnlocked = prefs.getBool('guest_user_unlocked_mod_m$i') ?? false;
-      if (isUnlocked) lastUnlocked = i; else break;
+    // প্রথম সাব-মডিউল বাদে বাকিগুলো পড়া হয়েছে কি না চেক
+    for (var sub in subModules) {
+      String subId = sub['id'].toString();
+      // প্রথম সাব-মডিউল তো সবসময়ই খোলা, তাই ওটা চেক করার দরকার নেই
+      if (subId.endsWith('s1')) continue;
+
+      bool isRead = prefs.getBool('${userPrefix}${_subKey}$subId') ?? false;
+      if (!isRead) return false;
     }
-    return "m$lastUnlocked";
+    return true;
+  }
+
+  // মডিউল সরাসরি আনলক করার জন্য (যেমন ফ্ল্যাশকার্ড গেম শেষ করলে)
+  static Future<void> unlockModule(String moduleId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('${userPrefix}${_modKey}$moduleId', true);
   }
 }

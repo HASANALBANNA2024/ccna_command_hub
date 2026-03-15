@@ -1,10 +1,9 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/screens/details_screen.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
-import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
-import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SubModuleScreen extends StatefulWidget {
   final String moduleId;
@@ -25,57 +24,62 @@ class SubModuleScreen extends StatefulWidget {
 }
 
 class _SubModuleScreenState extends State<SubModuleScreen> {
-
-  // ১. ডাইনামিক ইউজার প্রিফিক্স (ফায়ারবেস ছাড়া অফলাইন ফিক্সড আইডি)
-  String get _userPrefix => "guest_user_";
+  // ১. ডাইনামিক ইউজার প্রিফিক্স নেওয়া হচ্ছে
+  String get _userPrefix => UnlockService.userPrefix;
 
   @override
   void initState() {
     super.initState();
-
-    // ১. Continue Learning লজিক
+    // Continue Learning লজিক: যদি ইনডেক্স দেওয়া থাকে তবে সরাসরি সেখানে নিয়ে যাবে
     if (widget.initialIndex != null && widget.initialIndex! >= 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (widget.initialIndex! < widget.subModules.length) {
-          final selectedSubModule = widget.subModules[widget.initialIndex!];
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailsScreen(
-                moduleId: widget.moduleId,
-                subId: selectedSubModule['id'].toString(), // safe string conversion
-                title: selectedSubModule['title'],
-                initialIndex: widget.initialIndex!,
-              ),
-            ),
-          ).then((_) {
-            _saveLastRead(widget.initialIndex!);
-            refresh();
-          });
-        }
-      });
+      _navigateToInitialDetail();
     }
+  }
+
+  void _navigateToInitialDetail() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialIndex! < widget.subModules.length) {
+        final selectedSubModule = widget.subModules[widget.initialIndex!];
+        _openDetails(
+            selectedSubModule['id'].toString(),
+            selectedSubModule['title'],
+            widget.initialIndex!
+        );
+      }
+    });
   }
 
   void refresh() {
     if (mounted) setState(() {});
   }
 
-  // ২. প্রগ্রেস সেভ করার মেথড (UID-সহ)
+  // Details স্ক্রিনে যাওয়ার কমন ফাংশন
+  void _openDetails(String subId, String title, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailsScreen(
+          moduleId: widget.moduleId,
+          subId: subId,
+          title: title,
+          initialIndex: index,
+        ),
+      ),
+    ).then((_) {
+      _saveLastRead(index);
+      refresh(); // ফিরে আসার পর আইকন (Lock/Check) আপডেট হবে
+    });
+  }
+
+  // ড্যাশবোর্ডের "Continue Learning" এর জন্য ডেটা সেভ
   Future<void> _saveLastRead(int currentIndex) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-
-      // ইউজার ভিত্তিক কী (Key) ব্যবহার করা হচ্ছে
-      await prefs.setString('${_userPrefix}_last_mod_id', widget.moduleId);
-      await prefs.setString('${_userPrefix}_last_mod_name', widget.moduleName);
-      await prefs.setInt('${_userPrefix}_last_topic_index', currentIndex);
-
-      String subModulesJson = json.encode(widget.subModules);
-      await prefs.setString('${_userPrefix}_last_sub_modules', subModulesJson);
-
-      debugPrint("Progress Saved: Module ${widget.moduleId}, Index $currentIndex");
+      // UnlockService এর কী ফরম্যাট অনুযায়ী সেভ করা হচ্ছে
+      await prefs.setString('${_userPrefix}last_mod_id', widget.moduleId);
+      await prefs.setString('${_userPrefix}last_mod_name', widget.moduleName);
+      await prefs.setInt('${_userPrefix}last_topic_index', currentIndex);
+      await prefs.setString('${_userPrefix}last_sub_modules', json.encode(widget.subModules));
     } catch (e) {
       debugPrint("Error saving progress: $e");
     }
@@ -88,7 +92,10 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF020617) : const Color(0xFFF1F5F9),
       appBar: AppBar(
-        title: Text(widget.moduleName, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+        title: Text(
+            widget.moduleName,
+            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.blueAccent,
@@ -98,9 +105,10 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
         itemCount: widget.subModules.length,
         itemBuilder: (context, index) {
           final sub = widget.subModules[index];
+          String subId = sub['id'].toString();
 
           return FutureBuilder<bool>(
-            future: UnlockService.isSubUnlocked(sub['id'].toString()),
+            future: UnlockService.isSubUnlocked(subId),
             builder: (context, snapshot) {
               bool isUnlocked = snapshot.data ?? false;
 
@@ -110,84 +118,64 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
                   borderRadius: BorderRadius.circular(18),
                   color: isDark ? const Color(0xFF0F172A) : Colors.white,
                   boxShadow: [
-                    if(!isDark) BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)
+                    if (!isDark)
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4)
+                      )
                   ],
                 ),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
-                  leading: Container(
-                    height: 50, width: 50,
-                    decoration: BoxDecoration(
-                      color: isUnlocked ? Colors.blueAccent.withOpacity(0.15) : Colors.grey.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  leading: CircleAvatar(
+                    backgroundColor: isUnlocked
+                        ? Colors.green.withOpacity(0.1)
+                        : Colors.grey.withOpacity(0.1),
                     child: Icon(
-                      isUnlocked ? Icons.auto_stories_rounded : Icons.lock_outline_rounded,
-                      color: isUnlocked ? Colors.blueAccent : Colors.grey,
+                      isUnlocked ? Icons.check_circle_rounded : Icons.lock_outline_rounded,
+                      color: isUnlocked ? Colors.green : Colors.grey,
+                      size: 26,
                     ),
                   ),
                   title: Text(
                     sub['title'],
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: isUnlocked ? (isDark ? Colors.white : Colors.black87) : Colors.grey,
+                      fontSize: 15,
+                      color: isUnlocked
+                          ? (isDark ? Colors.white : Colors.black87)
+                          : Colors.grey,
                     ),
                   ),
-                  trailing: isUnlocked
-                      ? const Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.blueAccent)
-                      : const Icon(Icons.lock, size: 16, color: Colors.grey),
-
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
                   onTap: () async {
-                    final String subId = sub['id'].toString();
-                    final String currentModuleId = widget.moduleId;
-                    final String subTitle = sub['title'].toString();
-
-                    try {
-                      // ২. মডিউল লকড কিনা চেক
-                      bool modUnlocked = await UnlockService.isModuleUnlocked(currentModuleId);
-                      if (!modUnlocked) {
-                        if (mounted) _handleLockedModuleAction();
-                        return;
-                      }
-
-                      // ৩. সিকোয়েনশিয়াল এক্সেস চেক
-                      bool canAccess = true;
-                      if (index > 0) {
-                        String prevSubId = widget.subModules[index - 1]['id'].toString();
-                        canAccess = await UnlockService.isSubUnlocked(prevSubId);
-                      }
-
-                      if (canAccess) {
-                        // ৪. প্রগ্রেস সেভ করা
-                        await UnlockService.markSubAsRead(subId);
-                        await _saveLastRead(index);
-
-                        if (!mounted) return;
-
-                        // ৬. নেভিগেশন
-                        await Navigator.push(
+                    // ১. মেইন মডিউল লকড কিনা চেক
+                    bool modUnlocked = await UnlockService.isModuleUnlocked(widget.moduleId);
+                    if (!modUnlocked) {
+                      _showCustomLockedDialog(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailsScreen(
-                              moduleId: currentModuleId,
-                              subId: subId,
-                              title: subTitle,
-                              initialIndex: index,
-                            ),
-                          ),
-                        );
+                          "এই মডিউলটি এখনো লক করা আছে!\nআগের মডিউলের ফাইনাল কুইজে পাস করুন।"
+                      );
+                      return;
+                    }
 
-                        if (mounted) refresh();
-                      } else {
-                        if (mounted) {
-                          _showCustomLockedDialog(
-                              context,
-                              "আগে '${widget.subModules[index - 1]['title']}' পড়ে শেষ করো।"
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      debugPrint("Navigation Error handled: $e");
+                    // ২. সাব-মডিউল সিকোয়েন্স চেক (আগেরটি পড়া হয়েছে কি না)
+                    bool canAccess = true;
+                    if (index > 0) {
+                      String prevSubId = widget.subModules[index - 1]['id'].toString();
+                      canAccess = await UnlockService.isSubUnlocked(prevSubId);
+                    }
+
+                    if (canAccess) {
+                      // পড়া শুরু করার সাথে সাথে আনলক মার্ক করে দেওয়া হচ্ছে
+                      await UnlockService.markSubAsRead(subId);
+                      _openDetails(subId, sub['title'], index);
+                    } else {
+                      _showCustomLockedDialog(
+                          context,
+                          "ক্রমানুসারে শিখুন!\nআগে '${widget.subModules[index - 1]['title']}' পড়ে শেষ করুন।"
+                      );
                     }
                   },
                 ),
@@ -196,52 +184,46 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
           );
         },
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blueAccent,
-            minimumSize: const Size(double.infinity, 55),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          ),
-          onPressed: () async {
-            bool modUnlocked = await UnlockService.isModuleUnlocked(widget.moduleId);
-            if (!modUnlocked) {
-              _handleLockedModuleAction();
-              return;
-            }
-
-            bool allRead = await UnlockService.canTakeQuiz(widget.moduleId, widget.subModules);
-            if (allRead) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId))).then((_) => refresh());
-            } else {
-              _showCustomLockedDialog(context, "সবগুলো সাব-মডিউল না পড়ে কুইজ দেওয়া যাবে না!");
-            }
-          },
-          icon: const Icon(Icons.quiz_rounded, color: Colors.white),
-          label: const Text("Start Final Quiz", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ),
-      ),
+      bottomNavigationBar: _buildQuizButton(isDark),
     );
   }
 
-  void _handleLockedModuleAction() {
-    OverlayWidgets.showLockActionCard(
-      context: context,
-      onQuiz: () async {
-        Navigator.pop(context);
-        String lastModuleToExam = widget.moduleId;
-        if(!mounted) return;
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => QuizScreen(moduleId: lastModuleToExam))
-        ).then((_) => refresh());
-      },
-      onAd: () async {
-        await UnlockService.unlockModule(widget.moduleId);
-        Navigator.pop(context);
-        refresh();
-      },
+  Widget _buildQuizButton(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+      ),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blueAccent,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(double.infinity, 55),
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        ),
+        onPressed: () async {
+          // কুইজ দেওয়ার যোগ্যতা চেক
+          bool canQuiz = await UnlockService.canTakeQuiz(widget.moduleId, widget.subModules);
+          if (canQuiz) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId))
+            ).then((_) => refresh());
+          } else {
+            _showCustomLockedDialog(
+                context,
+                "প্রস্তুতি শেষ হয়নি!\nসবগুলো সাব-মডিউল না পড়ে ফাইনাল কুইজ দেওয়া যাবে না।"
+            );
+          }
+        },
+        icon: const Icon(Icons.quiz_rounded),
+        label: const Text(
+            "START FINAL QUIZ",
+            style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1)
+        ),
+      ),
     );
   }
 
@@ -251,8 +233,25 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E293B),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Text(message, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
-        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text("বুঝেছি", style: TextStyle(color: Colors.blueAccent)))],
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.lock_person_rounded, color: Colors.amber, size: 50),
+            const SizedBox(height: 15),
+            Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white, height: 1.5)
+            ),
+          ],
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("বুঝেছি", style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold))
+          )
+        ],
       ),
     );
   }

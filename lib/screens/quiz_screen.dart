@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ccna_command_hub/models/quiz_model.dart';
+import 'package:ccna_command_hub/services/unlock_service.dart'; // ইম্পোর্ট নিশ্চিত করুন
 import 'quiz_result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -42,6 +43,43 @@ class _QuizScreenState extends State<QuizScreen> {
     } catch (e) {
       debugPrint("Error: $e");
     }
+  }
+
+  void _handleSubmit() {
+    int correctAnswers = 0;
+    for (var q in questions) {
+      if (q.selectedAnswer != null && q.selectedAnswer == q.answer) {
+        correctAnswers++;
+      }
+    }
+
+    // সরাসরি রেজাল্ট স্ক্রিনে চলে যাবে সব ডাটা নিয়ে
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(
+          questions: questions,
+          moduleId: widget.moduleId,
+          score: correctAnswers, // স্কোরটি পাঠিয়ে দিন (যদি কনস্ট্রাক্টরে থাকে)
+        ),
+      ),
+    );
+  }
+
+
+
+// এখানে (int score) যোগ করা হয়েছে যাতে এটি স্কোর গ্রহণ করতে পারে
+  void _navigateToResultScreen(int score) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(
+          questions: questions,
+          moduleId: widget.moduleId,
+          score: score, // এখন আর লাল দাগ থাকবে না
+        ),
+      ),
+    );
   }
 
   @override
@@ -107,9 +145,8 @@ class _QuizScreenState extends State<QuizScreen> {
           );
         },
       ),
-      // Final Quiz NavigationBar call
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15), // প্যাডিং কিছুটা কমানো হয়েছে সেফটির জন্য
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1E293B) : Colors.white,
           boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
@@ -120,22 +157,12 @@ class _QuizScreenState extends State<QuizScreen> {
             minimumSize: const Size(double.infinity, 55),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => QuizResultScreen(
-                    questions: questions,
-                    moduleId: widget.moduleId,
-                  )
-              ),
-            );
-          },
-          child: FittedBox( // এটি টেক্সটকে এক লাইনে রাখার জন্য অটোমেটিক ছোট করবে
+          onPressed: _handleSubmit, // সাবমিট লজিক কল করা হয়েছে
+          child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               "Submit Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} Final Answers",
-              maxLines: 1, // নিশ্চিত করবে যেন এক লাইনের বেশি না হয়
+              maxLines: 1,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,

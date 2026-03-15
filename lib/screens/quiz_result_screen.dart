@@ -5,131 +5,81 @@ import 'package:ccna_command_hub/models/quiz_model.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
-import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class QuizResultScreen extends StatefulWidget {
   final List<QuizQuestion> questions;
   final String moduleId;
+  final int score;
 
-  const QuizResultScreen({super.key, required this.questions, required this.moduleId});
+  const QuizResultScreen({
+    super.key,
+    required this.questions,
+    required this.moduleId,
+    required this.score
+  });
 
   @override
   State<QuizResultScreen> createState() => _QuizResultScreenState();
 }
 
 class _QuizResultScreenState extends State<QuizResultScreen> {
-  bool _isOverlayShown = false; // ওভারলে বারবার আসা বন্ধ করার জন্য ফ্ল্যাগ
+  bool _isOverlayShown = false;
 
   @override
   void initState() {
     super.initState();
-
-    // স্ক্রিন লোড হওয়ার পর একবার ওভারলে দেখানোর লজিক
+    // স্ক্রিন লোড হওয়ার পর রেজাল্ট প্রসেস করা হবে
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!_isOverlayShown) {
         await _handleResultAndOverlay();
-        if (mounted) {
-          setState(() {
-            _isOverlayShown = true;
-          });
-        }
       }
     });
   }
 
-  // রেজাল্ট সেভ এবং ওভারলে দেখানোর লজিক
   Future<void> _handleResultAndOverlay() async {
-    int score = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = score >= 18; // আপনার পাসিং মার্ক অনুযায়ী
+    // সঠিকভাবে স্কোর গণনা করা হচ্ছে
+    int finalScore = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
+    bool passed = finalScore >= 18; // ১৮ মানে ৭২% (পাসিং মার্ক)
 
     if (passed) {
-      final prefs = await SharedPreferences.getInstance();
-      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
-
-      // ✅ এখানে UID সহ Key ব্যবহার করতে হবে যাতে Dashboard এটি খুঁজে পায়
-      await prefs.setBool('${uid}_quiz_passed_${widget.moduleId}', true);
-
-      // মডিউল আনলক করার জন্য সার্ভিস কল করুন (এটি অলরেডি UID হ্যান্ডেল করছে)
-      int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
-      String nextModuleId = "m${currentNum + 1}";
-      await UnlockService.unlockModule(nextModuleId);
+      // ✅ সার্ভিস কল করে ডাটা সেভ এবং পরবর্তী মডিউল আনলক করা হচ্ছে
+      await UnlockService.markQuizAsPassed(widget.moduleId);
     }
 
-    // ওভারলে দেখানোর লজিক
     if (!mounted) return;
+
+    setState(() => _isOverlayShown = true);
+
+    // ওভারলে দেখানো হচ্ছে
     OverlayWidgets.showResultOverlay(
       context: context,
       passed: passed,
       onPrimary: () async {
         if (passed) {
-          // ১. বর্তমান মডিউল নম্বর থেকে পরের আইডি বের করা (m1 -> m2)
-          int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
-          String nextModuleId = "m${currentNum + 1}";
-
-          try {
-            // ২. আপনার JSON ডাটা লোড করা (যাতে পরের মডিউলের নাম ও সাব-মডিউল পাওয়া যায়)
-            final String response = await rootBundle.loadString('assets/data/modules.json');
-            final List<dynamic> allModules = json.decode(response);
-
-            // ৩. লিস্ট থেকে পরের মডিউলটি খুঁজে বের করা
-            var nextModule = allModules.firstWhere(
-                  (m) => m['id'] == nextModuleId,
-              orElse: () => null,
-            );
-
-            if (nextModule != null && mounted) {
-              // ৪. সরাসরি SubModuleScreen-এ পাঠিয়ে দেওয়া
-              // এখানে কোনো initialIndex পাঠানো হচ্ছে না, তাই এটি শুধু লিস্ট দেখাবে
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SubModuleScreen(
-                    moduleId: nextModule['id'],
-                    moduleName: nextModule['name'],
-                    subModules: nextModule['subModules'],
-                  ),
-                ),
-              );
-            } else {
-              // যদি আর কোনো মডিউল না থাকে তবে ড্যাশবোর্ডে ফিরে যাওয়া
-              if (mounted) Navigator.pop(context);
-            }
-          } catch (e) {
-            debugPrint("Error: $e");
-            if (mounted) Navigator.pop(context);
-          }
+          // পাস করলে পরের মডিউলে নিয়ে যাবে
+          await _navigateToNextModule(context);
         } else {
-          // ফেল করলে আবার কুইজ ট্রাই করা
+          // ফেল করলে কুইজ পুনরায় শুরু করবে
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => QuizScreen(moduleId: widget.moduleId),
-            ),
+            MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId)),
           );
         }
       },
       onSecondary: () {
-        // এটি বর্তমান ওভারলে বা কার্ডটি বন্ধ করে রেজাল্ট স্ক্রিনে রাখবে
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
-        }
+        // সেকেন্ডারি বাটন চাপলে রেজাল্ট লিস্ট দেখতে পাবে
+        Navigator.pop(context);
       },
     );
-
-
   }
-
-
-
 
   Future<void> _navigateToNextModule(BuildContext context) async {
     try {
       final String response = await rootBundle.loadString('assets/data/modules.json');
       final List<dynamic> data = json.decode(response);
 
+      // বর্তমান আইডি থেকে পরবর্তী আইডি বের করা (m1 -> m2)
       int currentNum = int.parse(widget.moduleId.replaceAll('m', ''));
       String nextModId = "m${currentNum + 1}";
 
@@ -140,6 +90,8 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
 
       if (nextModuleData != null) {
         if (!context.mounted) return;
+
+        // সরাসরি পরবর্তী মডিউলের সাব-মডিউল স্ক্রিনে নেভিগেশন
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -151,106 +103,47 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
           ),
         );
       } else {
-        Navigator.popUntil(context, (route) => route.isFirst);
+        // যদি আর কোনো মডিউল না থাকে (কোর্স সমাপ্ত)
+        if (context.mounted) {
+          Navigator.popUntil(context, (route) => route.isFirst);
+        }
       }
     } catch (e) {
-      debugPrint("Error navigating to next module: $e");
-      Navigator.popUntil(context, (route) => route.isFirst);
+      debugPrint("Navigation Error: $e");
+      if (context.mounted) Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    int score = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = score >= 18;
+    int currentScore = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
+    bool isPassed = currentScore >= 18;
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
       appBar: AppBar(
-        title: const Text("Analysis & Result"),
+        title: const Text("Analysis & Result", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.blueAccent,
+        elevation: 0,
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+              onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+              icon: const Icon(Icons.home_rounded)
+          )
+        ],
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: passed
-                    ? [Colors.green.shade800, Colors.green.shade500]
-                    : [Colors.red.shade900, Colors.red.shade600],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(35),
-                  bottomRight: Radius.circular(35)
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                )
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                      passed ? Icons.emoji_events_rounded : Icons.gpp_bad_rounded,
-                      color: Colors.white,
-                      size: 35
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        passed ? "EXAM PASSED!" : "EXAM FAILED!",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2
-                        )
-                    ),
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                          "Score: $score / 25",
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // স্কোর কার্ড সেকশন
+          _buildScoreHeader(isPassed, currentScore),
+
+          // রিভিউ লিস্ট
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
               itemCount: widget.questions.length,
               itemBuilder: (context, index) {
                 final q = widget.questions[index];
@@ -259,12 +152,25 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                 return Card(
                   color: isDark ? const Color(0xFF1E293B) : Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  elevation: isDark ? 0 : 2,
                   margin: const EdgeInsets.only(bottom: 12),
                   child: ExpansionTile(
-                    leading: Icon(isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-                        color: isCorrect ? Colors.green : Colors.red),
-                    title: Text(q.question,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87)),
+                    leading: CircleAvatar(
+                      backgroundColor: isCorrect ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
+                      child: Icon(
+                        isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                        color: isCorrect ? Colors.green : Colors.red,
+                        size: 24,
+                      ),
+                    ),
+                    title: Text(
+                        q.question,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black87
+                        )
+                    ),
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(16),
@@ -272,13 +178,25 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildInfoRow("Your Answer", q.selectedAnswer ?? "Not Answered", isCorrect ? Colors.green : Colors.red),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 8),
                             _buildInfoRow("Correct Answer", q.answer, Colors.green),
-                            const Divider(height: 25, color: Colors.white10),
-                            const Text("Explanation:", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
-                            const SizedBox(height: 5),
-                            Text(q.explanation,
-                                style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, height: 1.4)),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(color: Colors.white10),
+                            ),
+                            const Text(
+                                "Explanation:",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                                q.explanation,
+                                style: TextStyle(
+                                    color: isDark ? Colors.white70 : Colors.black54,
+                                    height: 1.5,
+                                    fontSize: 13
+                                )
+                            ),
                           ],
                         ),
                       )
@@ -290,25 +208,103 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(15),
-        child: TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(
-            // "Return to Module ${widget.moduleId.replaceAll('m', '').padLeft(2, '0')} List",
-            "Exit Result Screen",
-            style: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold),
-          ),
+      bottomNavigationBar: _buildBottomBar(isDark),
+    );
+  }
+
+  Widget _buildScoreHeader(bool passed, int score) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 25),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: passed
+              ? [const Color(0xFF15803D), const Color(0xFF22C55E)]
+              : [const Color(0xFFB91C1C), const Color(0xFFEF4444)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30)
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+              passed ? Icons.stars_rounded : Icons.report_problem_rounded,
+              color: Colors.white,
+              size: 50
+          ),
+          const SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                  passed ? "CONGRATULATIONS!" : "KEEP PRACTICING!",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.1
+                  )
+              ),
+              const SizedBox(height: 5),
+              Text(
+                  "You scored $score out of 25",
+                  style: const TextStyle(color: Colors.white70, fontSize: 14)
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomBar(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+        border: Border(top: BorderSide(color: isDark ? Colors.white10 : Colors.black12)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                side: const BorderSide(color: Colors.blueAccent),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () => Navigator.pop(context),
+              child: const Text("REVIEW ANSWERS", style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+              child: const Text("BACK TO HOME", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildInfoRow(String label, String value, Color color) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("$label: ", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-        Expanded(child: Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color))),
+        Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        const SizedBox(height: 2),
+        Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: color)),
       ],
     );
   }
