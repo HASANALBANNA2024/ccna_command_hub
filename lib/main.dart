@@ -7,14 +7,14 @@ import 'package:firebase_core/firebase_core.dart';
 // value notifier for Dark Mode
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
 
-void main() async {
-  // এটি অবশ্যই সবার আগে দিতে হবে
+void main() {
+  // // এটি অবশ্যই সবার আগে দিতে হবে
   WidgetsFlutterBinding.ensureInitialized();
-
-  // ফায়ারবেস ইনিশিয়ালাইজ করা
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  //
+  // // ফায়ারবেস ইনিশিয়ালাইজ করা
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
 
   runApp(const MyApp());
 }

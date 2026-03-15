@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
       // navigation to home screen
 
       Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => LoginScreen()
+        builder: (context) => DashboardScreen()
       ));
 
       debugPrint("Navigating to Home...");

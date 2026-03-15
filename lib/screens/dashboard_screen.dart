@@ -11,10 +11,8 @@ import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
-import 'package:ccna_command_hub/screens/quiz_screen.dart';
-import 'package:ccna_command_hub/services/database_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // UID ব্যবহারের জন্য ইম্পোর্ট
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ccna_command_hub/services/cloud_sync_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -141,10 +139,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+
+    // ১. প্রথমে ফোনের লোকাল ডাটা দিয়ে ড্যাশবোর্ড লোড হবে
     loadDashboardData();
     updateBookmarkCount();
     updateOverallProgress();
     loadLastRead();
+
+    // ২. ১ সেকেন্ড পর ব্যাকগ্রাউন্ডে ক্লাউড থেকে লেটেস্ট ডাটা চেক করবে
+    Future.delayed(Duration(seconds: 1), () async {
+      print("Checking for cloud updates...");
+
+      await CloudSyncService().syncCloudToLocal();
+
+      // ৩. ক্লাউড থেকে নতুন ডাটা আসলে ড্যাশবোর্ডের ক্যালকুলেশনগুলো আবার আপডেট করতে হবে
+      if (mounted) {
+        setState(() {
+          loadDashboardData();
+          updateOverallProgress();
+          loadLastRead();
+        });
+        print("Dashboard refreshed with cloud data!");
+      }
+    });
   }
 
   @override
@@ -181,6 +198,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         statusBarColor: Colors.transparent,
       ),
       child:Scaffold(
+
+        drawer: MainDrawer(),
         backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         endDrawer: const MainDrawer(),
         body: SafeArea(
@@ -192,63 +211,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20,),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: DatabaseService().getPersonalData,
-                  builder: (context, snapshot) {
-                    String displayName = "Engineer";
-                    String? imageBase64;
-
-                    if (snapshot.hasData && snapshot.data!.exists) {
-                      var userData = snapshot.data!.data() as Map<String, dynamic>;
-                      displayName = userData['name'] ?? "Engineer";
-                      imageBase64 = userData['image'];
-                    }
-
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Hello, $displayName!",
-                                  style: TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark ? Colors.white : Colors.blueGrey.shade900,
-                                  ),
-                                ),
+                // ডাটাবেস ছাড়া সরাসরি অফলাইন হেডার উইজেট
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Hello, Network Engineer!", // নির্দিষ্ট নামের বদলে প্রফেশনাল টাইটেল
+                              style: TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : Colors.blueGrey.shade900,
                               ),
-                              const Text(
-                                "Track your CCNA journey",
-                                style: TextStyle(fontSize: 11.5, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Builder(
-                          builder: (context) => GestureDetector(
-                            onTap: () => Scaffold.of(context).openEndDrawer(),
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.blueAccent,
-                              backgroundImage: (imageBase64 != null && imageBase64.isNotEmpty)
-                                  ? MemoryImage(base64Decode(imageBase64.split(',').last))
-                                  : null,
-                              child: (imageBase64 == null || imageBase64.isEmpty)
-                                  ? const Icon(Icons.person, color: Colors.white, size: 20)
-                                  : null,
                             ),
                           ),
-                        )
-                      ],
-                    );
-                  },
+                          const Text(
+                            "Track your CCNA journey offline", // অফলাইন মেসেজ
+                            style: TextStyle(fontSize: 11.5, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    // প্রোফাইল আইকন: যা ক্লিক করলে ড্রয়ার ওপেন হবে
+                    Builder(
+                      builder: (context) => GestureDetector(
+                        onTap: () => Scaffold.of(context).openDrawer(), // ওপেন ড্রয়ার
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.blueAccent.withOpacity(0.5),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.blueAccent,
+                            // ড্রয়ার ওপেন করার জন্য IconButton
+                            child: IconButton(
+                              onPressed: () {
+                                // এই কোডটি বাম পাশের ড্রয়ার ওপেন করবে
+                                Scaffold.of(context).openEndDrawer();                              },
+                              icon: const Icon(
+                                Icons.terminal_rounded, // আপনার পছন্দমতো টার্মিনাল আইকন
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 const SizedBox(height: 15),
                 InkWell(

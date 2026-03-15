@@ -90,6 +90,23 @@ class UnlockService {
     return "m$lastUnlocked";
   }
 
+  static Future<List<String>> getPassedModulesList() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> passedList = [];
+
+    // আমরা ৩২টি মডিউল চেক করছি (আপনার যতগুলো আছে সেই অনুযায়ী সংখ্যা দিন)
+    for (int i = 1; i <= 32; i++) {
+      String moduleId = "m$i";
+      // আপনার আগের লজিক অনুযায়ী কী (key) টা ঠিক আছে কি না দেখুন
+      bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}$moduleId') ?? false;
+
+      if (isUnlocked) {
+        passedList.add(moduleId);
+      }
+    }
+    return passedList;
+  }
+
   static Future<int> getPassedModulesCount() async {
     final prefs = await SharedPreferences.getInstance();
     int passedCount = 0;
@@ -108,4 +125,14 @@ class UnlockService {
     }
     return passedCount;
   }
+  // ক্লাউড থেকে আসা ডাটা SharedPreferences এ সেভ করার জন্য
+  static Future<void> saveToLocalJson(List<String> modules) async {
+    final prefs = await SharedPreferences.getInstance();
+    for (String moduleId in modules) {
+      // ক্লাউড থেকে আসা প্রতিটি মডিউল আইডিকে true মার্ক করে দেওয়া হচ্ছে
+      await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
+    }
+  }
+
+
 }

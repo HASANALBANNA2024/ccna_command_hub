@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../services/flashcard_service.dart';
 import '../services/unlock_service.dart';
+import 'package:ccna_command_hub/services/cloud_sync_service.dart';
 
 class FlashcardGameScreen extends StatefulWidget {
   const FlashcardGameScreen({super.key});
@@ -362,8 +363,18 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     padding: const EdgeInsets.symmetric(vertical: 15)
                 ),
-                onPressed: () => Navigator.pop(context),
-                child: const Text("CONTINUE", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                onPressed: () async{
+                  await UnlockService.unlockModule(_currentLevelId);
+                  await CloudSyncService().syncLocalToCloud();
+
+                  // ২. অ্যাকশন: স্ক্রিন বন্ধ করা
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text("CONTINUE",
+                    style: TextStyle(color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1)),
               ),
             )
           ],
