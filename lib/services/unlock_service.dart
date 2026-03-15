@@ -1,27 +1,23 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UnlockService {
-  // ১. ইউজার প্রিফিক্স
-  static String get _userPrefix {
-    final User? user = FirebaseAuth.instance.currentUser;
-    return user != null ? "${user.uid}_" : "guest_";
-  }
+  // ১. ফিক্সড ইউজার আইডি (যেহেতু এখন অফলাইন, তাই Firebase এর দরকার নেই)
+  static const String _userPrefix = "guest_user_";
 
   // কী (Keys)
   static const String _subKey = "unlocked_sub_";
   static const String _modKey = "unlocked_mod_";
   static const String _quizKey = "quiz_passed_";
 
-  // ২. সাব-মডিউল আনলক কিনা চেক করা (আইকন এবং এক্সেস এর জন্য)
+  // ২. সাব-মডিউল আনলক কিনা চেক করা
   static Future<bool> isSubUnlocked(String subId) async {
-    // প্রথম সাব-মডিউল সবসময় আনলক থাকবে
-    if (subId.endsWith('_s1')) return true;
+    // প্রথম সাব-মডিউল সবসময় আনলক থাকবে (যেমন: m1_s1)
+    if (subId.contains('_s1')) return true;
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
   }
 
-  // ৩. সাব-মডিউল পড়া শেষ হলে মার্ক করা
+  // ৩. সাব-মডিউল পড়া শেষ হলে মার্ক করা
   static Future<void> markSubAsRead(String subId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('${_userPrefix}${_subKey}$subId', true);
@@ -40,99 +36,54 @@ class UnlockService {
     await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
   }
 
-  // ৬. কুইজ পাস করলে মার্ক করা
+  // ৬. কুইজ আনলক করার লজিক (সব সাব-মডিউল পড়া হয়েছে কি না)
+  static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // লুপ চালিয়ে চেক করা হচ্ছে সব সাব-মডিউল পড়া হয়েছে কি না
+    for (var sub in subModules) {
+      String subId = sub['id'].toString();
+      bool isRead = prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
+
+      // যদি কোনো একটি পড়া না হয়, তবে কুইজ লক থাকবে
+      if (!isRead) return false;
+    }
+    return true; // সব পড়া শেষ হলে কুইজ আনলক
+  }
+
+  // ৭. কুইজ পাস করলে মার্ক করা
   static Future<void> markQuizAsPassed(String moduleId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('${_userPrefix}${_quizKey}$moduleId', true);
   }
 
-  // ৭. নির্দিষ্ট কুইজ পাস হয়েছে কি না চেক
+  // ৮. কুইজ পাস হয়েছে কি না চেক
   static Future<bool> isQuizPassed(String moduleId) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('${_userPrefix}${_quizKey}$moduleId') ?? false;
   }
 
-  // ৮. ড্যাশবোর্ডের জন্য কুইজ পাসের মোট সংখ্যা
-  static Future<int> getPassedQuizCount() async {
+  // ৯. পাস করা মডিউলের সংখ্যা (ড্যাশবোর্ড প্রগ্রেসের জন্য)
+  static Future<int> getPassedModulesCount() async {
     final prefs = await SharedPreferences.getInstance();
-    int totalPassed = 0;
-    for (int i = 1; i <= 32; i++) {
-      bool isPassed = prefs.getBool('${_userPrefix}${_quizKey}m$i') ?? false;
-      if (isPassed) totalPassed++;
-    }
-    return totalPassed;
-  }
-
-  // ৯. কুইজ দেওয়ার আগে সব পড়া হয়েছে কি না চেক (আপনার বর্তমান সমস্যা সমাধান করবে)
-  static Future<bool> canTakeQuiz(String moduleId, List<dynamic> subModules) async {
-    final prefs = await SharedPreferences.getInstance();
-    // গুরুত্বপূর্ণ: আপনি markSubAsRead এ যে Key ব্যবহার করেছেন, এখানেও তাই হতে হবে
-    for (var sub in subModules) {
-      String subId = sub['id'].toString();
-      bool isRead = prefs.getBool('${_userPrefix}${_subKey}$subId') ?? false;
-      if (!isRead) return false;
-    }
-    return true;
-  }
-
-  // ১০. সর্বশেষ আনলক হওয়া মডিউল আইডি বের করা
-  static Future<String> getLastUnlockedModuleId() async {
-    final prefs = await SharedPreferences.getInstance();
-    int lastUnlocked = 1;
+    int passedCount = 0;
     for (int i = 1; i <= 32; i++) {
       bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}m$i') ?? false;
       if (isUnlocked) {
-        lastUnlocked = i;
+        passedCount = i;
       } else {
         break;
       }
     }
-    return "m$lastUnlocked";
-  }
-
-  static Future<List<String>> getPassedModulesList() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> passedList = [];
-
-    // আমরা ৩২টি মডিউল চেক করছি (আপনার যতগুলো আছে সেই অনুযায়ী সংখ্যা দিন)
-    for (int i = 1; i <= 32; i++) {
-      String moduleId = "m$i";
-      // আপনার আগের লজিক অনুযায়ী কী (key) টা ঠিক আছে কি না দেখুন
-      bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}$moduleId') ?? false;
-
-      if (isUnlocked) {
-        passedList.add(moduleId);
-      }
-    }
-    return passedList;
-  }
-
-  static Future<int> getPassedModulesCount() async {
-    final prefs = await SharedPreferences.getInstance();
-    int passedCount = 0;
-
-    // আপনার লজিক অনুযায়ী ৩২টি মডিউল লুপ চালিয়ে চেক করা হচ্ছে
-    for (int i = 1; i <= 32; i++) {
-      // এখানে আপনার প্রিফিক্স এবং কী (Key) ঠিক থাকলে এটি কাজ করবে
-      // আমরা ধরে নিচ্ছি পাস করা মডিউলগুলো true হিসেবে সেভ আছে
-      bool isUnlocked = prefs.getBool('${_userPrefix}${_modKey}m$i') ?? false;
-
-      if (isUnlocked) {
-        passedCount = i;
-      } else {
-        break; // যেখানে false পাবে সেখানেই লুপ থেমে যাবে
-      }
-    }
     return passedCount;
   }
-  // ক্লাউড থেকে আসা ডাটা SharedPreferences এ সেভ করার জন্য
-  static Future<void> saveToLocalJson(List<String> modules) async {
+  static Future<String> getLastUnlockedModuleId() async {
     final prefs = await SharedPreferences.getInstance();
-    for (String moduleId in modules) {
-      // ক্লাউড থেকে আসা প্রতিটি মডিউল আইডিকে true মার্ক করে দেওয়া হচ্ছে
-      await prefs.setBool('${_userPrefix}${_modKey}$moduleId', true);
+    int lastUnlocked = 1;
+    for (int i = 1; i <= 32; i++) {
+      bool isUnlocked = prefs.getBool('guest_user_unlocked_mod_m$i') ?? false;
+      if (isUnlocked) lastUnlocked = i; else break;
     }
+    return "m$lastUnlocked";
   }
-
-
 }

@@ -2,7 +2,6 @@ import 'package:ccna_command_hub/screens/details_screen.dart';
 import 'package:ccna_command_hub/screens/quiz_screen.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
 import 'package:ccna_command_hub/widgets/overlay_widgets.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,14 +26,14 @@ class SubModuleScreen extends StatefulWidget {
 
 class _SubModuleScreenState extends State<SubModuleScreen> {
 
-  // ডাইনামিক ইউজার প্রিফিক্স
-  String get _userPrefix => FirebaseAuth.instance.currentUser?.uid ?? "guest";
+  // ১. ডাইনামিক ইউজার প্রিফিক্স (ফায়ারবেস ছাড়া অফলাইন ফিক্সড আইডি)
+  String get _userPrefix => "guest_user_";
 
   @override
   void initState() {
     super.initState();
 
-    // ১. Continue Learning লজিক: সরাসরি DetailsScreen-এ নিয়ে যাওয়া
+    // ১. Continue Learning লজিক
     if (widget.initialIndex != null && widget.initialIndex! >= 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (widget.initialIndex! < widget.subModules.length) {
@@ -45,13 +44,12 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
             MaterialPageRoute(
               builder: (context) => DetailsScreen(
                 moduleId: widget.moduleId,
-                subId: selectedSubModule['id'],
+                subId: selectedSubModule['id'].toString(), // safe string conversion
                 title: selectedSubModule['title'],
-                initialIndex: widget.initialIndex,
+                initialIndex: widget.initialIndex!,
               ),
             ),
           ).then((_) {
-            // ফিরে আসার পর প্রগ্রেস সেভ করা
             _saveLastRead(widget.initialIndex!);
             refresh();
           });
@@ -60,21 +58,27 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
     }
   }
 
-  void refresh() => setState(() {});
+  void refresh() {
+    if (mounted) setState(() {});
+  }
 
   // ২. প্রগ্রেস সেভ করার মেথড (UID-সহ)
   Future<void> _saveLastRead(int currentIndex) async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
 
-    // ইউজার ভিত্তিক কী (Key) ব্যবহার করা হচ্ছে
-    await prefs.setString('${_userPrefix}_last_mod_id', widget.moduleId);
-    await prefs.setString('${_userPrefix}_last_mod_name', widget.moduleName);
-    await prefs.setInt('${_userPrefix}_last_topic_index', currentIndex);
+      // ইউজার ভিত্তিক কী (Key) ব্যবহার করা হচ্ছে
+      await prefs.setString('${_userPrefix}_last_mod_id', widget.moduleId);
+      await prefs.setString('${_userPrefix}_last_mod_name', widget.moduleName);
+      await prefs.setInt('${_userPrefix}_last_topic_index', currentIndex);
 
-    String subModulesJson = json.encode(widget.subModules);
-    await prefs.setString('${_userPrefix}_last_sub_modules', subModulesJson);
+      String subModulesJson = json.encode(widget.subModules);
+      await prefs.setString('${_userPrefix}_last_sub_modules', subModulesJson);
 
-    debugPrint("Progress Saved: Module ${widget.moduleId}, Index $currentIndex for User: $_userPrefix");
+      debugPrint("Progress Saved: Module ${widget.moduleId}, Index $currentIndex");
+    } catch (e) {
+      debugPrint("Error saving progress: $e");
+    }
   }
 
   @override
@@ -96,7 +100,7 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
           final sub = widget.subModules[index];
 
           return FutureBuilder<bool>(
-            future: UnlockService.isSubUnlocked(sub['id']),
+            future: UnlockService.isSubUnlocked(sub['id'].toString()),
             builder: (context, snapshot) {
               bool isUnlocked = snapshot.data ?? false;
 
@@ -132,36 +136,58 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
                   trailing: isUnlocked
                       ? const Icon(Icons.arrow_forward_ios_rounded, size: 18, color: Colors.blueAccent)
                       : const Icon(Icons.lock, size: 16, color: Colors.grey),
+
                   onTap: () async {
-                    // মডিউল লকড কিনা চেক
-                    bool modUnlocked = await UnlockService.isModuleUnlocked(widget.moduleId);
-                    if (!modUnlocked) {
-                      _handleLockedModuleAction();
-                      return;
-                    }
+                    final String subId = sub['id'].toString();
+                    final String currentModuleId = widget.moduleId;
+                    final String subTitle = sub['title'].toString();
 
-                    // সিকোয়েনশিয়াল এক্সেস চেক
-                    bool canAccess = true;
-                    if (index > 0) {
-                      canAccess = await UnlockService.isSubUnlocked(widget.subModules[index - 1]['id']);
-                    }
+                    try {
+                      // ২. মডিউল লকড কিনা চেক
+                      bool modUnlocked = await UnlockService.isModuleUnlocked(currentModuleId);
+                      if (!modUnlocked) {
+                        if (mounted) _handleLockedModuleAction();
+                        return;
+                      }
 
-                    if (canAccess) {
-                      // ৩. পড়ার সময় প্রগ্রেস সেভ করা
-                      await UnlockService.markSubAsRead(sub['id']);
-                      await _saveLastRead(index);
+                      // ৩. সিকোয়েনশিয়াল এক্সেস চেক
+                      bool canAccess = true;
+                      if (index > 0) {
+                        String prevSubId = widget.subModules[index - 1]['id'].toString();
+                        canAccess = await UnlockService.isSubUnlocked(prevSubId);
+                      }
 
-                      if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DetailsScreen(
-                            moduleId: widget.moduleId,
-                            subId: sub['id'],
-                            title: sub['title'],
-                            initialIndex: index,
-                          )
-                      )).then((_) => refresh());
-                    } else {
-                      _showCustomLockedDialog(context, "আগে '${widget.subModules[index - 1]['title']}' পড়ে শেষ করো।");
+                      if (canAccess) {
+                        // ৪. প্রগ্রেস সেভ করা
+                        await UnlockService.markSubAsRead(subId);
+                        await _saveLastRead(index);
+
+                        if (!mounted) return;
+
+                        // ৬. নেভিগেশন
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsScreen(
+                              moduleId: currentModuleId,
+                              subId: subId,
+                              title: subTitle,
+                              initialIndex: index,
+                            ),
+                          ),
+                        );
+
+                        if (mounted) refresh();
+                      } else {
+                        if (mounted) {
+                          _showCustomLockedDialog(
+                              context,
+                              "আগে '${widget.subModules[index - 1]['title']}' পড়ে শেষ করো।"
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      debugPrint("Navigation Error handled: $e");
                     }
                   },
                 ),
@@ -185,12 +211,11 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
               return;
             }
 
-            // এখানে moduleId এবং subModules দুটোই পাঠাতে হবে
             bool allRead = await UnlockService.canTakeQuiz(widget.moduleId, widget.subModules);
             if (allRead) {
               Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: widget.moduleId))).then((_) => refresh());
             } else {
-              _showCustomLockedDialog(context, "সবগুলো সাব-মডিউল না পড়ে কুইজ দেওয়া যাবে না!");
+              _showCustomLockedDialog(context, "সবগুলো সাব-মডিউল না পড়ে কুইজ দেওয়া যাবে না!");
             }
           },
           icon: const Icon(Icons.quiz_rounded, color: Colors.white),
@@ -205,9 +230,12 @@ class _SubModuleScreenState extends State<SubModuleScreen> {
       context: context,
       onQuiz: () async {
         Navigator.pop(context);
-        String lastModuleToExam = await UnlockService.getLastUnlockedModuleId();
+        String lastModuleToExam = widget.moduleId;
         if(!mounted) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => QuizScreen(moduleId: lastModuleToExam)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => QuizScreen(moduleId: lastModuleToExam))
+        ).then((_) => refresh());
       },
       onAd: () async {
         await UnlockService.unlockModule(widget.moduleId);

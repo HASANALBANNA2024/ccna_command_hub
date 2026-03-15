@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../services/flashcard_service.dart';
 import '../services/unlock_service.dart';
-import 'package:ccna_command_hub/services/cloud_sync_service.dart';
+// import 'package:ccna_command_hub/services/cloud_sync_service.dart'; // এটি আর লাগবে না
 
 class FlashcardGameScreen extends StatefulWidget {
   const FlashcardGameScreen({super.key});
@@ -43,6 +43,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   Future<void> _setupGame() async {
+    // অফলাইন আনলক সার্ভিস থেকে ডাটা আনা
     int passedCount = await UnlockService.getPassedModulesCount();
     int nextLevel = passedCount + 1;
     if (nextLevel > 32) nextLevel = 32;
@@ -59,8 +60,11 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     _timer?.cancel();
     _timeLeft = 15;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timeLeft > 0) setState(() => _timeLeft--);
-      else _handleAnswer("");
+      if (_timeLeft > 0) {
+        if (mounted) setState(() => _timeLeft--);
+      } else {
+        _handleAnswer(""); // সময় শেষ হলে অটো ভুল উত্তর সাবমিট
+      }
     });
   }
 
@@ -72,7 +76,10 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
       _selectedOption = selected;
     });
     _controller.forward();
+
+    // কার্ড ফ্লিপ হওয়ার পর ৩ সেকেন্ড অপেক্ষা করে পরবর্তী কোয়েশ্চেন
     Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
       if (_currentIndex < _questions.length - 1) {
         _controller.reverse();
         setState(() {
@@ -97,9 +104,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    // লাইট মোডে টেক্সট আরও ডার্ক ও ক্লিয়ার করার জন্য Color পরিবর্তন
-    final Color textColor = isDark ? Colors.white : Colors.blueGrey.shade900;
-    final Color subTextColor = isDark ? Colors.white70 : Colors.blueGrey.shade700;
+    final Color textColor = isDark ? Colors.white : const Color(0xFF1E293B);
 
     if (_isLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
@@ -115,7 +120,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
                 _buildTopBar(isDark, textColor),
                 _buildQuestionHeader(isDark),
                 const Spacer(),
-                _buildFlipCard(card, isDark, textColor, subTextColor),
+                _buildFlipCard(card, isDark, textColor),
                 const Spacer(),
                 _buildOptionsGrid(card, isDark, textColor),
                 const SizedBox(height: 20),
@@ -134,19 +139,19 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? [const Color(0xFF020617), const Color(0xFF0F172A), const Color(0xFF1E293B)]
-              : [const Color(0xFFF0F9FF), const Color(0xFFE0F2FE), const Color(0xFFF8FAFC)],
+              ? [const Color(0xFF020617), const Color(0xFF0F172A)]
+              : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
         ),
       ),
       child: Stack(
         children: [
           Positioned(
             top: -50, right: -50,
-            child: _rippleCircle(250, isDark ? Colors.blue.withOpacity(0.05) : Colors.blue.withOpacity(0.1)),
+            child: _rippleCircle(250, isDark ? Colors.blue.withOpacity(0.05) : Colors.blueAccent.withOpacity(0.08)),
           ),
           Positioned(
             bottom: 100, left: -30,
-            child: _rippleCircle(180, isDark ? Colors.cyan.withOpacity(0.05) : Colors.cyan.withOpacity(0.08)),
+            child: _rippleCircle(180, isDark ? Colors.cyan.withOpacity(0.05) : Colors.cyanAccent.withOpacity(0.05)),
           ),
         ],
       ),
@@ -154,10 +159,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   Widget _rippleCircle(double size, Color color) {
-    return Container(
-      width: size, height: size,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-    );
+    return Container(width: size, height: size, decoration: BoxDecoration(shape: BoxShape.circle, color: color));
   }
 
   Widget _buildTopBar(bool isDark, Color textColor) {
@@ -168,7 +170,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
         children: [
           IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_ios_new, color: textColor, size: 20)),
           Text("LEVEL ${_currentLevelId.toUpperCase()}",
-              style: TextStyle(color: textColor, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.w900, letterSpacing: 1.5, fontSize: 16)),
           _timerWidget(isDark),
         ],
       ),
@@ -176,14 +178,21 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   Widget _timerWidget(bool isDark) {
+    bool isUrgent = _timeLeft < 5;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: _timeLeft < 5 ? Colors.red.withOpacity(0.1) : (isDark ? Colors.white10 : Colors.blue.withOpacity(0.05)),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _timeLeft < 5 ? Colors.redAccent : Colors.blueAccent.withOpacity(0.3)),
+        color: isUrgent ? Colors.red.withOpacity(0.1) : (isDark ? Colors.white10 : Colors.blue.withOpacity(0.1)),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: isUrgent ? Colors.redAccent : Colors.blueAccent.withOpacity(0.3)),
       ),
-      child: Text("$_timeLeft s", style: TextStyle(color: _timeLeft < 5 ? Colors.redAccent : Colors.blueAccent, fontWeight: FontWeight.bold)),
+      child: Row(
+        children: [
+          Icon(Icons.timer_outlined, size: 16, color: isUrgent ? Colors.redAccent : Colors.blueAccent),
+          const SizedBox(width: 5),
+          Text("$_timeLeft s", style: TextStyle(color: isUrgent ? Colors.redAccent : Colors.blueAccent, fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 
@@ -197,7 +206,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
             children: [
               Text("Question ${_currentIndex + 1}/${_questions.length}",
                   style: TextStyle(color: isDark ? Colors.white60 : Colors.blueGrey, fontSize: 13, fontWeight: FontWeight.bold)),
-              Icon(Icons.auto_awesome, color: Colors.blueAccent.withOpacity(0.4), size: 16),
+              Icon(Icons.bolt_rounded, color: Colors.amber.withOpacity(0.7), size: 18),
             ],
           ),
           const SizedBox(height: 10),
@@ -205,9 +214,9 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: (_currentIndex + 1) / _questions.length,
-              minHeight: 6,
+              minHeight: 8,
               color: Colors.blueAccent,
-              backgroundColor: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
+              backgroundColor: isDark ? Colors.white10 : Colors.blueAccent.withOpacity(0.1),
             ),
           ),
         ],
@@ -215,7 +224,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     );
   }
 
-  Widget _buildFlipCard(Flashcard card, bool isDark, Color textColor, Color subTextColor) {
+  Widget _buildFlipCard(Flashcard card, bool isDark, Color textColor) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -224,13 +233,13 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
           transform: Matrix4.identity()..setEntry(3, 2, 0.001)..rotateY(angle)..scale(_scaleAnimation.value),
           alignment: Alignment.center,
           child: angle < pi / 2
-              ? _glassCard(card.question, "QUESTION", Colors.blueAccent, isDark, textColor, subTextColor)
+              ? _glassCard(card.question, "QUESTION", Colors.blueAccent, isDark, textColor)
               : Stack(
             children: [
               Transform(
                 transform: Matrix4.identity()..rotateY(pi),
                 alignment: Alignment.center,
-                child: _glassCard("${card.answer}\n\n${card.explanation}", "ANSWER", Colors.teal, isDark, textColor, subTextColor),
+                child: _glassCard("${card.answer}\n\n${card.explanation}", "ANSWER", Colors.teal, isDark, textColor),
               ),
               Positioned(
                 top: 25, right: 55,
@@ -253,40 +262,39 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
         color: isCorrect ? Colors.green.shade600 : Colors.red.shade600,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 8)],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8)],
       ),
       child: Text(isCorrect ? "CORRECT" : "WRONG",
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 11, letterSpacing: 1)),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 11)),
     );
   }
 
-  Widget _glassCard(String text, String label, Color accent, bool isDark, Color textColor, Color subTextColor) {
+  Widget _glassCard(String text, String label, Color accent, bool isDark, Color textColor) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 35),
-      height: 300, width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      height: 320, width: double.infinity,
       decoration: BoxDecoration(
-        // লাইট মোডে অপাসিটি কিছুটা বাড়ানো হয়েছে যেন টেক্সট ভেসে ওঠে
-        color: isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.75),
+        color: isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.85),
         borderRadius: BorderRadius.circular(35),
         border: Border.all(color: isDark ? Colors.white12 : Colors.white),
         boxShadow: [
-          BoxShadow(color: accent.withOpacity(isDark ? 0.1 : 0.05), blurRadius: 25, spreadRadius: 2)
+          BoxShadow(color: accent.withOpacity(0.1), blurRadius: 30, spreadRadius: 2)
         ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(35),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Padding(
-            padding: const EdgeInsets.all(25),
+            padding: const EdgeInsets.all(30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(label, style: TextStyle(color: accent, fontSize: 10, letterSpacing: 3, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 20),
+                Text(label, style: TextStyle(color: accent, fontSize: 12, letterSpacing: 4, fontWeight: FontWeight.w900)),
+                const SizedBox(height: 25),
                 Text(text, textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 19, color: textColor, fontWeight: FontWeight.bold, height: 1.4)),
+                    style: TextStyle(fontSize: 20, color: textColor, fontWeight: FontWeight.bold, height: 1.5)),
               ],
             ),
           ),
@@ -303,33 +311,31 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
           bool isCorrect = option == card.answer;
           bool isSelected = option == _selectedOption;
 
-          Color optionBg = isDark ? Colors.white.withOpacity(0.06) : Colors.white.withOpacity(0.85);
-          Color borderCol = isDark ? Colors.white10 : Colors.blueGrey.withOpacity(0.1);
-
+          Color borderCol = isDark ? Colors.white10 : Colors.blueAccent.withOpacity(0.1);
           if (_isAnswered) {
-            if (isCorrect) borderCol = Colors.green.shade400;
-            else if (isSelected) borderCol = Colors.red.shade400;
+            if (isCorrect) borderCol = Colors.green.shade500;
+            else if (isSelected) borderCol = Colors.red.shade500;
           }
 
           return GestureDetector(
             onTap: () => _handleAnswer(option),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 22),
               decoration: BoxDecoration(
-                  color: optionBg,
-                  borderRadius: BorderRadius.circular(20),
+                  color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
+                  borderRadius: BorderRadius.circular(22),
                   border: Border.all(color: borderCol, width: 2),
                   boxShadow: [
-                    if(!isDark) BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))
+                    if(!isDark) BoxShadow(color: Colors.blueAccent.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 8))
                   ]
               ),
               child: Row(
                 children: [
-                  Expanded(child: Text(option, style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 15))),
-                  if (_isAnswered && isCorrect) Icon(Icons.check_circle_rounded, color: Colors.green.shade400, size: 22),
-                  if (_isAnswered && isSelected && !isCorrect) Icon(Icons.cancel_rounded, color: Colors.red.shade400, size: 22),
+                  Expanded(child: Text(option, style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 16))),
+                  if (_isAnswered && isCorrect) Icon(Icons.check_circle_rounded, color: Colors.green.shade500, size: 24),
+                  if (_isAnswered && isSelected && !isCorrect) Icon(Icons.cancel_rounded, color: Colors.red.shade500, size: 24),
                 ],
               ),
             ),
@@ -340,46 +346,50 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   void _showCompleteDialog() {
-    showDialog(context: context, barrierDismissible: false, builder: (c) => BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white.withOpacity(0.9),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.emoji_events_rounded, color: Colors.amber, size: 70),
-            const SizedBox(height: 15),
-            Text("LEVEL COMPLETED", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.blueGrey.shade900)),
-            const SizedBox(height: 8),
-            const Text("You've mastered this module!", style: TextStyle(color: Colors.blueGrey)),
-            const SizedBox(height: 25),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    padding: const EdgeInsets.symmetric(vertical: 15)
-                ),
-                onPressed: () async{
-                  await UnlockService.unlockModule(_currentLevelId);
-                  await CloudSyncService().syncLocalToCloud();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (c) => BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: AlertDialog(
+            backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.stars_rounded, color: Colors.amber, size: 80),
+                const SizedBox(height: 15),
+                const Text("MODULE COMPLETED!", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+                const SizedBox(height: 10),
+                const Text("You've successfully mastered this level and earned your progress.", textAlign: TextAlign.center, style: TextStyle(color: Colors.blueGrey)),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        elevation: 10,
+                        shadowColor: Colors.blueAccent.withOpacity(0.3),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                        padding: const EdgeInsets.symmetric(vertical: 18)
+                    ),
+                    onPressed: () async {
+                      // ১. লোকাল মেমরিতে প্রগ্রেস সেভ করা
+                      await UnlockService.unlockModule(_currentLevelId);
 
-                  // ২. অ্যাকশন: স্ক্রিন বন্ধ করা
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text("CONTINUE",
-                    style: TextStyle(color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1)),
-              ),
-            )
-          ],
-        ),
-      ),
-    ));
+                      // ২. CloudSyncService এর লাইনটি ডিলিট করা হয়েছে কারণ এখন এটি অফলাইন
+
+                      if (!mounted) return;
+                      Navigator.pop(context); // Dialog close
+                      Navigator.pop(context); // Screen close
+                    },
+                    child: const Text("FINISH",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }

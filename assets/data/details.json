@@ -157,6 +157,59 @@
       "example": "যেমন ধরো একটি organization এ বিভিন্ন vendor এর networking devices ব্যবহার হচ্ছে। OSI model অনুযায়ী, data transmission ঠিকমত হয় কারণ প্রতিটি layer নির্দিষ্ট কাজ করে এবং devices layer-wise communication অনুসরণ করে।",
       "image": "osi_model_purpose.png"
     },
+    "m2s3": {
+      "title": "OSI Model Layer Overview",
+      "theory": "OSI Model মোট ৭টি layer নিয়ে গঠিত। প্রতিটি layer network communication এর নির্দিষ্ট একটি কাজ করে। নিচের layer গুলো physical data transmission এর সাথে সম্পর্কিত এবং উপরের layer গুলো application ও user interaction পরিচালনা করে।",
+
+      "layers": [
+        {
+          "layer": "Application Layer",
+          "number": 7,
+          "description": "User এবং network এর মধ্যে সরাসরি interaction তৈরি করে। যেমন web browser, email client ইত্যাদি এই layer ব্যবহার করে।",
+          "examples": ["HTTP", "HTTPS", "FTP", "SMTP"]
+        },
+        {
+          "layer": "Presentation Layer",
+          "number": 6,
+          "description": "Data format, encryption, compression ইত্যাদি পরিচালনা করে যাতে data সঠিকভাবে receive করা যায়।",
+          "examples": ["SSL", "TLS", "JPEG", "MPEG"]
+        },
+        {
+          "layer": "Session Layer",
+          "number": 5,
+          "description": "দুইটি device এর মধ্যে session establish, manage এবং terminate করে।",
+          "examples": ["NetBIOS", "RPC"]
+        },
+        {
+          "layer": "Transport Layer",
+          "number": 4,
+          "description": "Reliable data delivery নিশ্চিত করে এবং data segmentation ও flow control পরিচালনা করে।",
+          "examples": ["TCP", "UDP"]
+        },
+        {
+          "layer": "Network Layer",
+          "number": 3,
+          "description": "Logical addressing এবং routing এর মাধ্যমে data এক network থেকে অন্য network এ পাঠায়।",
+          "examples": ["IP", "ICMP", "IPsec"]
+        },
+        {
+          "layer": "Data Link Layer",
+          "number": 2,
+          "description": "Physical network এর মধ্যে frame transmission এবং MAC addressing পরিচালনা করে।",
+          "examples": ["Ethernet", "PPP", "MAC"]
+        },
+        {
+          "layer": "Physical Layer",
+          "number": 1,
+          "description": "Network cable, electrical signals, bits transmission ইত্যাদি পরিচালনা করে।",
+          "examples": ["UTP Cable", "Fiber Optic", "Hub"]
+        }
+      ],
+
+      "example": "যখন একজন user browser এ website open করে, তখন Application layer থেকে data শুরু হয় এবং ধাপে ধাপে নিচের layer গুলো পার হয়ে Physical layer দিয়ে network এ transmit হয়।",
+
+      "image": "osi_model_layers_overview.png"
+    },
     "m2s4": {
       "theory": "OSI Model এ data transmission শুরু হয় user application থেকে এবং পৌঁছায় receiving device পর্যন্ত। এটি layered approach অনুসরণ করে, যেখানে প্রতিটি layer নির্দিষ্ট কাজ সম্পন্ন করে।\n\nপ্রক্রিয়া overview:\n1. User application (যেমন email বা browser) data generate করে।\n2. Data গুলো encapsulate হয় বিভিন্ন layer এ, প্রতিটি layer তার নিজস্ব header/metadata যোগ করে।\n3. Physical transmission medium (cable বা wireless) দিয়ে data sender থেকে network এ প্রবেশ করে।\n4. Network devices (switches, routers) layered approach অনুযায়ী data forward করে।\n5. Receiving end এ, data reverse process হয়। প্রতিটি layer তার own header/metadata remove করে এবং final data application layer এ পৌঁছে।\n\nএই overview দেখায় যে, কিভাবে data smooth, reliable এবং structured ভাবে network এ প্রবাহিত হয়, এবং network communication এর A to Z concept বুঝতে সাহায্য করে।",
       "example": "ধরুন তুমি একটি email পাঠাচ্ছো। তোমার computer application layer থেকে data তৈরি করে। এরপর transport layer segment তৈরি করে, network layer packet তৈরি করে, এবং data link layer frame এ wrap হয়। Physical layer data signal হিসেবে পাঠায়। Receiving end এ, switch/routing devices data forward করে, receiver OSI layer অনুযায়ী reverse process করে email finally application layer এ আসে।",

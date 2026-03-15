@@ -11,8 +11,8 @@ import 'package:ccna_command_hub/models/module_model.dart';
 import 'package:ccna_command_hub/services/bookmark_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ccna_command_hub/services/unlock_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ccna_command_hub/services/cloud_sync_service.dart';
+// import 'package:firebase_auth/firebase_auth.dart'; // আর দরকার নেই
+// import 'package:ccna_command_hub/services/cloud_sync_service.dart'; // আর দরকার নেই
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -36,14 +36,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int lastTopicIndex = -1;
   List<dynamic> lastSubModules = [];
 
-  // --- নতুন মেথড: বর্তমান ইউজারের ইউনিক প্রিফিক্স তৈরি করা ---
-  String get _userPrefix => FirebaseAuth.instance.currentUser?.uid ?? "guest";
+  // অফলাইন প্রিফিক্স (Firebase এর বদলে ফিক্সড আইডি)
+  String get _userPrefix => "guest_user_";
 
   Future<void> loadLastRead() async {
     final prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
-        // প্রতিটি Key-এর সাথে ইউজারের UID prefix যোগ করা হয়েছে
         lastReadId = prefs.getString('${_userPrefix}_last_mod_id') ?? "m1";
         lastReadName = prefs.getString('${_userPrefix}_last_mod_name') ?? "Introduction to CCNA";
         lastTopicIndex = prefs.getInt('${_userPrefix}_last_topic_index') ?? -1;
@@ -52,14 +51,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (subJson != null) {
           lastSubModules = json.decode(subJson);
         } else {
-          lastSubModules = []; // নতুন ইউজারের জন্য খালি রাখা
+          lastSubModules = [];
         }
       });
     }
   }
 
   void navigateToLastRead() async {
-    // যদি সাব-মডিউল লিস্ট খালি থাকে তবে ডিফল্ট লোড করা (আপনার আগের লজিক)
     if (lastSubModules.isEmpty) {
       try {
         final String response = await rootBundle.loadString('assets/data/modules.json');
@@ -75,7 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (!mounted) return;
 
-    // নেভিগেশনে 'initialIndex' যুক্ত করা হয়েছে
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -83,52 +80,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
           moduleId: lastReadId,
           moduleName: lastReadName,
           subModules: lastSubModules,
-          initialIndex: lastTopicIndex, // এটি ইউজারকে সঠিক টপিকে নিয়ে যাবে
+          initialIndex: lastTopicIndex,
         ),
       ),
-    ).then((_)
-    {
+    ).then((_) {
       loadLastRead();
       updateOverallProgress();
     });
   }
 
-
   Future<void> updateOverallProgress() async {
     try {
-      // ১. বর্তমানে কোন ইউজার লগইন আছে তার UID নেওয়া
-      final String uid = FirebaseAuth.instance.currentUser?.uid ?? "guest";
-
-      // ২. UnlockService থেকে পাস করা কুইজের সংখ্যা নিয়ে আসা
-      // নিশ্চিত করুন UnlockService.getPassedQuizCount() মেথডটি UID ব্যবহার করে ডাটা আনছে
-      int passed = await UnlockService.getPassedQuizCount();
+      // অফলাইন সার্ভিস থেকে প্রগ্রেস আনা
+      int passed = await UnlockService.getPassedModulesCount();
 
       if (mounted) {
         setState(() {
           passedModulesCount = passed;
-
-          // ৩. প্রগ্রেস ক্যালকুলেশন (পাস করা মডিউল / মোট ৩২টি মডিউল)
-          // আমরা double এ কনভার্ট করে নিচ্ছি যাতে নিখুঁত রেজাল্ট আসে
           double calcProgress = (passed.toDouble() / 32);
-
-          // ৪. পারসেন্টেজ বের করা (যেমন: ০.৫ * ১০০ = ৫০%)
           progressPercentage = calcProgress * 100;
-
-          // ৫. যদি আপনার UI-তে Linear/Circular Progress Indicator থাকে,
-          // তবে সেটিতে overallProgress = calcProgress (০.০ থেকে ১.০) ব্যবহার করবেন।
         });
-
-        debugPrint("Progress Updated for User: $uid | Passed: $passed | Percentage: ${progressPercentage.toStringAsFixed(2)}%");
+        debugPrint("Offline Progress Updated | Passed: $passed");
       }
     } catch (e) {
-      debugPrint("Error updating progress: $e");
+      debugPrint("Error updating overall progress: $e");
     }
   }
 
   Future<void> updateBookmarkCount() async {
-    // BookmarkService অলরেডি UID ভিত্তিক আপডেট করা হয়েছে
     final List<Map<String, dynamic>> bookmarks = await BookmarkService.getAllBookmarks();
-
     if (mounted) {
       setState(() {
         bookmarkCount = bookmarks.length;
@@ -139,29 +119,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    // ক্লাউড সিঙ্ক বাদ দিয়ে সরাসরি অফলাইন লোড
+    _initializeOfflineDashboard();
+  }
 
-    // ১. প্রথমে ফোনের লোকাল ডাটা দিয়ে ড্যাশবোর্ড লোড হবে
-    loadDashboardData();
-    updateBookmarkCount();
-    updateOverallProgress();
-    loadLastRead();
-
-    // ২. ১ সেকেন্ড পর ব্যাকগ্রাউন্ডে ক্লাউড থেকে লেটেস্ট ডাটা চেক করবে
-    Future.delayed(Duration(seconds: 1), () async {
-      print("Checking for cloud updates...");
-
-      await CloudSyncService().syncCloudToLocal();
-
-      // ৩. ক্লাউড থেকে নতুন ডাটা আসলে ড্যাশবোর্ডের ক্যালকুলেশনগুলো আবার আপডেট করতে হবে
-      if (mounted) {
-        setState(() {
-          loadDashboardData();
-          updateOverallProgress();
-          loadLastRead();
-        });
-        print("Dashboard refreshed with cloud data!");
-      }
-    });
+  Future<void> _initializeOfflineDashboard() async {
+    await loadDashboardData();
+    await updateBookmarkCount();
+    await updateOverallProgress();
+    await loadLastRead();
+    print("Offline Dashboard Ready!");
   }
 
   @override
@@ -197,9 +164,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
         statusBarColor: Colors.transparent,
       ),
-      child:Scaffold(
-
-        drawer: MainDrawer(),
+      child: Scaffold(
+        drawer: const MainDrawer(),
         backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         endDrawer: const MainDrawer(),
         body: SafeArea(
@@ -210,8 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20,),
-                // ডাটাবেস ছাড়া সরাসরি অফলাইন হেডার উইজেট
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -223,7 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Hello, Network Engineer!", // নির্দিষ্ট নামের বদলে প্রফেশনাল টাইটেল
+                              "Hello, Network Engineer!",
                               style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.bold,
@@ -232,17 +197,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           const Text(
-                            "Track your CCNA journey offline", // অফলাইন মেসেজ
+                            "Track your CCNA journey offline",
                             style: TextStyle(fontSize: 11.5, color: Colors.grey),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 10),
-                    // প্রোফাইল আইকন: যা ক্লিক করলে ড্রয়ার ওপেন হবে
                     Builder(
                       builder: (context) => GestureDetector(
-                        onTap: () => Scaffold.of(context).openDrawer(), // ওপেন ড্রয়ার
+                        onTap: () => Scaffold.of(context).openEndDrawer(), // ডান পাশের ড্রয়ার
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
@@ -254,16 +218,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor: Colors.blueAccent,
-                            // ড্রয়ার ওপেন করার জন্য IconButton
-                            child: IconButton(
-                              onPressed: () {
-                                // এই কোডটি বাম পাশের ড্রয়ার ওপেন করবে
-                                Scaffold.of(context).openEndDrawer();                              },
-                              icon: const Icon(
-                                Icons.terminal_rounded, // আপনার পছন্দমতো টার্মিনাল আইকন
-                                size: 20,
-                                color: Colors.white,
-                              ),
+                            child: const Icon(
+                              Icons.terminal_rounded,
+                              size: 20,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -321,13 +279,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisSpacing: 12,
                   childAspectRatio: 1.5,
                   children: [
-                    _buildMenuCard(context,"Modules",Icons.menu_book,Colors.indigo,isDark, () {
+                    _buildMenuCard(context, "Modules", Icons.menu_book, Colors.indigo, isDark, () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen())).then((_) {
                         updateBookmarkCount();
                         updateOverallProgress();
                       });
-                    },
-                    ),
+                    }),
                     _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade700, isDark, () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))).then((value) {
                         updateBookmarkCount();
@@ -335,13 +292,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       });
                     }),
                     _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
-
-            _buildMenuCard(context, "Flashcard Game", Icons.bolt, Colors.orange, isDark, () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FlashcardGameScreen()),
-              );
-            }),
+                    _buildMenuCard(context, "Flashcard Game", Icons.bolt, Colors.orange, isDark, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const FlashcardGameScreen()),
+                      ).then((_) {
+                        updateOverallProgress();
+                      });
+                    }),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -359,11 +317,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
         ),
-      ) ,
+      ),
     );
   }
 
-  // --- UI Helper মেথডগুলো অপরিবর্তিত রাখা হয়েছে ---
+  // UI Helpers (অপরিবর্তিত)
   Widget _buildOverallProgress(double percentage, int passedCount, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(12),
