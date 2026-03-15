@@ -16,22 +16,22 @@
         {
           "name": "LAN",
           "desc": "Local Area Network: ছোট এলাকা যেমন অফিস বা বাড়ির মধ্যে ডিভাইস সংযুক্ত করে।",
-          "image": "lan_image.png"
+          "image": "assets/images/lan_image.png"
         },
         {
           "name": "MAN",
           "desc": "Metropolitan Area Network: শহর বা শহরের বৃহৎ এলাকা জুড়ে ডিভাইস সংযুক্ত করে।",
-          "image": "man_image.png"
+          "image": "assets/images/lan_image.png"
         },
         {
           "name": "WAN",
           "desc": "Wide Area Network: দেশ বা মহাদেশ জুড়ে ডিভাইস সংযুক্ত করতে ব্যবহৃত হয়।",
-          "image": "wan_image.png"
+          "image": "assets/images/lan_image.png"
         },
         {
           "name": "PAN",
           "desc": "Personal Area Network: ব্যক্তিগত ডিভাইস যেমন মোবাইল, ল্যাপটপ, ট্যাব সংযুক্ত করে।",
-          "image": "pan_image.png"
+          "image": "assets/images/lan_image.png"
         }
       ]
     },

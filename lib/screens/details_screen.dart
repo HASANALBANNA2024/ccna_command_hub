@@ -34,10 +34,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
     UnlockService.markSubAsRead(widget.subId);
   }
 
+  // --- আপডেট করা loadDetails ফাংশন যা বুকমার্ক ডাটা সাপোর্ট করে ---
   Future<void> loadDetails() async {
     try {
+      // ১. প্রথমে চেক করো বুকমার্কে এই টপিকটি 'full_content' সহ আছে কি না
+      List<Map<String, dynamic>> bookmarks = await BookmarkService.getAllBookmarks();
+
+      // টাইটেল দিয়ে বুকমার্ক খুঁজে বের করা
+      var bookmarkedItem = bookmarks.firstWhere(
+            (item) => item['title'] == widget.title && item.containsKey('full_content'),
+        orElse: () => {},
+      );
+
+      if (bookmarkedItem.isNotEmpty && bookmarkedItem['full_content'] != null) {
+        setState(() {
+          details = Map<String, dynamic>.from(bookmarkedItem['full_content']);
+          isLoading = false;
+        });
+        return; // বুকমার্ক ডাটা পাওয়া গেলে এখান থেকেই ফাংশন শেষ হবে
+      }
+
+      // ২. বুকমার্কে না থাকলে রেগুলার এসেট ফাইল থেকে ডাটা লোড হবে
       final String response = await rootBundle.loadString("assets/data/details.json");
       final Map<String, dynamic> data = json.decode(response);
+
       setState(() {
         details = data[widget.moduleId]?[widget.subId];
         isLoading = false;
@@ -76,17 +96,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  // --- মেইন বডি জেনারেটর ---
   List<Widget> _buildDynamicBody(bool isDark) {
     List<Widget> widgets = [];
     if (details == null) return widgets;
 
-    // ১. টেক্সট এবং লিস্ট কন্টেন্ট (লুপ)
     details!.forEach((key, value) {
       if (key == 'image' || key == 'id' || key == 'title' || value == null || value == "") return;
-
       String sectionTitle = key[0].toUpperCase() + key.substring(1);
-
       if (value is List) {
         widgets.add(_buildDynamicListSection(sectionTitle, value, isDark));
       } else {
@@ -94,7 +110,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       }
     });
 
-    // ২. ইমেজ সেকশন (ক্লিকযোগ্য কার্ডের ভেতর)
+    // ইমেজ সেকশন (বুকমার্ক থেকে আসলেও এটি অটোমেটিক রেন্ডার হবে)
     if (details!.containsKey('image') && details!['image'] != null && details!['image'] != "") {
       widgets.add(
         Card(
@@ -102,17 +118,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
           color: isDark ? const Color(0xFF1E293B) : Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: ExpansionTile(
-            initiallyExpanded: false, // প্রথমে বন্ধ থাকবে, ক্লিক করলে খুলবে
+            initiallyExpanded: false,
             leading: const Icon(Icons.image_search_rounded, color: Colors.blueAccent),
-            title: const Text(
-              "Reference Diagram",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            title: const Text("Reference Diagram", style: TextStyle(fontWeight: FontWeight.bold)),
             children: [
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Container(
-                  height: 180, // কম্প্যাক্ট হাইট
+                  height: 180,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
@@ -137,18 +150,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
       );
       widgets.add(const SizedBox(height: 20));
     }
-
     return widgets;
   }
 
-  // --- টেক্সট কার্ড ডিজাইন ---
   Widget _buildTextSection(String title, String content, bool isDark) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       color: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
-        initiallyExpanded: false,
         leading: const Icon(Icons.book_rounded, color: Colors.blueAccent),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         children: [
@@ -171,14 +181,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  // --- ডাইনামিক লিস্ট কার্ড ডিজাইন ---
   Widget _buildDynamicListSection(String title, List<dynamic> list, bool isDark) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       color: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
-        initiallyExpanded: false,
         leading: const Icon(Icons.list_alt_rounded, color: Colors.orangeAccent),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         children: list.map((item) {
@@ -190,27 +198,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...item.entries.map((entry) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: RichText(
-                        text: TextSpan(
-                          style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, height: 1.4),
-                          children: [
-                            TextSpan(
-                                text: "${entry.key[0].toUpperCase() + entry.key.substring(1)}: ",
-                                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)
-                            ),
-                            TextSpan(text: "${entry.value}"),
-                          ],
-                        ),
+                  ...item.entries.map((entry) => Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 14, height: 1.4),
+                        children: [
+                          TextSpan(text: "${entry.key[0].toUpperCase() + entry.key.substring(1)}: ", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+                          TextSpan(text: "${entry.value}"),
+                        ],
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  )).toList(),
                   const SizedBox(height: 10),
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: _buildStyleBookmark(item.values.first.toString(), item.toString()),
+                      alignment: Alignment.centerRight,
+                      child: _buildStyleBookmark(item.values.first.toString(), item.toString())
                   ),
                 ],
               ),
@@ -223,7 +226,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  // --- বুকমার্ক বাটন (Save/Saved টেক্সটসহ) ---
   Widget _buildStyleBookmark(String bTitle, String bContent) {
     return FutureBuilder<bool>(
       future: BookmarkService.isBookmarked(bTitle),
@@ -232,7 +234,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
         return StatefulBuilder(builder: (context, setLocalState) {
           return InkWell(
             onTap: () async {
-              await BookmarkService.toggleBookmark({'title': bTitle, 'theory': bContent});
+              await BookmarkService.toggleBookmark({
+                'title': bTitle,
+                'theory': bContent
+              });
               setLocalState(() => isSaved = !isSaved);
             },
             child: Container(
@@ -257,7 +262,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  // --- অ্যাপবার এর মেইন বুকমার্ক বাটন ---
   Widget _buildFullBookmarkBtn() {
     return FutureBuilder<bool>(
       future: BookmarkService.isBookmarked(widget.title),
@@ -271,7 +275,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
               await BookmarkService.toggleBookmark({
                 'id': widget.subId,
                 'title': widget.title,
-                'theory': details!['theory'] ?? "Full Module Content",
+                'theory': details!['theory'] ?? "Module Summary",
+                'full_content': details,
               });
               setLocalState(() => isSaved = !isSaved);
             },
