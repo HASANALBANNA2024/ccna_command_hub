@@ -34,7 +34,7 @@ class _MainDrawerState extends State<MainDrawer> {
                     Navigator.pop(context);
                     showAboutDialog(
                       context: context,
-                      applicationName: "CCNA Command Hub",
+                      applicationName: "CCNA Hub",
                       applicationVersion: "1.0.0",
                       applicationIcon: const Icon(Icons.terminal_rounded, color: Colors.blueAccent),
                       children: [
@@ -146,7 +146,7 @@ class _MainDrawerState extends State<MainDrawer> {
           ),
           const SizedBox(height: 15),
           const Text(
-            "CCNA Command Hub",
+            "CCNA Hub",
             style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Text(
