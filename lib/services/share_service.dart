@@ -1,65 +1,80 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareService {
-  static void shareSubModule(String title, dynamic details) {
+  // মেইন শেয়ার ফাংশন (DetailsScreen থেকে কল হয়)
+  static Future<void> shareSubModule(String title, dynamic details) async {
     if (details == null) return;
 
-    String shareContent = "📌 Topic: $title\n";
-    shareContent += "==========================\n\n";
+    StringBuffer shareContent = StringBuffer();
+    shareContent.writeln("📌 Topic: $title");
+    shareContent.writeln("==========================\n");
 
-    // ১. যদি ডাটাটি List ফরম্যাটে থাকে (AppBar Full Bookmark এর ডাটা)
+    String? imagePath;
+
     if (details is List) {
       for (var section in details) {
         if (section is Map) {
-          shareContent += "🔹 ${section['title']}:\n${section['content']}\n\n";
+          shareContent.writeln("🔹 ${section['title']}:\n${section['content']}\n");
         }
       }
     }
-    // ২. যদি ডাটাটি Map ফরম্যাটে থাকে (Normal Details বা Individual Bookmark)
     else if (details is Map<String, dynamic>) {
-      // থিওরি যোগ করা
-      if (details['theory'] != null && details['theory'] != "") {
-        shareContent += "📖 Theory:\n${details['theory']}\n\n";
+      if (details.containsKey('image') && details['image'] != null && details['image'] != "") {
+        imagePath = await _prepareImageFile(details['image']);
       }
 
-      // ডায়নামিক লিস্ট চেক (types, devices, topologies, media, details ইত্যাদি)
-      List<String> listKeys = ['types', 'devices', 'topologies', 'media', 'details'];
-
-      for (var key in listKeys) {
-        if (details[key] != null && details[key] is List) {
-          String sectionTitle = key[0].toUpperCase() + key.substring(1);
-          shareContent += "📝 $sectionTitle:\n";
-
-          for (var item in details[key]) {
-            shareContent += "• ${item['name'] ?? ''}: ${item['desc'] ?? ''}\n";
+      details.forEach((key, value) {
+        if (key == 'id' || key == 'title' || key == 'image' || value == null || value == "") return;
+        String sectionTitle = key[0].toUpperCase() + key.substring(1);
+        if (value is List) {
+          shareContent.writeln("📂 $sectionTitle:");
+          for (var item in value) {
+            if (item is Map) {
+              item.forEach((subKey, subValue) => shareContent.writeln("  - ${subKey.toUpperCase()}: $subValue"));
+              shareContent.writeln("");
+            } else {
+              shareContent.writeln("  • ${item.toString()}");
+            }
           }
-          shareContent += "\n";
+        } else {
+          shareContent.writeln("📖 $sectionTitle:\n${value.toString()}\n");
         }
-      }
-
-      // এক্সাম্পল যোগ করা
-      if (details['example'] != null && details['example'] != "") {
-        shareContent += "💡 Example:\n${details['example']}\n\n";
-      }
+      });
     }
 
-    shareContent += "--------------------------\n";
-    shareContent += "Shared from: CCNA Command Hub App";
+    shareContent.writeln("--------------------------");
+    shareContent.writeln("Shared from: CCNA Command Hub App");
 
-    // সিস্টেম শেয়ার ডায়ালগ ওপেন
-    Share.share(shareContent);
+    if (imagePath != null) {
+      await Share.shareXFiles([XFile(imagePath)], text: shareContent.toString());
+    } else {
+      await Share.share(shareContent.toString());
+    }
   }
 
-  // বুকমার্ক থেকে শেয়ার করার সময় যাতে সব ডাটা যায়
+  // এই ফাংশনটি আপনার এরর ফিক্স করবে (BookmarkScreen থেকে কল হয়)
   static void shareBookmark(Map<String, dynamic> item) {
     String title = item['title'] ?? "CCNA Topic";
+    // বুকমার্ক আইটেমটি সরাসরি আমাদের মেইন শেয়ার ফাংশনে পাঠিয়ে দিচ্ছি
+    shareSubModule(title, item);
+  }
 
-    // full_content থাকলে সেটি পাঠাবে (সেটি List বা Map যাই হোক)
-    if (item['full_content'] != null) {
-      shareSubModule(title, item['full_content']);
-    } else {
-      // ব্যাকআপ লজিক যদি ডাটা সরাসরি থাকে (ইন্ডিভিজুয়াল বুকমার্ক)
-      shareSubModule(title, item);
+  // এসেট ইমেজকে ফাইলে রূপান্তর
+  static Future<String?> _prepareImageFile(String assetPath) async {
+    try {
+      final byteData = await rootBundle.load(assetPath);
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/share_${DateTime.now().millisecondsSinceEpoch}.png');
+      await file.writeAsBytes(byteData.buffer.asUint8List(
+          byteData.offsetInBytes,
+          byteData.lengthInBytes
+      ));
+      return file.path;
+    } catch (e) {
+      return null;
     }
   }
 }
