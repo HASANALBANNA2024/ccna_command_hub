@@ -51,10 +51,16 @@ class _SplashScreenState extends State<SplashScreen>
                 shape: BoxShape.circle
               ),
 
-              child: const Icon(
-                Icons.terminal_rounded,
-                size: 80,
-                color: Colors.white,
+              // child: const Icon(
+              //   Icons.terminal_rounded,
+              //   size: 80,
+              //   color: Colors.white,
+              // ),
+              child: Image.asset(
+                'assets/images/app_icon.png', // আপনার আইকন ফাইলের পাথ
+                width: 80,                  // আইকনের সাইজ অনুযায়ী এডজাস্ট করুন
+                height: 80,
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(height: 20,),

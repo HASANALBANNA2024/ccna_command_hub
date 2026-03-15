@@ -120,13 +120,29 @@ class _MainDrawerState extends State<MainDrawer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10), // ইমেজের চারপাশে গ্যাপ রাখার জন্য
             decoration: const BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
-              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                )
+              ],
             ),
-            child: const Icon(Icons.terminal_rounded, size: 40, color: Colors.blueAccent),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/icon/app_icon.png', // আপনার ইমেজের পাথ
+                width: 40,  // আইকনের সাইজ অনুযায়ী ৪০ রাখা হয়েছে
+                height: 40,
+                fit: BoxFit.contain, // ইমেজটি যেন কন্টেইনারের ভেতরে সুন্দরভাবে বসে
+                errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.terminal_rounded, size: 40, color: Colors.blueAccent),
+                // যদি কোনো কারণে ইমেজ লোড না হয় তবে ব্যাকআপ হিসেবে আইকন দেখাবে
+              ),
+            ),
           ),
           const SizedBox(height: 15),
           const Text(

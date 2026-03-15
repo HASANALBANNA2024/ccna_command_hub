@@ -1,12 +1,10 @@
 name: ccna_command_hub
 description: "A new Flutter project."
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.0
+  sdk: '>=3.1.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -18,38 +16,43 @@ dependencies:
   firebase_auth: ^5.1.1
   cloud_firestore: ^5.0.1
   firebase_storage: ^12.1.0
-  intl: ^0.19.0 # Date Format
+  intl: ^0.19.0
   flip_card: ^0.7.0
-
-
-
-
-
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0 # এটি dependencies-এ থাকা ভালো
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  google_fonts: ^6.1.0
+  flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1 # লঞ্চার আইকন প্যাকেজ
+  flutter_native_splash: ^2.4.0   # স্প্ল্যাশ স্ক্রিন প্যাকেজ
 
+# লঞ্চার আইকন কনফিগারেশন
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#1E293B" # আপনার দেওয়া ডার্ক ব্লু ব্যাকগ্রাউন্ড
+  adaptive_icon_foreground: "assets/images/app_icon.png"
 
-
-  flutter_lints: ^6.0.0
-
+# স্প্ল্যাশ স্ক্রিন কনফিগারেশন
+flutter_native_splash:
+  color: "#1E293B"
+  image: "assets/images/app_icon.png"
+  android_12:
+    image: "assets/images/app_icon.png"
+    color: "#1E293B"
+  fullscreen: true
 
 flutter:
-
-
   uses-material-design: true
 
-  # assets file loading
   assets:
+    #json assets
     - assets/data/modules.json
     - assets/data/details.json
     - assets/data/quiz.json
-
-
-
-    #image connection
+    #image assets
     - assets/images/lan_image.png
-
+    - assets/images/app_icon.png # আপনার আইকন ফাইলটি এখানে থাকতে হবে

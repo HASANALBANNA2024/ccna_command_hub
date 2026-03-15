@@ -247,10 +247,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.blueAccent.withOpacity(0.5), width: 1.5),
               ),
-              child: const CircleAvatar(
+             child: CircleAvatar(
                 radius: 18,
                 backgroundColor: Colors.blueAccent,
-                child: Icon(Icons.terminal_rounded, size: 18, color: Colors.white),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/icon/app_icon.png',
+                    width: 30, // সার্কেলের রেডিয়াস অনুযায়ী অ্যাডজাস্ট করুন
+                    height: 30,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.terminal_rounded, size: 18, color: Colors.white),
+                    // যদি ইমেজ না পায় তবে আগের আইকনটি দেখাবে
+                  ),
+                ),
               ),
             ),
           ),
