@@ -119,14 +119,14 @@
     "subModules":
             [
               { "id": "m7s1", "title": "VLAN Intro", "isUnlocked": false, "desc": "What is VLAN and why used." },
-              { "id": "m7s2", "title": "VLAN Benefits", "isUnlocked": false, "desc": "Advantages of VLANs." },
-              { "id": "m7s3", "title": "Access Port", "isUnlocked": false, "desc": "Ports assigned to single VLAN." },
-              { "id": "m7s4", "title": "Trunk Port", "isUnlocked": false, "desc": "Carry multiple VLANs." },
-              { "id": "m7s5", "title": "VLAN Tagging (802.1Q)", "isUnlocked": false, "desc": "How VLAN tags work." },
-              { "id": "m7s6", "title": "Native VLAN", "isUnlocked": false, "desc": "VLAN for untagged traffic." },
-              { "id": "m7s7", "title": "VLAN Membership", "isUnlocked": false, "desc": "Assigning devices to VLANs." },
-              { "id": "m7s8", "title": "VLAN Types", "isUnlocked": false, "desc": "Data, Voice, Management VLANs." },
-              { "id": "m7s9", "title": "VLAN Pruning", "isUnlocked": false, "desc": "Limiting VLAN traffic on trunks." }
+              { "id": "m7s2", "title": "Access vs Trunk", "isUnlocked": false, "desc": "Access and Trunk por of VLAN." },
+              { "id": "m7s3", "title": "VLAN Tag (802.1Q) & Native Vlan", "isUnlocked": false, "desc": "How VLAN tags work." },
+             { "id": "m7s4", "title": "VLAN Membership", "isUnlocked": false, "desc": "Assigning devices to VLANs." },
+              { "id": "m7s5", "title": "VLAN Types", "isUnlocked": false, "desc": "Data, Voice, Management VLANs." },
+              { "id": "m7s6", "title": "VLAN Pruning", "isUnlocked": false, "desc": "Limiting VLAN traffic on trunks." },
+              { "id": "m7s7", "title": "Private Vlan", "isUnlocked": false, "desc": "Limited (Targeted) Access of Vlan." },
+              { "id": "m7s8", "title": "Vlan Configuration", "isUnlocked": false, "desc": "How to Configure of Vlan." },
+              { "id": "m7s9", "title": "Verification", "isUnlocked": false, "desc": "How to trobleshoot of Vlan." }
             ]
   },
   {
@@ -139,7 +139,8 @@
       { "id": "m8s1", "title": "Inter-VLAN Routing", "isUnlocked": false, "desc": "Routing between VLANs." },
       { "id": "m8s2", "title": "SVI (Switched Virtual Interface)", "isUnlocked": false, "desc": "VLAN interface for routing." },
       { "id": "m8s3", "title": "SVI Configuration", "isUnlocked": false, "desc": "How to configure SVI on switches." },
-      { "id": "m8s4", "title": "Inter-VLAN Configuration", "isUnlocked": false, "desc": "Configure routing between VLANs." }
+      { "id": "m8s4", "title": "Inter-VLAN Configuration", "isUnlocked": false, "desc": "Configure routing between VLANs." },
+      { "id": "m8s5", "title": "Verification", "isUnlocked": false, "desc": "Troble Shoot issue of Inter-vlan & SVI." }
     ]
   },
   {
@@ -152,9 +153,8 @@
               { "id": "m9s1", "title": "EtherChannel Intro", "isUnlocked": false, "desc": "What is EtherChannel and why used." },
               { "id": "m9s2", "title": "EtherChannel Benefits", "isUnlocked": false, "desc": "Advantages of EtherChannel." },
               { "id": "m9s3", "title": "EtherChannel Types", "isUnlocked": false, "desc": "Static and dynamic types (LACP, PAgP)." },
-              { "id": "m9s4", "title": "LACP Protocol", "isUnlocked": false, "desc": "Link Aggregation Control Protocol basics." },
-              { "id": "m9s5", "title": "PAgP Protocol", "isUnlocked": false, "desc": "Port Aggregation Protocol basics." },
-              { "id": "m9s6", "title": "EtherChannel Configuration", "isUnlocked": false, "desc": "Step-by-step switch config." }
+              { "id": "m9s4", "title": "EtherChannel Configuration", "isUnlocked": false, "desc": "Step-by-step switch config." },
+              { "id": "m9s5", "title": "Verification", "isUnlocked": false, "desc": "How to trobleshoot on EtherChannel." }
             ]
   },
   {
