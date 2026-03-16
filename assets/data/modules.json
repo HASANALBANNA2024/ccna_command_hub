@@ -47,14 +47,13 @@
                 { "id": "m3s3", "title": "Public vs Private IP", "isUnlocked": false, "desc": "Difference between IP types." },
                 { "id": "m3s4", "title": "Static vs Dynamic IP", "isUnlocked": false, "desc": "Static and dynamic IPs." },
                 { "id": "m3s5", "title": "Default Gateway", "isUnlocked": false, "desc": "What is a default gateway." },
-                { "id": "m3s6", "title": "Broadcast Address", "isUnlocked": false, "desc": "Understanding broadcast address." },
-                { "id": "m3s7", "title": "Network Address", "isUnlocked": false, "desc": "Understanding network address." },
-                { "id": "m3s8", "title": "Host Address Calculation", "isUnlocked": false, "desc": "How to calculate host IPs." },
-                { "id": "m3s9", "title": "CIDR Notation", "isUnlocked": false, "desc": "Understanding CIDR (/24, /16)." },
-                { "id": "m3s10", "title": "Private IP Ranges", "isUnlocked": false, "desc": "Common private IP ranges." },
-                { "id": "m3s11", "title": "APIPA / Automatic IP", "isUnlocked": false, "desc": "Auto private IP assignment." },
-                { "id": "m3s12", "title": "Loopback Address", "isUnlocked": false, "desc": "127.0.0.1 usage." },
-                { "id": "m3s13", "title": "Reserved Addresses", "isUnlocked": false, "desc": "Reserved IPv4 addresses." }
+                { "id": "m3s6", "title": "Network & Broadcast Address", "isUnlocked": false, "desc": "Understanding network & Broadcast address." },
+                { "id": "m3s7", "title": "Host Address Calculation", "isUnlocked": false, "desc": "How to calculate host IPs." },
+                { "id": "m3s8", "title": "CIDR Notation", "isUnlocked": false, "desc": "Understanding CIDR (/24, /16)." },
+                { "id": "m3s9", "title": "Private IP Ranges", "isUnlocked": false, "desc": "Common private IP ranges." },
+                { "id": "m3s10", "title": "APIPA / Automatic IP", "isUnlocked": false, "desc": "Auto private IP assignment." },
+                { "id": "m3s11", "title": "Loopback Address", "isUnlocked": false, "desc": "127.0.0.1 usage." },
+                { "id": "m3s12", "title": "Reserved Addresses", "isUnlocked": false, "desc": "Reserved IPv4 addresses." }
 
             ]
 
