@@ -39,16 +39,51 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   Future<void> _setupGame() async {
     try {
       int passedCount = await UnlockService.getPassedModulesCount();
-      String targetLevelId = passedCount > 0 ? "m${min(passedCount + 1, 32)}" : "m1";
-      _currentLevelId = targetLevelId;
-      _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
+      List<Flashcard> allFetchedQuestions = [];
+      String targetLevelId = "";
+
+      // লজিক ১: যদি ৩২টি মডিউলই পাস হয়ে যায় (Grand Quiz)
+      if (passedCount >= 32) {
+        targetLevelId = "Grand Finale (Mixed)";
+
+        // সব মডিউল থেকে ডাটা লুপ করে নিয়ে আসা
+        for (int i = 1; i <= 32; i++) {
+          var moduleQuestions = await FlashcardService.getQuestionsByModule("m$i");
+          allFetchedQuestions.addAll(moduleQuestions);
+        }
+        // সব প্রশ্ন একসাথে এলোমেলো (Shuffle) করে দেওয়া
+        allFetchedQuestions.shuffle();
+      }
+
+      // লজিক ২: নির্দিষ্ট মডিউল লোড করা
+      else {
+        targetLevelId = "m${passedCount + 1}";
+        allFetchedQuestions = await FlashcardService.getQuestionsByModule(targetLevelId);
+
+        // লজিক ৩: যদি কারেন্ট মডিউলে প্রশ্ন না থাকে, তবে আগের মডিউল চেক করা
+        int tempCount = passedCount;
+        while (allFetchedQuestions.isEmpty && tempCount > 0) {
+          targetLevelId = "m$tempCount";
+          allFetchedQuestions = await FlashcardService.getQuestionsByModule(targetLevelId);
+          tempCount--;
+        }
+      }
 
       if (mounted) {
-        setState(() => _isLoading = false);
-        if (_questions.isNotEmpty) _startTimer();
+        if (allFetchedQuestions.isEmpty) {
+          _showErrorAndPop("কোনো প্রশ্ন পাওয়া যায়নি। দয়া করে ডাটা চেক করুন।");
+          return;
+        }
+
+        setState(() {
+          _currentLevelId = targetLevelId; // এটি UI-তে দেখাবে কোন মডিউল চলছে
+          _questions = allFetchedQuestions;
+          _isLoading = false;
+        });
+        _startTimer();
       }
     } catch (e) {
-      if (mounted) _showErrorAndPop("Error loading game.");
+      if (mounted) _showErrorAndPop("Error loading game: $e");
     }
   }
 
