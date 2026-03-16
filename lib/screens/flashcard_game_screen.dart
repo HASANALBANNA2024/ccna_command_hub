@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../services/flashcard_service.dart';
 import '../services/unlock_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class FlashcardGameScreen extends StatefulWidget {
   const FlashcardGameScreen({super.key});
@@ -13,6 +14,7 @@ class FlashcardGameScreen extends StatefulWidget {
 }
 
 class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTickerProviderStateMixin {
+
   List<Flashcard> _questions = [];
   int _currentIndex = 0;
   bool _isLoading = true;
@@ -35,6 +37,9 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
         CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine)
     );
   }
+
+
+
 
   Future<void> _setupGame() async {
     try {
@@ -108,6 +113,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     });
     _controller.forward();
 
+
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
       _controller.reverse().then((_) {
@@ -133,8 +139,10 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     if (_isLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
     final card = _questions[_currentIndex];

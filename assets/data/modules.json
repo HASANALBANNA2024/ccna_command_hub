@@ -72,7 +72,8 @@
               { "id": "m4s5", "title": "Global Unicast Address", "isUnlocked": false, "desc": "Routable IPv6 address." },
               { "id": "m4s6", "title": "Unique Local Address", "isUnlocked": false, "desc": "Private IPv6 address range." },
               { "id": "m4s7", "title": "IPv6 Header", "isUnlocked": false, "desc": "Simplified header structure." },
-              { "id": "m4s8", "title": "IPv6 vs IPv4", "isUnlocked": false, "desc": "Differences between IPv4 and IPv6." },
+              { "id": "m4s8", "title": "Multicast & Anycast", "isUnlocked": false, "desc": "description of Multicast & Anycast" },
+              { "id": "m4s9", "title": "IPv6 vs IPv4", "isUnlocked": false, "desc": "Differences between IPv4 and IPv6." },
               { "id": "m4s10", "title": "IPv6 Deployment", "isUnlocked": false, "desc": "Transition and deployment tips." }
             ]
 

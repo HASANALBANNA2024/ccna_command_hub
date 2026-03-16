@@ -20,6 +20,7 @@ dependencies:
   flip_card: ^0.7.0
   cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0 # এটি dependencies-এ থাকা ভালো
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -56,3 +57,7 @@ flutter:
     #image assets
     - assets/images/lan_image.png
     - assets/images/app_icon.png # আপনার আইকন ফাইলটি এখানে থাকতে হবে
+
+    #sound system
+    - assets/sounds/click.ogg
+    - assets/sounds/complete.wav
