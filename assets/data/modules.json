@@ -164,17 +164,13 @@
     "desc":"Root Bridge, Port roles and states.",
     "subModules":
             [
-
-                { "id": "m10s1", "title": "STP Intro", "isUnlocked": false, "desc": "What is STP and why needed." },
-                { "id": "m10s2", "title": "STP Purpose", "isUnlocked": false, "desc": "Role in preventing loops." },
-                { "id": "m10s3", "title": "STP Operation", "isUnlocked": false, "desc": "How STP works (BPDU exchange)." },
-                { "id": "m10s4", "title": "STP Root Bridge", "isUnlocked": false, "desc": "Root bridge selection process." },
-                { "id": "m10s5", "title": "STP Port Roles", "isUnlocked": false, "desc": "Root, Designated, Alternate ports." },
-                { "id": "m10s6", "title": "STP Port States", "isUnlocked": false, "desc": "Blocking, Listening, Learning, Forwarding, Disabled." },
-                { "id": "m10s7", "title": "STP Timers", "isUnlocked": false, "desc": "Hello, Forward Delay, Max Age timers." },
-                { "id": "m10s8", "title": "STP Variants", "isUnlocked": false, "desc": "PVST, RSTP, MSTP overview." },
-                { "id": "m10s9", "title": "STP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on switches." }
-
+            { "id": "m10s1", "title": "STP Intro", "isUnlocked": false, "desc": "What is STP and why needed." },
+            { "id": "m10s2", "title": "STP Operation", "isUnlocked": false, "desc": "How STP works (BPDU exchange)." },
+            { "id": "m10s3", "title": "STP Root Bridge", "isUnlocked": false, "desc": "Root bridge selection process." },
+            { "id": "m10s4", "title": "STP Port Roles & States", "isUnlocked": false, "desc": "Root, Designated, Alternate ports & States." },
+            { "id": "m10s5", "title": "STP Timers & variants", "isUnlocked": false, "desc": "Hello, Forward Delay, Max Age timers." },
+            { "id": "m10s6", "title": "STP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on switches." },
+            { "id": "m10s7", "title": "STP Verification", "isUnlocked": false, "desc": "How to Trobleshoot of STP." }
             ]
   },
   {
@@ -231,7 +227,7 @@
     "subModules":
       [
         { "id": "m14s1", "title": "Dynamic Routing Intro", "isUnlocked": false, "desc": "What is dynamic routing." },
-        { "id": "m14s2", "title": "Routing Protocols Overview", "isUnlocked": false, "desc": "RIP, OSPF, EIGRP basics." },
+        { "id": "m14s2", "title": "Routing Protocols Overview (Dynamic)", "isUnlocked": false, "desc": "RIP, OSPF, EIGRP basics." },
         { "id": "m14s3", "title": "Distance Vector Routing", "isUnlocked": false, "desc": "RIP protocol and hop count." },
         { "id": "m14s4", "title": "Link-State Routing", "isUnlocked": false, "desc": "OSPF basics and LSA types." }
       ]
@@ -263,7 +259,8 @@
         { "id": "m16s4", "title": "OSPF LSAs", "isUnlocked": false, "desc": "Types of Link-State Advertisements." },
         { "id": "m16s5", "title": "OSPF Neighbor Formation", "isUnlocked": false, "desc": "Hello packets and adjacency process." },
         { "id": "m16s6", "title": "OSPF Router Types", "isUnlocked": false, "desc": "Internal, ABR, ASBR router roles." },
-        { "id": "m16s7", "title": "OSPF Configuration", "isUnlocked": false, "desc": "Step-by-step OSPF setup on routers." }
+        { "id": "m16s7", "title": "OSPF Configuration", "isUnlocked": false, "desc": "Step-by-step OSPF setup on routers." },
+        { "id": "m16s8", "title": "OSPF Verification", "isUnlocked": false, "desc": "How to trobleshoot of OSPF (Basic)." }
       ]
   },
   {
@@ -294,7 +291,9 @@
         { "id": "m18s2", "title": "Distance Vector Concept", "isUnlocked": false, "desc": "RIP uses hop count for routing." },
         { "id": "m18s3", "title": "RIP Versions", "isUnlocked": false, "desc": "RIP v1 and RIP v2 overview." },
         { "id": "m18s4", "title": "RIP Timers", "isUnlocked": false, "desc": "Update, Invalid, Hold-down, Flush timers." },
-        { "id": "m18s5", "title": "RIP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." }
+        { "id": "m18s5", "title": "RIP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." },
+        { "id": "m18s6", "title": "Verification & Trobleshooting", "isUnlocked": false, "desc": "How to trobleshoot of RIP." }
+
       ]
   },
   {
