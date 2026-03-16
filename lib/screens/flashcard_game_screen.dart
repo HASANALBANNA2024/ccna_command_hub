@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../services/flashcard_service.dart';
 import '../services/unlock_service.dart';
-// import 'package:ccna_command_hub/services/cloud_sync_service.dart'; // এটি আর লাগবে না
 
 class FlashcardGameScreen extends StatefulWidget {
   const FlashcardGameScreen({super.key});
@@ -26,66 +25,31 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
 
   late AnimationController _controller;
   late Animation<double> _animation;
-  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _setupGame();
-    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
+    _controller = AnimationController(duration: const Duration(milliseconds: 600), vsync: this);
     _animation = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOutBack)
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine)
     );
-    _scaleAnimation = TweenSequence([
-      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 1.05), weight: 50),
-      TweenSequenceItem(tween: Tween<double>(begin: 1.05, end: 1.0), weight: 50),
-    ]).animate(_controller);
   }
 
   Future<void> _setupGame() async {
     try {
-      // 1. User koita module pass koreche seta check kora
       int passedCount = await UnlockService.getPassedModulesCount();
-
-      // 2. Default level m1 set kora
-      String targetLevelId = "m1";
-
-      if (passedCount > 0) {
-        // Jodi user kono module pass kore thake, tobe tar porer level (last unlocked) load hobe
-        int nextLevelNum = passedCount + 1;
-        if (nextLevelNum > 32) nextLevelNum = 32;
-        targetLevelId = "m$nextLevelNum";
-      }
-
+      String targetLevelId = passedCount > 0 ? "m${min(passedCount + 1, 32)}" : "m1";
       _currentLevelId = targetLevelId;
-
-      // 3. FlashcardService theke data ana
       _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
 
-      // 4. Safety Check: Jodi target level-e question na thake, tobe m1 load hobe
-      if (_questions.isEmpty && _currentLevelId != "m1") {
-        _currentLevelId = "m1";
-        _questions = await FlashcardService.getQuestionsByModule(_currentLevelId);
-      }
-
       if (mounted) {
-        if (_questions.isNotEmpty) {
-          setState(() => _isLoading = false);
-          _startTimer();
-        } else {
-          // Jodi ekdomi kono question na pawa jay (Data error)
-          _showErrorAndPop("Questions are currently unavailable.");
-        }
+        setState(() => _isLoading = false);
+        if (_questions.isNotEmpty) _startTimer();
       }
     } catch (e) {
-      debugPrint("Flashcard Setup Error: $e");
-      if (mounted) _showErrorAndPop("An error occurred while loading the game.");
+      if (mounted) _showErrorAndPop("Error loading game.");
     }
-  }
-
-  void _showErrorAndPop(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    Navigator.pop(context);
   }
 
   void _startTimer() {
@@ -95,7 +59,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
       if (_timeLeft > 0) {
         if (mounted) setState(() => _timeLeft--);
       } else {
-        _handleAnswer(""); // সময় শেষ হলে অটো ভুল উত্তর সাবমিট
+        _handleAnswer("");
       }
     });
   }
@@ -109,20 +73,21 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     });
     _controller.forward();
 
-    // কার্ড ফ্লিপ হওয়ার পর ৩ সেকেন্ড অপেক্ষা করে পরবর্তী কোয়েশ্চেন
     Future.delayed(const Duration(seconds: 3), () {
       if (!mounted) return;
-      if (_currentIndex < _questions.length - 1) {
-        _controller.reverse();
-        setState(() {
-          _currentIndex++;
-          _isAnswered = false;
-          _selectedOption = "";
-        });
-        _startTimer();
-      } else {
-        _showCompleteDialog();
-      }
+      _controller.reverse().then((_) {
+        if (!mounted) return;
+        if (_currentIndex < _questions.length - 1) {
+          setState(() {
+            _currentIndex++;
+            _isAnswered = false;
+            _selectedOption = "";
+          });
+          _startTimer();
+        } else {
+          _showCompleteDialog();
+        }
+      });
     });
   }
 
@@ -136,27 +101,30 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   @override
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color textColor = isDark ? Colors.white : const Color(0xFF1E293B);
-
     if (_isLoading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-
     final card = _questions[_currentIndex];
 
     return Scaffold(
       body: Stack(
         children: [
-          _buildWaterBackground(isDark),
+          _buildRealisticWaterBackground(isDark),
           SafeArea(
-            child: Column(
-              children: [
-                _buildTopBar(isDark, textColor),
-                _buildQuestionHeader(isDark),
-                const Spacer(),
-                _buildFlipCard(card, isDark, textColor),
-                const Spacer(),
-                _buildOptionsGrid(card, isDark, textColor),
-                const SizedBox(height: 20),
-              ],
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    _buildTopBar(isDark),
+                    _buildQuestionHeader(isDark),
+                    const SizedBox(height: 10),
+                    _buildFlipCard(card, isDark),
+                    const SizedBox(height: 20),
+                    _buildOptionsGrid(card, isDark),
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -164,45 +132,59 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     );
   }
 
-  Widget _buildWaterBackground(bool isDark) {
+  Widget _buildRealisticWaterBackground(bool isDark) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: isDark
-              ? [const Color(0xFF020617), const Color(0xFF0F172A)]
-              : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
+              ? [const Color(0xFF001220), const Color(0xFF002540), const Color(0xFF004060)]
+              : [const Color(0xFFB2EBF2), const Color(0xFF80DEEA), const Color(0xFF26C6DA)], // পানির উজ্জ্বল নীল রঙ বাড়ানো হয়েছে
         ),
       ),
       child: Stack(
         children: [
-          Positioned(
-            top: -50, right: -50,
-            child: _rippleCircle(250, isDark ? Colors.blue.withOpacity(0.05) : Colors.blueAccent.withOpacity(0.08)),
-          ),
-          Positioned(
-            bottom: 100, left: -30,
-            child: _rippleCircle(180, isDark ? Colors.cyan.withOpacity(0.05) : Colors.cyanAccent.withOpacity(0.05)),
+          _movingBubble(300, 0.15, -50, -50),
+          _movingBubble(250, 0.1, 400, 200),
+          _movingBubble(180, 0.08, 700, -20),
+          _movingBubble(120, 0.12, 150, 300),
+          _movingBubble(200, 0.07, 550, 100),
+          _movingBubble(90, 0.15, 800, 280),
+          _movingBubble(350, 0.05, 200, -100),
+          // পানির ফিল দেওয়ার জন্য হালকা রিফ্লেকশন
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15), // ব্লার কমানো হয়েছে যাতে পানি স্বচ্ছ মনে হয়
+            child: Container(color: Colors.white.withOpacity(0.02)),
           ),
         ],
       ),
     );
   }
 
-  Widget _rippleCircle(double size, Color color) {
-    return Container(width: size, height: size, decoration: BoxDecoration(shape: BoxShape.circle, color: color));
+  Widget _movingBubble(double size, double opacity, double top, double left) {
+    return Positioned(
+      top: top, left: left,
+      child: Container(
+        width: size, height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [Colors.white.withOpacity(opacity), Colors.transparent],
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _buildTopBar(bool isDark, Color textColor) {
+  Widget _buildTopBar(bool isDark) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.only(top: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_ios_new, color: textColor, size: 20)),
-          Text("LEVEL ${_currentLevelId.toUpperCase()}",
-              style: TextStyle(color: textColor, fontWeight: FontWeight.w900, letterSpacing: 1.5, fontSize: 16)),
+          IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close, size: 24)),
+          Text("LEVEL ${_currentLevelId.toUpperCase()}", style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16, letterSpacing: 1.2)),
           _timerWidget(isDark),
         ],
       ),
@@ -210,218 +192,174 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
   }
 
   Widget _timerWidget(bool isDark) {
-    bool isUrgent = _timeLeft < 5;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isUrgent ? Colors.red.withOpacity(0.1) : (isDark ? Colors.white10 : Colors.blue.withOpacity(0.1)),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: isUrgent ? Colors.redAccent : Colors.blueAccent.withOpacity(0.3)),
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white30),
       ),
-      child: Row(
-        children: [
-          Icon(Icons.timer_outlined, size: 16, color: isUrgent ? Colors.redAccent : Colors.blueAccent),
-          const SizedBox(width: 5),
-          Text("$_timeLeft s", style: TextStyle(color: isUrgent ? Colors.redAccent : Colors.blueAccent, fontWeight: FontWeight.bold)),
-        ],
-      ),
+      child: Text("$_timeLeft s", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
     );
   }
 
   Widget _buildQuestionHeader(bool isDark) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text("Question ${_currentIndex + 1}/${_questions.length}",
-                  style: TextStyle(color: isDark ? Colors.white60 : Colors.blueGrey, fontSize: 13, fontWeight: FontWeight.bold)),
-              Icon(Icons.bolt_rounded, color: Colors.amber.withOpacity(0.7), size: 18),
-            ],
+    return Column(
+      children: [
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: LinearProgressIndicator(
+            value: (_currentIndex + 1) / _questions.length,
+            minHeight: 6,
+            backgroundColor: Colors.white12,
+            color: Colors.white,
           ),
-          const SizedBox(height: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: LinearProgressIndicator(
-              value: (_currentIndex + 1) / _questions.length,
-              minHeight: 8,
-              color: Colors.blueAccent,
-              backgroundColor: isDark ? Colors.white10 : Colors.blueAccent.withOpacity(0.1),
-            ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        Text("Question ${_currentIndex + 1}/${_questions.length}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+      ],
     );
   }
 
-  Widget _buildFlipCard(Flashcard card, bool isDark, Color textColor) {
+  Widget _buildFlipCard(Flashcard card, bool isDark) {
     return AnimatedBuilder(
-      animation: _controller,
+      animation: _animation,
       builder: (context, child) {
         final angle = _animation.value * pi;
         return Transform(
-          transform: Matrix4.identity()..setEntry(3, 2, 0.001)..rotateY(angle)..scale(_scaleAnimation.value),
+          transform: Matrix4.identity()..setEntry(3, 2, 0.001)..rotateY(angle),
           alignment: Alignment.center,
           child: angle < pi / 2
-              ? _glassCard(card.question, "QUESTION", Colors.blueAccent, isDark, textColor)
-              : Stack(
-            children: [
-              Transform(
-                transform: Matrix4.identity()..rotateY(pi),
-                alignment: Alignment.center,
-                child: _glassCard("${card.answer}\n\n${card.explanation}", "ANSWER", Colors.teal, isDark, textColor),
-              ),
-              Positioned(
-                top: 25, right: 55,
-                child: Transform(
-                  transform: Matrix4.identity()..rotateY(pi),
-                  alignment: Alignment.center,
-                  child: _buildResultBadge(card),
-                ),
-              ),
-            ],
+              ? _glassCard(card.question, "QUESTION", isDark, null)
+              : Transform(
+            transform: Matrix4.identity()..rotateY(pi),
+            alignment: Alignment.center,
+            child: _glassCard("${card.answer}\n\n${card.explanation}", "ANSWER", isDark, card),
           ),
         );
       },
     );
   }
 
+  Widget _glassCard(String text, String label, bool isDark, Flashcard? card) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          constraints: const BoxConstraints(minHeight: 220),
+          width: double.infinity,
+          padding: const EdgeInsets.all(25),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(isDark ? 0.1 : 0.4),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: Colors.white.withOpacity(0.4)),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 25)],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(label, style: const TextStyle(letterSpacing: 3, fontWeight: FontWeight.w900, fontSize: 10, color: Colors.blueAccent)),
+              const SizedBox(height: 15),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold, height: 1.4),
+              ),
+            ],
+          ),
+        ),
+        // ব্যাজ পজিশন এখন বাম দিকে (Left: 20)
+        if (card != null)
+          Positioned(
+            top: 20,
+            left: 20,
+            child: _buildResultBadge(card),
+          ),
+      ],
+    );
+  }
+
   Widget _buildResultBadge(Flashcard card) {
     bool isCorrect = _selectedOption == card.answer;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isCorrect ? Colors.green.shade600 : Colors.red.shade600,
+        color: isCorrect ? Colors.green.withOpacity(0.9) : Colors.red.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8)],
+        boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 5)],
       ),
-      child: Text(isCorrect ? "CORRECT" : "WRONG",
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 11)),
+      child: Text(
+        isCorrect ? "CORRECT" : "WRONG",
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 10),
+      ),
     );
   }
 
-  Widget _glassCard(String text, String label, Color accent, bool isDark, Color textColor) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 30),
-      height: 320, width: double.infinity,
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.08) : Colors.white.withOpacity(0.85),
-        borderRadius: BorderRadius.circular(35),
-        border: Border.all(color: isDark ? Colors.white12 : Colors.white),
-        boxShadow: [
-          BoxShadow(color: accent.withOpacity(0.1), blurRadius: 30, spreadRadius: 2)
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(35),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildOptionsGrid(Flashcard card, bool isDark) {
+    return Column(
+      children: card.options.map((option) {
+        bool isCorrect = option == card.answer;
+        bool isSelected = option == _selectedOption;
+
+        Color borderCol = Colors.white24;
+        if (_isAnswered) {
+          if (isCorrect) borderCol = Colors.greenAccent;
+          else if (isSelected) borderCol = Colors.redAccent;
+        }
+
+        return GestureDetector(
+          onTap: () => _handleAnswer(option),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(isDark ? 0.08 : 0.3),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: borderCol, width: 2),
+            ),
+            child: Row(
               children: [
-                Text(label, style: TextStyle(color: accent, fontSize: 12, letterSpacing: 4, fontWeight: FontWeight.w900)),
-                const SizedBox(height: 25),
-                Text(text, textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, color: textColor, fontWeight: FontWeight.bold, height: 1.5)),
+                Expanded(child: Text(option, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+                if (_isAnswered && isCorrect) const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 20),
+                if (_isAnswered && isSelected && !isCorrect) const Icon(Icons.cancel_rounded, color: Colors.redAccent, size: 20),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildOptionsGrid(Flashcard card, bool isDark, Color textColor) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: Column(
-        children: card.options.map((option) {
-          bool isCorrect = option == card.answer;
-          bool isSelected = option == _selectedOption;
-
-          Color borderCol = isDark ? Colors.white10 : Colors.blueAccent.withOpacity(0.1);
-          if (_isAnswered) {
-            if (isCorrect) borderCol = Colors.green.shade500;
-            else if (isSelected) borderCol = Colors.red.shade500;
-          }
-
-          return GestureDetector(
-            onTap: () => _handleAnswer(option),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(bottom: 14),
-              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 22),
-              decoration: BoxDecoration(
-                  color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: borderCol, width: 2),
-                  boxShadow: [
-                    if(!isDark) BoxShadow(color: Colors.blueAccent.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 8))
-                  ]
-              ),
-              child: Row(
-                children: [
-                  Expanded(child: Text(option, style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 16))),
-                  if (_isAnswered && isCorrect) Icon(Icons.check_circle_rounded, color: Colors.green.shade500, size: 24),
-                  if (_isAnswered && isSelected && !isCorrect) Icon(Icons.cancel_rounded, color: Colors.red.shade500, size: 24),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
+  void _showErrorAndPop(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    Navigator.pop(context);
   }
 
   void _showCompleteDialog() {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (c) => BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: AlertDialog(
-            backgroundColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.stars_rounded, color: Colors.amber, size: 80),
-                const SizedBox(height: 15),
-                const Text("MODULE COMPLETED!", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
-                const SizedBox(height: 10),
-                const Text("You've successfully mastered this level and earned your progress.", textAlign: TextAlign.center, style: TextStyle(color: Colors.blueGrey)),
-                const SizedBox(height: 30),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        elevation: 10,
-                        shadowColor: Colors.blueAccent.withOpacity(0.3),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                        padding: const EdgeInsets.symmetric(vertical: 18)
-                    ),
-                    onPressed: () async {
-                      // ১. লোকাল মেমরিতে প্রগ্রেস সেভ করা
-                      await UnlockService.unlockModule(_currentLevelId);
-
-                      // ২. CloudSyncService এর লাইনটি ডিলিট করা হয়েছে কারণ এখন এটি অফলাইন
-
-                      if (!mounted) return;
-                      Navigator.pop(context); // Dialog close
-                      Navigator.pop(context); // Screen close
-                    },
-                    child: const Text("FINISH",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, letterSpacing: 2)),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ));
+      context: context,
+      barrierDismissible: false,
+      builder: (c) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          backgroundColor: Colors.white.withOpacity(0.95),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          title: const Text("Completed!", style: TextStyle(fontWeight: FontWeight.bold)),
+          content: const Text("You have finished this level successfully."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                UnlockService.unlockModule(_currentLevelId);
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text("Finish", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
