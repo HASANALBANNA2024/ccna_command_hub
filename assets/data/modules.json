@@ -90,7 +90,7 @@
               { "id": "m5s3", "title": "Binary & Decimal Conversion", "isUnlocked": false, "desc": "IP binary-decimal conversion." },
               { "id": "m5s4", "title": "Subnetting Formula", "isUnlocked": false, "desc": "Calculate subnets and hosts." },
               { "id": "m5s5", "title": "FLSM & VLSM", "isUnlocked": false, "desc": "Fixed & Variable subnetting." },
-              { "id": "m5s7", "title": "CIDR & Supernetting", "isUnlocked": false, "desc": "CIDR and supernet basics." }
+              { "id": "m5s6", "title": "CIDR & Supernetting", "isUnlocked": false, "desc": "CIDR and supernet basics." }
             ]
   },
   {
