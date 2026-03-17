@@ -1005,5 +1005,432 @@
         "Network command এ ভুল আইপি দেওয়া।"
       ]
     }
+  },
+  "m19": {
+    "m19s1": {
+      "module_name": "BGP Phase 1: The Global Postmaster (বিজিবি পরিচিতি)",
+      "philosophy": "BGP শুধুমাত্র একটি রাউটিং প্রোটোকল নয়; এটি ইন্টারনেটের 'গভর্নেন্স' বা শাসন ব্যবস্থা। এটি ছাড়া এক দেশ থেকে অন্য দেশের আইএসপি-তে ডেটা পৌঁছানো অসম্ভব।",
+      "Defination": "BGP হলো একমাত্র প্রোটোকল যা ইন্টারনেটের বিভিন্ন স্বায়ত্তশাসিত সিস্টেম (AS) বা বিশাল নেটওয়ার্কগুলোর মধ্যে যোগাযোগের সেতুবন্ধন তৈরি করে। এটি একটি Path Vector প্রোটোকল।",
+      "Path Vector Logic": "BGP দূরত্বের (Metric) বদলে পথের (Path) তালিকার ওপর ভিত্তি করে চলে। প্রতিটি রুটের সাথে 'AS_PATH' অ্যাট্রিবিউট থাকে, যা লুপ হওয়া থেকে নেটওয়ার্ককে বাঁচায়।",
+      "TCP Protocol": "বিজিবি প্যাকেট ডেলিভারি নিশ্চিত করতে TCP ব্যবহার করে। এটি নিজেই নিজের একনলেজমেন্ট (ACK) হ্যান্ডেল করে না, বরং টিসিপি-র ওপর নির্ভর করে।",
+      "Increamental Updates": "একবার পুরো রাউটিং টেবিল এক্সচেঞ্জ হয়ে গেলে, বিজিবি আর বারবার তা পাঠায় না। শুধুমাত্র নেটওয়ার্কে কোনো পরিবর্তন (নতুন রুট বা রিমুভ হওয়া রুট) হলেই আপডেট পাঠায়।",
+      "Autonoumous System(AS)": "A collection of IP networks managed by a single administrative entity (ISP, University, or Corporation).",
+      "AS Types": [
+        {
+          "range": "1 - 64511",
+          "type": "Public AS",
+          "usage": "গ্লোবাল ইন্টারনেটে ব্যবহৃত হয়, আইএএনএ (IANA) থেকে কিনতে হয়।"
+        },
+        {
+          "range": "64512 - 65535",
+          "type": "Private AS",
+          "usage": "নিজের ল্যাব বা ইন্টারনাল কানেক্টিভিটির জন্য ফ্রিতে ব্যবহার করা হয়।"
+        },
+        {
+          "range": "65536 - 4,294,967,295",
+          "type": "4-Byte AS",
+          "usage": "আধুনিক বিশাল নেটওয়ার্কের জন্য নতুন স্ট্যান্ডার্ড।"
+        }
+      ],
+      "Peering Concept": "বিজিবিতে অন্য প্রোটোকলের মতো অটো-নেইবারশিপ নেই। এখানে প্রতিটি নেইবারকে ম্যানুয়ালি আইপি এবং এএস নম্বর দিয়ে কনফিগার করতে হয়।",
+      "Best Path Selection": "বিজিবি মেট্রিকে ব্যান্ডউইথ দেখে না। এটি ১৩টি ধাপের একটি অ্যালগরিদম ব্যবহার করে বেস্ট পাথ খুঁজে বের করে (যা আমরা পরবর্তী সাব-মডিউলে বিস্তারিত পড়ব)।",
+      "Basic Configuration": "Establishing a basic BGP process between two ISPs (AS 100 and AS 200)",
+      "commands": [
+        "ISP -01 (AS 100)",
+        "router bgp 100 (নিজের AS নম্বর দিয়ে বিজিবি শুরু করা)",
+        " bgp router-id 1.1.1.1 (রাউটারকে একটি ইউনিক নাম দেওয়া)",
+        " neighbor 10.1.1.2 remote-as 200 (নেইবারের আইপি এবং তার AS নম্বর বলে দেওয়া)",
+        " network 103.10.10.0 mask 255.255.255.0 (নিজের যে রুটটি ইন্টারনেটে প্রচার করতে চান তা ডিক্লেয়ার করা)\n\n\n\n",
+        "ISP -02 (AS 200)",
+        "router bgp 100 (নিজের AS নম্বর দিয়ে বিজিবি শুরু করা)",
+        " bgp router-id 2.2.2.2 (রাউটারকে একটি ইউনিক নাম দেওয়া)",
+        " neighbor 10.1.1.2 remote-as 100 (নেইবারের আইপি এবং তার AS নম্বর বলে দেওয়া)",
+        " network 203.10.10.0 mask 255.255.255.0 (নিজের যে রুটটি ইন্টারনেটে প্রচার করতে চান তা ডিক্লেয়ার করা)"
+      ],
+      "Verification": [
+        "show_ip_bgp_summary  - নেইবারশিপের বর্তমান অবস্থা এবং কতগুলো রুট রিসিভ হয়েছে তা চেক করার প্রধান কমান্ড।",
+        "show_ip_bgp - বিজিবি-র মূল ডেটাবেস বা RIB (Routing Information Base) দেখার জন্য ব্যবহৃত হয়।"
+      ]
+    },
+    "m19s2": {
+      "BGP Feature overview": "BGP কোনো সাধারণ রাউটিং প্রোটোকল নয়, এটি একটি রিচ ফিচার-সেট সমৃদ্ধ 'Policy-based' প্রোটোকল। এর ফিচারগুলো মূলত বিশাল স্কেলের নেটওয়ার্ক এবং জটিল বিজনেস পলিসি হ্যান্ডেল করার জন্য তৈরি।",
+      "Key Features": {
+        "Path Vector Scalability": "ইন্টারনেটের ১ মিলিয়নের বেশি রুট (Full Routing Table) বিজিবি প্রসেস করতে পারে, যা OSPF বা EIGRP-এর পক্ষে অসম্ভব। এটি মেমরিতে রুটগুলোকে দক্ষতার সাথে ম্যানেজ করে।",
+        "Policy Based Routing": "ব্যান্ডউইথের ওপর ভিত্তি করে নয়, বরং 'ট্রাস্ট' এবং 'চুক্তি'র ওপর ভিত্তি করে ডেটা পাঠানো হয়। যেমন: 'আমার ডেটা যেন কখনই AS 500 পার না হয়'—এই ধরনের পলিসি শুধুমাত্র বিজিবি-তে সম্ভব।",
+        "Reliability via TCP": "BGP পোর্ট ১৭৯ ব্যবহার করে TCP কানেকশন তৈরি করে। এর ফলে বিজিবি-কে আলাদা করে কোনো 'Error Recovery' বা 'Acknowledgment' মেকানিজম তৈরি করতে হয় না, সব কাজ TCP সামলায়।",
+        "Incremental and Triggered Updates": "বিজিবিতে কোনো 'Periodic Update' নেই। একবার রুট সিংক্রোনাইজ হয়ে গেলে, শুধুমাত্র যখন কোনো রুট ডাউন হয় বা নতুন রুট আসে (Triggered), তখনই প্যাকেট পাঠানো হয়।",
+        "Path Attributes": "মেট্রিকের বদলে এখানে Weight, Local Preference, AS-Path, MED ইত্যাদি ১১টিরও বেশি অ্যাট্রিবিউট ব্যবহার করে ট্রাফিক কন্ট্রোল করা যায়।",
+        "Loop suppression Mechanism": "প্রতিটি আপডেটে 'AS_PATH' লিস্ট থাকে। রাউটার যদি সেই লিস্টে নিজের AS নম্বর দেখে, তবে সে তৎক্ষণাৎ রুটটি ড্রপ করে দেয়।",
+        "Classless Support and CIDR": "এটি CIDR (Classless Inter-Domain Routing) এবং VLSM পূর্ণাঙ্গভাবে সাপোর্ট করে। এটি হাজার হাজার ছোট নেটওয়ার্ককে একটি বড় ব্লকে 'Summarize' বা 'Aggregate' করতে পারে।",
+        "Multi_Protocol_BGP_MP_BGP": "একই বিজিবি সেশন দিয়ে IPv4, IPv6, এবং VPNv4 (MPLS) রুট আদান-প্রদান করার ক্ষমতা।",
+        "Route_Flap_Dampening": "যদি কোনো লিংক বারবার আপ-ডাউন (Flapping) করে, তবে বিজিবি সেই রুটটিকে নির্দিষ্ট সময়ের জন্য পেনাল্টি দিয়ে বসিয়ে রাখে যাতে পুরো ইন্টারনেট স্ট্যাবল থাকে।",
+        "Soft_Reconfiguration": "নেইবারশিপ না কেটেই নতুন কনফিগারেশন বা ফিল্টারিং পলিসি অ্যাপ্লাই করার ক্ষমতা।",
+        "Configuration ": [
+          "Router-01 (ISP Backbone)",
+          "router bgp 100",
+          " no synchronization (আইজিপি-র সাথে সিংক্রোনাইজ করার দরকার নেই, এটি কনভারজেন্স ফাস্ট করে)",
+          " bgp log-neighbor-changes (নেইবার আপ বা ডাউন হলে সাথে সাথে লগ মেসেজ দিবে)",
+          " neighbor 10.1.1.2 remote-as 200",
+          " network 103.10.10.0 mask 255.255.255.0 (সঠিক মাস্ক সহ রুট ডিক্লেয়ার করা)",
+          " neighbor 10.1.1.2 description CONNECTION_TO_ISP_2",
+          " exit\n\n\n\n",
+          "Router-01 (ISP Side)",
+          "router bgp 200",
+          " no synchronization (সিংক্রোনাইজ করার দরকার নেই, এটি কনভারজেন্স ফাস্ট করে)",
+          " bgp log-neighbor-changes (নেইবার আপ বা ডাউন হলে সাথে সাথে লগ মেসেজ দিবে)",
+          " neighbor 11.1.1.2 remote-as 100",
+          " network 103.10.11.0 mask 255.255.255.0 (সঠিক মাস্ক সহ রুট ডিক্লেয়ার করা)",
+          " neighbor 11.1.1.2 description CONNECTION_TO_Client",
+          " exit"
+        ],
+        "Verification_and_Analysis": [
+          "show ip bgp - বিজিবি-র সব ফিচার এবং অ্যাট্রিবিউটসহ টেবিল দেখার জন্য।",
+          "show ip bgp neighbors - নেইবারের ডিটেইল ফিচার সাপোর্ট (যেমন: Route Refresh, Multi-protocol) দেখার জন্য।"
+        ]
+      }
+    },
+    "m19s3": {
+      "Introduction of AS": "Autonomous System (AS) হলো ইন্টারনেটের একেকটি স্বাধীন রাষ্ট্র। প্রতিটি AS-এর নিজস্ব রাউটিং পলিসি এবং অ্যাডমিনিস্ট্রেশন থাকে। BGP মূলত এই রাষ্ট্রগুলোর মধ্যে একটি ডিপ্লোম্যাটিক পাসপোর্টের মতো কাজ করে।",
+      "AS_Core_Definition": [
+        "Technical_Meaning:- A collection of IP networks and routers under the control of one or more network operators that presents a common routing policy to the Internet.\n\n\n",
+        "Simplified_Meaning:- সহজ কথায়, একটি আইএসপি (ISP), বড় ইউনিভার্সিটি বা টেক জায়ান্ট (যেমন: Google, Meta) এর পুরো নেটওয়ার্ক একটি ইউনিক AS নম্বরের অধীনে থাকে।"
+      ],
+      "AS Number Format": [
+        "2 Byte AS umber\n",
+          "range:- 1 - 65,535",
+          "bits:- 16-bit number",
+          "description:- এটি আদিম স্ট্যান্ডার্ড। ইন্টারনেটের প্রসারের ফলে এই রেঞ্জটি দ্রুত ফুরিয়ে আসছিল।\n\n",
+          "4_Byte_AS_Number",
+          "range:- 65,536 - 4,294,967,295",
+          "bits:- 32-bit number",
+          "description:- আধুনিক স্ট্যান্ডার্ড। বর্তমানে আইএএনএ (IANA) এই রেঞ্জ থেকেই নতুন এএস নম্বর বরাদ্দ দিচ্ছে।"
+      ],
+      "AS Categories": {
+        "Public_AS":[
+          "range:- 1 - 64,511",
+          "purpose:- গ্লোবাল ইন্টারনেটে রাউটিং করার জন্য এটি বাধ্যতামূলক।",
+          "allocation:- এটি RIR (যেমন: এশিয়া প্যাসিফিকের জন্য APNIC) থেকে টাকা দিয়ে কিনতে হয়।"
+        ],
+        "Private_AS": [
+          "range:- 64,512 - 65,535",
+          "purpose:- নিজের ল্যাব, ইন্টারনাল অফিস বা ছোট কাস্টমার নেটওয়ার্কের জন্য ফ্রিতে ব্যবহার করা হয়।",
+          "limitation:- ইন্টারনেটে যাওয়ার আগে এই এএস নম্বরটি অবশ্যই রিমুভ (Strip) করতে হয়, নাহলে গ্লোবাল রাউটিংয়ে কনফ্লিক্ট হবে।"
+        ]
+      },
+      "AS Architecture types": [
+        "Stub AS:- যেখানে মাত্র একটি কানেকশন থাকে অন্য কোনো AS-এর সাথে (যেমন: একটি ছোট অফিস)।",
+        "Multihomed AS:- যেখানে দুই বা ততোধিক আইএসপির সাথে কানেকশন থাকে রিডান্ডেন্সির জন্য।",
+        "Transit AS:- েখানে একটি AS অন্য দুটি AS-এর মধ্যে ট্রাফিক পাস করার পারমিশন দেয় (যেমন: বড় বড় টায়ার-১ আইএসপি)।"
+      ],
+      "IANA and RIR Hierarchy": {
+        "level_1": "IANA (Internet Assigned Numbers Authority) - গ্লোবাল হেডকোয়ার্টার।",
+        "level_2": "RIR (Regional Internet Registry) - যেমন: APNIC (Asia), ARIN (North America)।",
+        "level_3": "NIR/LIR (National/Local Internet Registry) - স্থানীয় আইএসপি যারা কাস্টমারকে এএস নম্বর দেয়।"
+      },
+      "Configuration Lab Setup": {
+        "Scenario": "Private AS 65001-এ বিজিবি প্রসেস রান করা এবং রাউটার আইডি সেট করা।",
+        "commands": [
+          "Router-Edge (Internal Lab)",
+          "router bgp 65001 (Private AS ব্যবহার করে বিজিবি শুরু)",
+          " bgp router-id 10.10.10.1",
+          " neighbor 103.10.10.2 remote-as 100 (পাবলিক আইএসপির সাথে পিয়ারিং)",
+          " ! Private AS রিমুভ করার কমান্ড (ISP রাউটারে থাকে)",
+          " neighbor 10.10.10.2 remove-private-as",
+          " exit"
+        ]
+      },
+      "Verification_Commands": [
+        "show ip bgp summary - নিজের এবং নেইবারের এএস নম্বর চেক করার জন্য।",
+        "show ip bgp - রাউটিং টেবিলে AS_PATH লিস্ট দেখার জন্য।"
+      ]
+    },
+    "m19s4": {
+      "Introduction of Path Attributes": "BGP-তে 'Best Path' নির্বাচনের জন্য কোনো একক মেট্রিক (Cost/Hop) নেই। বরং এটি কতগুলো বৈশিষ্ট্যের (Attributes) ওপর নির্ভর করে। এই Attributes-গুলোই ঠিক করে ট্রাফিক কোন দিক দিয়ে ঢুকবে আর কোন দিক দিয়ে বের হবে।",
+      "Attributes Internal Details": {
+        "Weight": {
+          "nature": "Cisco Proprietary",
+          "scope": "Local to the router (অন্য কোনো রাউটারে পাস হয় না)।",
+          "default_value": "Locally originated routes-এর জন্য 32768, অন্যদের জন্য 0।",
+          "logic": "Higher is Better।",
+          "use_case": "যখন একটি রাউটার দুটি ভিন্ন ISP-র সাথে যুক্ত থাকে, তখন নির্দিষ্ট ISP-কে পছন্দ করার জন্য এটি ব্যবহৃত হয়।"
+        },
+        "Local_Preference": {
+          "nature": "Well-known Discretionary",
+          "scope": "Internal to the AS (পুরো Autonomous System-এ ছড়িয়ে পড়ে)।",
+          "default_value": "100",
+          "logic": "Higher is Better।",
+          "use_case": "পুরো কোম্পানি বা AS থেকে বাইরে বের হওয়ার (Exit Path) জন্য কোন গেটওয়ে সেরা তা নির্ধারণ করে।"
+        },
+        "AS Path": {
+          "nature": "Well-known Mandatory",
+          "scope": "End-to-End (ইন্টারনেটের এক মাথা থেকে অন্য মাথায় যায়)।",
+          "logic": "Shortest Path is Better (কম AS মানেই ভালো রাস্তা)।",
+          "mechanism": "লুপ আটকানোর জন্য রাউটার যখন নিজের AS নম্বর AS_PATH লিস্টে দেখে, তখন সে রুটটি রিজেক্ট করে।"
+        },
+        "Origin": {
+          "nature": "Well-known Mandatory",
+          "types": {
+            "IGP (i)": "Network কমান্ডের মাধ্যমে আসা রুট (সবচেয়ে পছন্দের)।",
+            "EGP (e)": "পুরানো প্রোটোকল থেকে আসা (বর্তমানে ব্যবহৃত হয় না)।",
+            "Incomplete (?)": "Redistribution-এর মাধ্যমে আসা রুট (সবচেয়ে কম পছন্দের)।"
+          }
+        },
+        "MED Multi Exit Discriminator": {
+          "nature": "Optional Non-transitive",
+          "scope": "Between adjacent AS (শুধুমাত্র পাশের AS-কে ইনফ্লুয়েন্স করে)।",
+          "default_value": "0",
+          "logic": "Lower is Better।",
+          "use_case": "বাইরের দুনিয়াকে বলা—'আমার ঘরে ঢোকার জন্য এই ছোট মেট্রিকের রাস্তাটি ব্যবহার করো' (Entry Path)।"
+        }
+      },
+      "Dual End Configuration Lab": {
+        "topology_logic": "Router_A (Customer AS 600) <---> Router_B (ISP AS 200)",
+        "goal": "আমরা Router_A থেকে Weight এবং Local Preference সেট করব এবং Router_B-কে MED পাঠিয়ে ইনবাউন্ড ট্রাফিক কন্ট্রোল করব।",
+        "Router_A_Customer_Config": [
+          "!",
+          "router bgp 600",
+          " bgp router-id 1.1.1.1",
+          " neighbor 192.168.1.2 remote-as 200",
+          " !",
+          " ! -- Weight ও Local Preference সেট করা (Inbound Policy for Outbound Traffic) --",
+          " neighbor 192.168.1.2 route-map PREFER_ISP_IN in",
+          " !",
+          " ! -- MED সেট করা (Outbound Policy for Inbound Traffic) --",
+          " neighbor 192.168.1.2 route-map SEND_MED_OUT out",
+          " network 10.10.10.0 mask 255.255.255.0",
+          " exit",
+          "!",
+          "route-map PREFER_ISP_IN permit 10",
+          " set weight 500 (Cisco Local)",
+          " set local-preference 300 (AS Wide)",
+          "!",
+          "route-map SEND_MED_OUT permit 10",
+          " set metric 50 (পাশের AS-কে রিকোয়েস্ট পাঠানো)"
+        ],
+        "Router_B_ISP_Config": [
+          "!",
+          "router bgp 200",
+          " bgp router-id 2.2.2.2",
+          " neighbor 192.168.1.1 remote-as 600",
+          " !",
+          " ! ISP সাধারণত কাস্টমারের পাঠানো MED রিসিভ করে এবং AS_PATH দেখে",
+          " neighbor 192.168.1.1 description CUSTOMER_CONNECTION",
+          " network 100.100.100.0 mask 255.255.255.0",
+          " exit"
+        ]
+      },
+      "Technical Verification": {
+        "command_1": "show ip bgp - এই টেবিলে 'LocPrf' এবং 'Weight' কলাম দুটি খুব ভালো করে লক্ষ্য করুন।",
+        "command_2": "show ip bgp 10.10.10.0 - স্পেসিফিক রুটের ডিটেইলস দেখলে 'Metric' (MED) এবং 'Origin' দেখা যাবে।",
+        "command_3": "clear ip bgp * soft - পলিসি সেট করার পর সেশন রিসেট না করে আপডেট অ্যাপ্লাই করার জন্য।"
+      },
+      "Critical Deep Note": {
+        "Weight_vs_LocalPref": "Weight শুধুমাত্র একটি রাউটারে কাজ করে, কিন্তু Local Preference আপনার অফিসের সব রাউটারে কাজ করে।",
+        "MED_vs_AS_Path": "MED পাশের AS-কে রিকোয়েস্ট করে, কিন্তু তারা তা না মানলে AS_PATH PREPEND করে জোর করে পাথ লম্বা করে দিতে হয়।"
+      }
+    },
+    "m19s5": {
+      "Introduction of Route Selection": "BGP কোনো 'Load Balancing' প্রোটোকল নয়; এটি ডিফল্টভাবে একটি গন্তব্যের জন্য শুধুমাত্র একটি সেরা পথ (Best Path) বেছে নেয়। এই সেরা পথটি খুঁজে বের করার জন্য বিজিবি ১৩টি ধাপের একটি কঠোর টাই-ব্রেকার (Tie-breaker) নিয়ম মেনে চলে।",
+
+      "BGP_Best_Path_Algorithm_Steps": {
+        "Weight": "Cisco Proprietary. রাউটারের নিজস্ব লোকাল ভ্যালু। Higher is Better।",
+        "Local Preference": "পুরো AS-এর জন্য। Higher is Better।",
+        "Locally Originated": "নিজ রাউটারে তৈরি রুট (Network/Redistribute) অন্য রাউটার থেকে পাওয়া রুটের চেয়ে শ্রেষ্ঠ।",
+        "AS Path": "সবচেয়ে কম দৈর্ঘ্যের AS_PATH। Shortest is Better।",
+        "Origin Type": "IGP (i) < EGP (e) < Incomplete (?)।",
+        "MED": "পাশের AS থেকে আসা মেট্রিক। Lowest is Better।",
+        "Neighbor Type": "EBGP রুট সবসময় IBGP রুটের চেয়ে বেশি পছন্দের।",
+        "IGP Metric": "BGP Next-hop-এ পৌঁছাতে যার IGP কস্ট (OSPF/Static) কম, সে জয়ী হবে।",
+        "Multipath": "যদি বিজিবি মাল্টিপাথ এনাবল থাকে, তবে এটি লোড শেয়ার করবে (নাহলে পরবর্তী ধাপে যাবে)।",
+        "Oldest Path": "সবচেয়ে পুরনো এবং স্থিতিশীল (Stable) EBGP রুট।",
+        "Router ID": "যার Router-ID (IP address) সবচেয়ে ছোট।",
+        "Cluster List": "Route Reflector থাকলে যার ক্লাস্টার লিস্ট ছোট।",
+        "Neighbor IP": "সবশেষে, যার নেইবার আইপি অ্যাড্রেস সবচেয়ে ছোট।"
+      },
+
+      "Dual End Configuration Lab": {
+        "topology_logic": "Router_A (AS 100) and Router_B (AS 100) connected to Router_C (AS 200).",
+        "goal": "আমরা Router_C থেকে চেক করব কীভাবে Route Selection কাজ করে এবং দুটি পাথের মধ্যে একটিকে ম্যানিপুলেট করব।",
+
+        "Router_A_Edge_ISP": [
+          "!",
+          "router bgp 100",
+          " neighbor 10.1.1.2 remote-as 200",
+          " network 100.100.100.0 mask 255.255.255.0",
+          " !",
+          " ! ISP-A চাচ্ছে তার রুটটি যেন কম পছন্দের হয়, তাই সে AS-Path Prepend করছে",
+          " route-map PREPEND_OUT permit 10",
+          "  set as-path prepend 100 100 100",
+          " !",
+          " neighbor 10.1.1.2 route-map PREPEND_OUT out"
+        ],
+
+        "Router_C_Customer_Core": [
+          "!",
+          "router bgp 200",
+          " neighbor 10.1.1.1 remote-as 100 (ISP-A)",
+          " neighbor 10.2.2.1 remote-as 100 (ISP-B)",
+          " !",
+          " ! --- Selection Manipulation ---",
+          " ! ISP-B থেকে আসা রুটকে আমরা Local Preference দিয়ে সেরা বানাবো",
+          " route-map PREFER_ISP_B permit 10",
+          "  set local-preference 500",
+          " !",
+          " neighbor 10.2.2.1 route-map PREFER_ISP_B in",
+          " exit"
+        ]
+      },
+
+      "Deep Dive Analysis": {
+        "Weight_vs_LocPrf": "রাউটার প্রথমে Weight চেক করে। যদি Weight কনফিগার করা না থাকে (বা সমান হয়), তবেই সে Local Preference চেক করতে যায়।",
+        "Breaking_the_Tie": "যদি আপনি দেখেন আপনার রাউটারে একটি রুটের পাশে '>' চিহ্ন নেই, তার মানে এটি 'Best Path' হিসেবে সিলেক্ট হয়নি। 'show ip bgp' কমান্ড দিয়ে চেক করুন কোন ধাপে এসে এটি আটকে গেছে।",
+        "Next_Hop_Rule": "সব সিলেকশনের আগে BGP চেক করে 'Next-hop' রিচেবল কি না। নেক্সট-হপ রিচেবল না হলে উপরের ১৩টি ধাপের কোনোটিই কাজ করবে না।"
+      },
+
+      "Verification": {
+        "command_1": "show ip bgp - বিজিবি টেবিল দেখে সেরা রুট (>) খুঁজে বের করা।",
+        "command_2": "show ip bgp 100.100.100.0 - নির্দিষ্ট রুটের জন্য কেন এটি সেরা (Best) হলো তার কারণ দেখা।",
+        "command_3": "show ip bgp neighbors x.x.x.x routes - নেইবার থেকে কী রুট আসছে তা দেখা।"
+      }
+    },
+    "m19s6": {
+      "Neighbors / Peers": "BGP-তে নেইবারশিপকে 'Peering' বলা হয়। এটি TCP পোর্ট ১৭৯-এর ওপর ভিত্তি করে একটি পয়েন্ট-টু-পয়েন্ট রিলেশনশিপ। বিজিবি নেইবারশিপ মানেই হলো দুটি রাউটারের মধ্যে একটি বিশ্বস্ত 'Trust' তৈরি করা।",
+      "BGP_Neighbor_Types": {
+        "EBGP External": {
+          "logic": "Peering between different Autonomous Systems (AS 100 to AS 200).",
+          "default ttl": "1 (সরাসরি কানেক্টেড থাকতে হয়)।",
+          "administrative distance": "20 (খুবই বিশ্বস্ত)।",
+          "next_hop": "অটোমেটিক্যালি নিজের আইপিকে নেক্সট-হপ হিসেবে সেট করে।"
+        },
+        "IBGP Internal": {
+          "logic": "Peering within the same Autonomous System (AS 100 to AS 100).",
+          "default ttl": "255 (মাঝখানে অন্য রাউটার থাকলেও সমস্যা নেই)।",
+          "administrative_distance": "200 (কম বিশ্বস্ত)।",
+          "split_horizon": "IBGP থেকে শেখা রুট অন্য IBGP নেইবারকে পাঠায় না (লুপ আটকাতে)।"
+        }
+      },
+      "BGP Finite State Machine FSM": {
+        "Idle": "প্রাথমিক অবস্থা। রাউটার নেইবারের দিকে রুট খুঁজছে বা এডমিন শাটডাউন হয়ে আছে।",
+        "Connect": "রাউটার TCP 3-way handshake করার চেষ্টা করছে।",
+        "Active": "TCP কানেকশন ফেইল করেছে। রাউটার পুনরায় চেষ্টা করছে। (এখানে আটকে থাকা মানে কনফিগারেশনে ভুল আছে)।",
+        "OpenSent": "TCP কানেকশন হয়েছে এবং রাউটার তার 'OPEN' মেসেজ পাঠিয়েছে।",
+        "OpenConfirm": "নেইবারের প্যারামিটার ম্যাচ করেছে। এখন শুধু Keepalive-এর অপেক্ষা।",
+        "Established": "সফল! এখন রুট আদান-প্রদান শুরু হবে।"
+      },
+      "Dual End Configuration Lab": {
+        "topology logic": "Router_A (AS 100) কানেক্ট হচ্ছে Router_B (AS 200) এর সাথে।",
+        "goal": "আমরা Loopback ইন্টারফেস ব্যবহার করে স্টেবল নেইবারশিপ কনফিগার করব।",
+
+        "RouterA ISP 1": [
+          "!",
+          "interface Loopback0",
+          " ip address 1.1.1.1 255.255.255.255",
+          "!",
+          "router bgp 100",
+          " bgp router-id 1.1.1.1",
+          " neighbor 2.2.2.2 remote-as 200",
+          " neighbor 2.2.2.2 update-source Loopback0 (প্যকেট লুপব্যাক থেকে বের হবে)",
+          " neighbor 2.2.2.2 ebgp-multihop 2 (যেহেতু সরাসরি আইপিতে নেইবারশিপ নয়)",
+          " neighbor 2.2.2.2 password MY_SECURE_KEY",
+          " exit"
+        ],
+        "Router B ISP 2": [
+          "!",
+          "interface Loopback0",
+          " ip address 2.2.2.2 255.255.255.255",
+          "!",
+          "router bgp 200",
+          " bgp router-id 2.2.2.2",
+          " neighbor 1.1.1.1 remote-as 100",
+          " neighbor 1.1.1.1 update-source Loopback0",
+          " neighbor 1.1.1.1 ebgp-multihop 2",
+          " neighbor 1.1.1.1 password MY_SECURE_KEY",
+          " exit"
+        ]
+      },
+      "Deep Dive Troubleshooting": {
+        "Why_Active_State": "যদি নেইবারশিপ 'Active' স্টেটে আটকে থাকে, তবে বুঝবেন: ১. IP Reachability নেই, ২. পোর্ট ১৭৯ ব্লক করা, ৩. ভুল AS নম্বর বা ভুল নেইবার আইপি।",
+        "The_Multihop_Rule": "EBGP-তে ডিফল্ট TTL ১ থাকে। যদি নেইবারশিপ লুপব্যাক দিয়ে করা হয়, তবে 'ebgp-multihop' কমান্ড ছাড়া নেইবারশিপ আপ হবে না।",
+        "Authentication": "BGP MD5 পাসওয়ার্ড সাপোর্ট করে। দুই পাশে পাসওয়ার্ড না মিললে নেইবারশিপ 'Idle' থেকে নড়বে না।"
+      },
+      "Verification_Commands": {
+        "command_1": "show ip bgp summary - নেইবারশিপের বর্তমান অবস্থা দেখার সেরা কমান্ড।",
+        "command_2": "show ip bgp neighbors x.x.x.x - নেইবারের সাথে কী কী প্যারামিটার আলোচনা (Negotiate) হয়েছে তা দেখার জন্য।",
+        "command_3": "telnet x.x.x.x 179 - চেক করা যে পোর্ট ১৭৯ খোলা আছে কি না।"
+      }
+    },
+    "m19s7": {
+      "Introduction": "BGP একটি 'Chatty' প্রোটোকল নয়। এটি অত্যন্ত ডিসিপ্লিনড ভাবে নির্দিষ্ট কিছু মেসেজের মাধ্যমে যোগাযোগ রক্ষা করে। প্রতিটি বিজিবি মেসেজের সামনে ১৯-বাইটের একটি ফিক্সড হেডার থাকে যা প্যাকেটের বৈধতা নিশ্চিত করে।",
+      "BGP_Message_Types": {
+        "1 OPEN Message": {
+          "purpose": "নেইবারশিপ বা পিয়ারিং শুরু করার প্রথম ধাপ।",
+          "Description": [
+            "Version: বর্তমানে বিজিবি-র ভার্সন ৪।",
+            "My AS: রাউটার নিজের Autonomous System নম্বর পাঠায়।",
+            "Hold Time: কতক্ষণ নেইবারের কাছ থেকে খবর না পেলে সেশন ডেড ঘোষণা করবে (Default 180s)।",
+            "BGP Identifier: রাউটার-আইডি (Router-ID)।",
+            "Optional Parameters: যেমন—IPv6 সাপোর্ট করে কি না বা রুট রিফ্রেশ ক্ষমতা আছে কি না।"
+          ]
+        },
+        "2 UPDATE Message": {
+          "purpose": "আসল রাউটিং তথ্য আদান-প্রদান করা। এটি বিজিবি-র সবচেয়ে জটিল প্যাকেট।",
+          "Description": [
+            "Withdrawn Routes: যে রুটগুলো এখন আর সচল নেই।",
+            "Path Attributes: AS-Path, Origin, Local Pref ইত্যাদি।",
+            "NLRI (Network Layer Reachability Info): প্রিফিক্স এবং সাবনেট মাস্ক।"
+          ]
+        },
+        "3 KEEPALIVE Message": {
+          "purpose": "সেশন সচল আছে কি না তা নিশ্চিত করা।",
+          "mechanics": "এটি মাত্র ১৯ বাইটের একটি প্যাকেট (শুধু হেডার)।",
+          "frequency": "ডিফল্টভাবে প্রতি ৬০ সেকেন্ডে পাঠানো হয়। এটি হোল্ড টাইমারের ১/৩ ভাগ হতে হয়।"
+        },
+        "4 NOTIFICATION Message": {
+          "purpose": "কোনো এরর বা ভুল হলে সেশন তৎক্ষণাৎ বন্ধ করে দেওয়া।",
+          "scenario": "ভুল পাসওয়ার্ড, ভুল AS নম্বর, বা হোল্ড টাইমার এক্সপায়ার হলে এই মেসেজটি পাঠিয়ে কানেকশন ড্রপ করা হয়।"
+        },
+        "5 ROUTE REFRESH Message": {
+          "purpose": "সেশন রিসেট না করেই নতুন করে রুট রিকোয়েস্ট করা। (এটি একটি অপশনাল ক্যাপাবিলিটি)।"
+        }
+      },
+      "Dual_End_Message_Control_Lab": {
+        "topology_logic": "Router_A (AS 100) <---> Router_B (AS 200)",
+        "goal": "আমরা বিজিবি টাইমার পরিবর্তনের মাধ্যমে Keepalive এবং Hold-time মেসেজের ফ্রিকোয়েন্সি কন্ট্রোল করব।",
+
+        "Router_A_Main_Node": [
+          "!",
+          "router bgp 100",
+          " neighbor 10.1.1.2 remote-as 200",
+          " !",
+          " ! --- মেসেজ টাইমার টিউনিং ---",
+          " ! Keepalive ১০ সেকেন্ড এবং Hold-time ৩০ সেকেন্ড সেট করছি",
+          " neighbor 10.1.1.2 timers 10 30",
+          " !",
+          " neighbor 10.1.1.2 description FASTER_DETECTION",
+          " exit"
+        ],
+
+        "Router_B_Remote_Node": [
+          "!",
+          "router bgp 200",
+          " neighbor 10.1.1.1 remote-as 100",
+          " !",
+          " ! বিজিবি সবসময় দুই পাশের মধ্যে 'Lowest Timer' টি বেছে নেয়।",
+          " ! তাই রাউটার বি-তে কনফিগার না করলেও সে ৩০ সেকেন্ড হোল্ড টাইম মেনে নিবে।",
+          " neighbor 10.1.1.1 description CONNECTION_TO_R1",
+          " exit"
+        ]
+      },
+      "Deep Dive Packet Analysis": {
+        "TCP Handshake First": "যেকোনো বিজিবি মেসেজ (OPEN) পাঠানোর আগে রাউটারকে অবশ্যই TCP Port 179 ব্যবহার করে 3-way handshake সম্পন্ন করতে হয়।",
+        "Update Optimization": "বিজিবি একই আপডেটে একাধিক রুট পাঠাতে পারে যদি তাদের 'Path Attributes' একই রকম হয়। এতে ব্যান্ডউইথ সাশ্রয় হয়।",
+        "Notification Codes": "যখন আপনি একটি Notification পান, তখন একটি Error Code থাকে (যেমন Code 2 মানে OPEN Message Error)।"
+      },
+      "Verification Commands": {
+        "command 1": "show ip bgp neighbors x.x.x.x - এখানে 'BGP state = Established' এবং কতগুলো মেসেজ আদান-প্রদান হয়েছে তা দেখা যায়।",
+        "command 2": "debug ip bgp keepalives - রিয়েল টাইমে কিপ-অ্যালাইভ মেসেজ আসা-যাওয়া দেখার জন্য।",
+        "command 3": "debug ip bgp updates - আপডেটের ভেতরে কী কী রুট আছে তা দেখার জন্য।"
+      }
+    }
   }
 }
