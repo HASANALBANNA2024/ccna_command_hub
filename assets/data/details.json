@@ -1007,7 +1007,7 @@
     }
   },
   "m19": {
-    "m19s1": {
+  "m19s1": {
       "module_name": "BGP Phase 1: The Global Postmaster (বিজিবি পরিচিতি)",
       "philosophy": "BGP শুধুমাত্র একটি রাউটিং প্রোটোকল নয়; এটি ইন্টারনেটের 'গভর্নেন্স' বা শাসন ব্যবস্থা। এটি ছাড়া এক দেশ থেকে অন্য দেশের আইএসপি-তে ডেটা পৌঁছানো অসম্ভব।",
       "Defination": "BGP হলো একমাত্র প্রোটোকল যা ইন্টারনেটের বিভিন্ন স্বায়ত্তশাসিত সিস্টেম (AS) বা বিশাল নেটওয়ার্কগুলোর মধ্যে যোগাযোগের সেতুবন্ধন তৈরি করে। এটি একটি Path Vector প্রোটোকল।",
@@ -1052,7 +1052,7 @@
         "show_ip_bgp - বিজিবি-র মূল ডেটাবেস বা RIB (Routing Information Base) দেখার জন্য ব্যবহৃত হয়।"
       ]
     },
-    "m19s2": {
+  "m19s2": {
       "BGP Feature overview": "BGP কোনো সাধারণ রাউটিং প্রোটোকল নয়, এটি একটি রিচ ফিচার-সেট সমৃদ্ধ 'Policy-based' প্রোটোকল। এর ফিচারগুলো মূলত বিশাল স্কেলের নেটওয়ার্ক এবং জটিল বিজনেস পলিসি হ্যান্ডেল করার জন্য তৈরি।",
       "Key Features": {
         "Path Vector Scalability": "ইন্টারনেটের ১ মিলিয়নের বেশি রুট (Full Routing Table) বিজিবি প্রসেস করতে পারে, যা OSPF বা EIGRP-এর পক্ষে অসম্ভব। এটি মেমরিতে রুটগুলোকে দক্ষতার সাথে ম্যানেজ করে।",
@@ -1089,7 +1089,7 @@
         ]
       }
     },
-    "m19s3": {
+  "m19s3": {
       "Introduction of AS": "Autonomous System (AS) হলো ইন্টারনেটের একেকটি স্বাধীন রাষ্ট্র। প্রতিটি AS-এর নিজস্ব রাউটিং পলিসি এবং অ্যাডমিনিস্ট্রেশন থাকে। BGP মূলত এই রাষ্ট্রগুলোর মধ্যে একটি ডিপ্লোম্যাটিক পাসপোর্টের মতো কাজ করে।",
       "AS_Core_Definition": [
         "Technical_Meaning:- A collection of IP networks and routers under the control of one or more network operators that presents a common routing policy to the Internet.\n\n\n",
@@ -1144,7 +1144,7 @@
         "show ip bgp - রাউটিং টেবিলে AS_PATH লিস্ট দেখার জন্য।"
       ]
     },
-    "m19s4": {
+  "m19s4": {
       "Introduction of Path Attributes": "BGP-তে 'Best Path' নির্বাচনের জন্য কোনো একক মেট্রিক (Cost/Hop) নেই। বরং এটি কতগুলো বৈশিষ্ট্যের (Attributes) ওপর নির্ভর করে। এই Attributes-গুলোই ঠিক করে ট্রাফিক কোন দিক দিয়ে ঢুকবে আর কোন দিক দিয়ে বের হবে।",
       "Attributes Internal Details": {
         "Weight": {
@@ -1229,7 +1229,7 @@
         "MED_vs_AS_Path": "MED পাশের AS-কে রিকোয়েস্ট করে, কিন্তু তারা তা না মানলে AS_PATH PREPEND করে জোর করে পাথ লম্বা করে দিতে হয়।"
       }
     },
-    "m19s5": {
+  "m19s5": {
       "Introduction of Route Selection": "BGP কোনো 'Load Balancing' প্রোটোকল নয়; এটি ডিফল্টভাবে একটি গন্তব্যের জন্য শুধুমাত্র একটি সেরা পথ (Best Path) বেছে নেয়। এই সেরা পথটি খুঁজে বের করার জন্য বিজিবি ১৩টি ধাপের একটি কঠোর টাই-ব্রেকার (Tie-breaker) নিয়ম মেনে চলে।",
 
       "BGP_Best_Path_Algorithm_Steps": {
@@ -1293,7 +1293,7 @@
         "command_3": "show ip bgp neighbors x.x.x.x routes - নেইবার থেকে কী রুট আসছে তা দেখা।"
       }
     },
-    "m19s6": {
+  "m19s6": {
       "Neighbors / Peers": "BGP-তে নেইবারশিপকে 'Peering' বলা হয়। এটি TCP পোর্ট ১৭৯-এর ওপর ভিত্তি করে একটি পয়েন্ট-টু-পয়েন্ট রিলেশনশিপ। বিজিবি নেইবারশিপ মানেই হলো দুটি রাউটারের মধ্যে একটি বিশ্বস্ত 'Trust' তৈরি করা।",
       "BGP_Neighbor_Types": {
         "EBGP External": {
@@ -1359,7 +1359,7 @@
         "command_3": "telnet x.x.x.x 179 - চেক করা যে পোর্ট ১৭৯ খোলা আছে কি না।"
       }
     },
-    "m19s7": {
+  "m19s7": {
       "Introduction": "BGP একটি 'Chatty' প্রোটোকল নয়। এটি অত্যন্ত ডিসিপ্লিনড ভাবে নির্দিষ্ট কিছু মেসেজের মাধ্যমে যোগাযোগ রক্ষা করে। প্রতিটি বিজিবি মেসেজের সামনে ১৯-বাইটের একটি ফিক্সড হেডার থাকে যা প্যাকেটের বৈধতা নিশ্চিত করে।",
       "BGP_Message_Types": {
         "1 OPEN Message": {
@@ -1432,7 +1432,7 @@
         "command 3": "debug ip bgp updates - আপডেটের ভেতরে কী কী রুট আছে তা দেখার জন্য।"
       }
     },
-    "m19s8": {
+  "m19s8": {
       "BGP Table Architecture & Memory Management": "BGP-র কর্মক্ষমতা নির্ভর করে তার তিনটি প্রধান টেবিলের ওপর। একে বলা হয় RIB (Routing Information Base) আর্কিটেকচার। যখন একটি রুট রাউটারে ঢোকে বা বের হয়, তখন তাকে তিনটি স্তর পার হতে হয়।",
 
       "BGP Three Table Architecture": {
@@ -1498,7 +1498,7 @@
         "Memory Warning": "লক্ষ লক্ষ ইন্টারনেট রুট Adj-RIB-In এ সেভ করে রাখলে রাউটারের র‍্যাম (RAM) ক্র্যাশ করতে পারে। তাই প্রোডাকশনে 'Route Refresh' ফিচার ব্যবহার করা উত্তম।"
       }
     },
-    "m18s9": {
+  "m18s9": {
       "Introduciton of Configuration": "BGP কনফিগারেশন মানে শুধু নেইবারশিপ নয়, বরং সঠিক সোর্স ইন্টারফেস এবং এএস (AS) নম্বর নিশ্চিত করা। প্রোডাকশন নেটওয়ার্কে স্ট্যাবিলিটির জন্য সরাসরি ইন্টারফেসের বদলে লুপব্যাক ইন্টারফেস ব্যবহার করা হয়।",
       "BGP Configuration Categories": {
         "Type 1 EBGP Physical": "সরাসরি কানেক্টেড ফিজিক্যাল ইন্টারফেসের মাধ্যমে ভিন্ন AS-এ নেইবারশিপ।",
@@ -1582,7 +1582,7 @@
         "step 3": "ping <prefix> source <loopback_ip> - কানেক্টিভিটি টেস্ট করার জন্য।"
       }
     },
-    "m19s10":{
+  "m19s10":{
       "BGP Route Filtering & Policy Control": "BGP ফিল্টারিং হলো আপনার নেটওয়ার্কের গেটকিপার। এটি ছাড়া আপনার রাউটার ইন্টারনেটের সব রুট রিসিভ করে হ্যাং হয়ে যেতে পারে। ফিল্টারিং মূলত তিনটি স্তরে কাজ করে: ১. আইপি প্রিফিক্স, ২. এএস-পাথ লিস্ট, এবং ৩. রুট-ম্যাপ (সবকিছুর মিশ্রণ)।",
       "BGP Filtering Methods": {
         "1 Prefix Lists": {
@@ -1649,7 +1649,7 @@
         "command 3": "clear ip bgp * soft - ফিল্টার চেঞ্জ করলে সেশন রিসেট না করে রুট সিংক্রোনাইজ করা।"
       }
     },
-    "m19s11":{
+  "m19s11":{
       "BGP Attributes Manipulation (Traffic Engineering)": "বিজিবিতে ট্রাফিক কন্ট্রোল করার দুটি দিক আছে: ১. আউটবাউন্ড (আমি কোন দিক দিয়ে বের হবো) এবং ২. ইনবাউন্ড (বাইরের পৃথিবী আমার কাছে কোন দিক দিয়ে ঢুকবে)। এই মডিউলে আমরা শিখব কীভাবে 'Route-map' ব্যবহার করে এই ডিসিশনগুলো পরিবর্তন করা যায়।",
       "Manipulation Strategies": {
         "Outbound Traffic Control": {
@@ -1716,7 +1716,7 @@
       },
       "Golden Rule": "Inbound ট্রাফিক কন্ট্রোল করা (AS-Path/MED) সবসময় কঠিন, কারণ এটি অন্য কারো (ISP) ডিসিশনের ওপর নির্ভর করে। কিন্তু Outbound (Local Pref) আপনার নিজের হাতে।"
     },
-    "m19s12":{
+  "m19s12":{
       "BGP Route Aggregation & Summarization": "ইন্টারনেটের রাউটিং টেবিল বর্তমানে ১ মিলিয়নের বেশি রুট বহন করছে। যদি প্রতিটি ছোট ছোট সাবনেট (যেমন /২৪) আলাদাভাবে পাঠানো হয়, তবে রাউটার ক্র্যাশ করবে। BGP এগ্রিগেশন এই হাজার হাজার রুটকে একটি বড় ব্লকে (যেমন /১৬) রূপান্তর করে ইন্টারনেটের লোড কমায়।",
       "Core Aggregation Concepts": {
         "1 Aggregate Address": "বিজিবি-তে 'aggregate-address' কমান্ড ব্যবহার করে ছোট রুটগুলোকে একটি বড় সামারি রুটে রূপান্তর করা হয়।",
@@ -1766,7 +1766,7 @@
       },
       "Common Interview Question": "কেন as-set ব্যবহার করা জরুরি? উত্তর: as-set ছাড়া সামারি রুটটি মনে হয় যেন এই রাউটারেই তৈরি হয়েছে। এটি অরিজিনাল AS-PATH মুছে ফেলে, ফলে নেটওয়ার্কে লুপ হওয়ার ঝুঁকি তৈরি হয়।"
     },
-    "m19s13":{
+  "m19s13":{
       "BGP Communities (Tagging & Policy Grouping)": "BGP কমিউনিটি হলো রুটের গায়ে লাগানো একটি স্টিকারের মতো। এর মাধ্যমে আমরা রুটগুলোকে ক্যাটাগরি অনুযায়ী ভাগ করি (যেমন: 'Customer Routes', 'Local Routes', 'Do Not Advertise')। এটি জটিল আইপি লিস্টের বদলে শুধুমাত্র একটি ট্যাগ দিয়ে পুরো নেটওয়ার্ক কন্ট্রোল করতে সাহায্য করে।",
       "BGP Community Formats": {
         "Standard Format": "32-bit number (যেমন: 6553600)",
@@ -1826,7 +1826,67 @@
       },
       "Critical Note": "মনে রাখবেন, BGP ডিফল্টভাবে কমিউনিটি এট্রিবিউট নেইবারকে পাঠায় না। 'neighbor x.x.x.x send-community' কমান্ডটি না দিলে কোনো কমিউনিটি পলিসি কাজ করবে না।"
     },
-    "m19s14":{
+  "m19s14":{
+      "BGP Route Reflector": "IBGP-র প্রধান নিয়ম হলো—এক নেইবার থেকে শেখা রুট অন্য নেইবারকে দেওয়া যাবে না (Split Horizon)। এই সমস্যা সমাধানের জন্য ফুল-মেশ করতে হয়, যা বড় নেটওয়ার্কে অসম্ভব। Route Reflector এই নিয়ম ভেঙে একটি সেন্ট্রাল হাবে পরিণত হয়, যা রুট রিসিভ করে সবার কাছে 'রিফ্লেক্ট' বা প্রচার করে।",
+      "RR Architecture Components": {
+        "1 Route_Reflector RR": "সেন্ট্রাল রাউটার যা রুট রিফ্লেক্ট করার ক্ষমতা রাখে।",
+        "2 RR Client": "যে রাউটারগুলো RR-এর সাথে পিয়ারিং করে এবং RR-এর মাধ্যমে রুট পায়।",
+        "3 Non Client": "সাধারণ IBGP নেইবার যারা RR-এর সাথে যুক্ত কিন্তু রিফ্লেকশন সুবিধার বাইরে।"
+      },
+
+      "Reflection Rules Internal Logic": {
+        "Rule 1": "যদি রুটটি EBGP নেইবার থেকে আসে -> RR সেটি Client এবং Non-Client সবার কাছে পাঠাবে।",
+        "Rule 2": "যদি রুটটি Client থেকে আসে -> RR সেটি Non-Client এবং অন্য সব Client-কে পাঠাবে।",
+        "Rule 3": "যদি রুটটি Non-Client থেকে আসে -> RR সেটি শুধুমাত্র Client-দের পাঠাবে (Non-Client কে নয়)।"
+      },
+
+      "Dual End RR Configuration Lab": {
+        "topology logic": "Router_RR (Server) <---> Router_Client (AS 100)",
+        "goal": "Router_RR কে সার্ভার হিসেবে সেট করা যেন সে Client-এর রুটগুলো অন্যদের কাছে রিফ্লেক্ট করতে পারে।",
+
+        "Router A Route Reflector Server": [
+          "!",
+          "router bgp 100",
+          " bgp router-id 1.1.1.1",
+          " neighbor 2.2.2.2 remote-as 100",
+          " neighbor 2.2.2.2 update-source Loopback0",
+          " !",
+          " ! --- RR কনফিগারেশন কমান্ড ---",
+          " ! নিচের কমান্ডটি এই রাউটারকে সার্ভার এবং ২.২.২.২ কে ক্লায়েন্ট বানাবে",
+          " neighbor 2.2.2.2 route-reflector-client",
+          " exit"
+        ],
+
+        "Router B RR Client": [
+          "!",
+          "router bgp 100",
+          " bgp router-id 2.2.2.2",
+          " neighbor 1.1.1.1 remote-as 100",
+          " neighbor 1.1.1.1 update-source Loopback0",
+          " !",
+          " ! ক্লায়েন্ট সাইডে কোনো স্পেশাল কমান্ড লাগে না। ",
+          " ! ক্লায়েন্ট একে সাধারণ IBGP নেইবারশিপ হিসেবেই দেখে।",
+          " exit"
+        ]
+      },
+
+      "Loop Prevention Mechanisms": {
+        "Originator ID": "যে ক্লায়েন্ট প্রথম রুটটি পাঠিয়েছে তার রাউটার আইডি। যদি সে নিজের আইডি রুটে দেখে, তবে লুপ মনে করে ড্রপ করে।",
+        "Cluster List": "রুটটি কোন কোন RR পার হয়ে এসেছে তার লিস্ট। RR যদি নিজের ক্লাস্টার আইডি লিস্টে দেখে, তবে রুটটি গ্রহণ করে না।"
+      },
+
+      "Pros and Cons": {
+        "Advantages": "কনফিগারেশন সহজ, ফুল-মেশ লাগে না, রাউটারের CPU/RAM বাঁচে।",
+        "Disadvantages": "RR ডাউন হলে পুরো নেটওয়ার্কের রুট আদান-প্রদান বন্ধ হয়ে যেতে পারে (সমাধান: Dual RR ব্যবহার করা)।"
+      },
+
+      "VerificationCommands": {
+        "command 1": "show ip bgp neighbors 2.2.2.2 - নেইবার ডিটেইলসে সে ক্লায়েন্ট কি না তা দেখা যাবে।",
+        "command 2": "show ip bgp 10.10.10.0 - রুটের ভেতরে 'Originator' এবং 'Cluster-list' অ্যাট্রিবিউট চেক করা।",
+        "command 3": "show ip bgp cluster-id - রাউটারের নিজস্ব ক্লাস্টার আইডি দেখা।"
+      }
+    },
+  "m19s15":{
       "BGP Confederation (Scaling the Giant AS)": "BGP কনফেডারেশন হলো একটি বিশাল সাম্রাজ্যকে ছোট ছোট প্রদেশে ভাগ করার মতো। বাইরের দুনিয়া শুধু একটি বড় 'Public AS' দেখবে, কিন্তু ভেতরে রাউটারগুলো ছোট ছোট 'Private AS' ব্যবহার করে একে অপরের সাথে কথা বলবে। এটি IBGP Full-Mesh-এর প্রয়োজনীয়তা কমিয়ে দেয়।",
       "Core Confederation Concepts": {
         "1 Public AS": "এটি হলো মেইন এএস নম্বর যা গ্লোবাল ইন্টারনেটে পরিচিত (যেমন: AS 100)।",
@@ -1874,6 +1934,2138 @@
         "command 2": "show ip bgp summary - নেইবারশিপ কনফেডারেশন স্টাইলে আপ হয়েছে কি না তা চেক করা।",
         "command 3": "show ip bgp neighbors x.x.x.x - নেইবারের ডিটেইলসে সাব-এএস এর তথ্য দেখা।"
       }
+    },
+  "m19s16":{
+      "BGP Multi-hop & Timers": "BGP ডিফল্টভাবে মনে করে EBGP নেইবার সরাসরি তার দিয়ে যুক্ত (TTL=1)। কিন্তু যখন আমরা লুপব্যাক বা কয়েক হপ দূরের রাউটারের সাথে পিয়ারিং করি, তখন Multi-hop প্রয়োজন হয়। আবার নেটওয়ার্ক দ্রুত ডাউন হয়েছে কি না তা বোঝার জন্য Timers টিউন করা হয়।",
+      "1 BGP Multi hop Mechanism": {
+        "The TTL Problem": "EBGP প্যাকেটের TTL (Time To Live) ডিফল্টভাবে ১ থাকে। যদি নেইবার ১ হপের বেশি দূরে থাকে, তবে প্যাকেট সেখানে পৌঁছানোর আগেই ড্রপ হয়ে যায়।",
+        "The Solution": "'ebgp-multihop' কমান্ড ব্যবহার করে TTL ভ্যালু ১ থেকে বাড়িয়ে ২৫৫ পর্যন্ত করা যায়।",
+        "Use Case": "যখন লুপব্যাক ইন্টারফেস দিয়ে EBGP নেইবারশিপ করা হয় অথবা মাঝখানে কোনো ফায়ারওয়াল বা রাউটার থাকে।"
+      },
+      "2 BGP Timers Deep Dive": {
+        "Keepalive Timer": {
+          "definition": "নেইবারকে পাঠানো 'I am alive' মেসেজ।",
+          "default": "60 Seconds"
+        },
+        "Hold Timer": {
+          "definition": "কতক্ষণ পর্যন্ত নেইবারের খবর না পেলে সেশন ডাউন ঘোষণা করা হবে।",
+          "default": "180 Seconds (Keepalive-এর ৩ গুণ হতে হয়)।"
+        },
+        "Advertisement Interval": {
+          "definition": "একটি রুট পাঠানোর পর পরবর্তী আপডেটের জন্য কতক্ষণ অপেক্ষা করবে।",
+          "default": "EBGP-তে ৩০ সেকেন্ড, IBGP-তে ৫ সেকেন্ড।"
+        }
+      },
+
+      "Dual End Configuration Lab": {
+        "topology logic": "Router_A (AS 100) <---> [Cloud/Intermediate] <---> Router_B (AS 200)",
+        "goal": "লুপব্যাক টু লুপব্যাক EBGP সেশন তৈরি করা এবং ফাস্ট কনভারজেন্সের জন্য টাইমার কমানো।",
+
+        "Router A Main Site": [
+          "!",
+          "router bgp 100",
+          " neighbor 2.2.2.2 remote-as 200",
+          " neighbor 2.2.2.2 update-source Loopback0",
+          " !",
+          " ! --- Multi-hop কনফিগারেশন (TTL সেট করা) ---",
+          " neighbor 2.2.2.2 ebgp-multihop 5",
+          " !",
+          " ! --- টাইমার টিউনিং (Keepalive 10, Hold 30) ---",
+          " neighbor 2.2.2.2 timers 10 30",
+          " exit"
+        ],
+
+        "Router B Remote Site": [
+          "!",
+          "router bgp 200",
+          " neighbor 1.1.1.1 remote-as 100",
+          " neighbor 1.1.1.1 update-source Loopback0",
+          " !",
+          " neighbor 1.1.1.1 ebgp-multihop 5",
+          " !",
+          " ! বিজিবি দুই পাশের মধ্যে 'Lowest' টাইমারটি অটোমেটিক নেগোশিয়েট করে নেয়।",
+          " neighbor 1.1.1.1 timers 10 30",
+          " exit"
+        ]
+      },
+
+      "Technical Nuances": {
+        "TTL Security Check": "পেশাদার নেটওয়ার্কে 'ebgp-multihop' এর বদলে অনেক সময় 'ttl-security' ব্যবহার করা হয় হ্যাকিং থেকে বাঁচতে।",
+        "Timer Negotiation": "যদি একপাশে ১০/৩০ এবং অন্যপাশে ২০/৬০ টাইমার থাকে, তবে বিজিবি সেশন ১০/৩০ টাইমার মেনে চলবে (সবসময় ছোটটি অগ্রাধিকার পায়)।",
+        "CPU Impact": "টাইমার খুব বেশি কমিয়ে দিলে (যেমন ১/৩) রাউটারের CPU লোড বেড়ে যেতে পারে এবং সেশন বারবার ফ্ল্যাপ করতে পারে।"
+      },
+
+      "Verification": {
+        "command 1": "show ip bgp neighbors 2.2.2.2 | include External - এখানে TTL ভ্যালু কত তা দেখা যাবে।",
+        "command 2": "show ip bgp neighbors 2.2.2.2 | include timer - বর্তমান নেগোশিয়েটেড টাইমার চেক করার জন্য।",
+        "command 3": "debug ip bgp keepalives - রিয়েল টাইমে মেসেজ আদান-প্রদান দেখার জন্য।"
+      }
+    },
+  "m19s17":{
+      "BGP Route Dampening": "এটি এমন একটি মেকানিজম যা নেটওয়ার্কে বারবার আপ-ডাউন করা (Flapping) রুটগুলোকে চিহ্নিত করে এবং সাময়িকভাবে সেগুলোকে বিজ্ঞাপন (Advertise) করা থেকে বিরত রাখে যাতে রাউটার সিপিইউ এবং ব্যান্ডউইথ সুরক্ষিত থাকে।",
+      "core parameters": {
+        "penalty": {
+          "value": 1000,
+          "trigger": "Per flap (Withdrawal)",
+          "description": "প্রতিবার রুটটি ডাউন হলে এই পয়েন্টটি যুক্ত হয়।"
+        },
+        "suppress limit": {
+          "default value": 2000,
+          "action": "Suppress Route",
+          "description": "পেনাল্টি স্কোর এই সীমার উপরে গেলে রুটটি বিজিবি টেবিল থেকে সাপ্রেস বা হাইড করা হয়।"
+        },
+        "half life": {
+          "default time": "15 minutes",
+          "description": "যদি রুটটি স্থিতিশীল থাকে, তবে প্রতি ১৫ মিনিট অন্তর জমানো পেনাল্টি স্কোর অর্ধেক হয়ে যায়।"
+        },
+        "reuse limit": {
+          "default value": 755,
+          "action": "Unsuppress Route",
+          "description": "পেনাল্টি স্কোর কমতে কমতে এই সীমার নিচে নামলে রুটটি আবার বিজ্ঞাপন শুরু হয়।"
+        },
+        "max suppress time": {
+          "default_limit": "60 minutes",
+          "description": "একটি রুট সর্বোচ্চ কতক্ষণ সাপ্রেসড অবস্থায় থাকতে পারে (সাধারণত হাফ-লাইফের ৪ গুণ)।"
+        }
+      },
+      "configuration commands": {
+        "global enable": "bgp dampening",
+        "custom timers": "bgp dampening <half-life> <reuse> <suppress> <max-suppress-time>",
+        "route map application": [
+          "route-map <map_name> permit 10",
+          "match ip address <acl>",
+          "set dampening <half-life> <reuse> <suppress> <max-suppress-time>",
+          "exit",
+          "router bgp <as_number>",
+          "bgp dampening route-map <map_name>"
+        ]
+      },
+      "verification": {
+        "check flap stats": "show ip bgp flap-statistics",
+        "view dampened routes": "show ip bgp dampened-paths",
+        "detailed prefix info": "show ip bgp <prefix>",
+        "clear all penalties": "clear ip bgp flap-statistics",
+        "clear specific penalty": "clear ip bgp flap-statistics <prefix>"
+      },
+      "important notes": [
+        "এটি শুধুমাত্র EBGP রুটের জন্য প্রযোজ্য।",
+        "IBGP রুটে এটি কাজ করে না কারণ এটি ইন্টারনাল রাউটিং লুপ তৈরি করতে পারে।",
+        "রুটটি 'Suppressed' থাকাকালীন এটি রাউটিং টেবিলে (RIB) থাকে না, শুধু বিজিবি টেবিলে থাকে।"
+      ]
+    },
+  "m19s18":{
+      "BGP Troubleshoot": "কমান্ড -> উদ্দেশ্য -> সমস্যা শনাক্তকরণ -> সমাধান",
+      "Category 1 Session and Neighbor Status": {
+        "show ip bgp summary": {
+          "view": "বিজিবি নেইবার লিস্ট, এএস নম্বর, আপ/ডাউন টাইম এবং প্রিফিক্স কাউন্ট দেখার জন্য।",
+          "problem": "স্টেট 'Active' অথবা 'Idle' থাকা।",
+          "solution": "L3 কানেক্টিভিটি অথবা AS নম্বর ভুল আছে কি না চেক করুন।"
+        },
+        "show ip bgp neighbors": {
+          "view": "বিজিবি নেইবারের বিস্তারিত পরিসংখ্যান এবং সক্ষমতা (capabilities) দেখার জন্য।",
+          "problem": "বিজিবি ভার্সন অমিল অথবা সক্ষমতা নেগোসিয়েশন ফেইল হওয়া।",
+          "solution": "উভয় পক্ষ একই অ্যাড্রেস-ফ্যামিলি সাপোর্ট করে কি না নিশ্চিত করুন।"
+        },
+        "show ip bgp neighbors IP": {
+          "view": "নির্দিষ্ট নেইবারের বিস্তারিত তথ্য যেমন রাউটার-আইডি এবং রিমোট পোর্ট দেখার জন্য।",
+          "problem": "রাউটার-আইডি কনফ্লিক্ট (একই আইডি দুই রাউটারে)।",
+          "solution": "রাউটার-আইডি পরিবর্তন করুন: 'bgp router-id x.x.x.x'।"
+        },
+        "show ip bgp neighbors IP advertised routes": {
+          "view": "নেইবারকে আসলে কোন কোন রুট পাঠানো হচ্ছে তা দেখার জন্য।",
+          "problem": "লিস্টে কোনো রুট নেই (খালি আউটপুট)।",
+          "solution": "নেটওয়ার্ক স্টেটমেন্ট এবং আউটবাউন্ড রুট-ম্যাপ চেক করুন।"
+        },
+        "show ip bgp neighbors IP routes": {
+          "view": "ফিল্টারিংয়ের পরে নেইবার থেকে প্রাপ্ত এবং গৃহীত রুটগুলো দেখার জন্য।",
+          "problem": "প্রত্যাশিত রুট খুঁজে না পাওয়া।",
+          "solution": "ইনবাউন্ড রুট-ম্যাপ অথবা প্রিফিক্স-লিস্ট চেক করুন।"
+        },
+        "show ip bgp neighbors IP received routes": {
+          "view": "ফিল্টার করার আগে নেইবার থেকে আসা সমস্ত রুট দেখার জন্য।",
+          "note": "এর জন্য 'soft-reconfiguration inbound' এনাবল থাকতে হবে।",
+          "problem": "নেইবার রুট পাঠাচ্ছে বলে দাবি করলেও এখানে কিছু দেখাচ্ছে না।",
+          "solution": "নেইবারের আউটবাউন্ড ফিল্টারগুলো চেক করুন।"
+        },
+        "show ip bgp neighbors IP policy": {
+          "view": "নির্দিষ্ট নেইবারের ওপর অ্যাপ্লাই করা রুট-ম্যাপ এবং প্রিফিক্স-লিস্ট দেখার জন্য।",
+          "use": "কোন ফিল্টারটি বর্তমানে কার্যকর আছে তা যাচাই করা।"
+        },
+        "show ip bgp neighbors IP timers": {
+          "view": "কিপ-অ্যালাইভ এবং হোল্ড-টাইমারের নেগোশিয়েটেড ভ্যালু দেখার জন্য।",
+          "problem": "বারবার সেশন রিসেট হওয়া।",
+          "solution": "টাইমার ম্যাচ করছে কি না অথবা ব্যান্ডউইথ জ্যাম কি না চেক করুন।"
+        }
+      },
+
+      "Category 2 Table and Path Analysis": {
+        "show ip bgp": {
+          "view": "মূল বিজিবি টেবিল (Loc-RIB) দেখার জন্য।",
+          "problem": "বেস্ট পাথ চিহ্ন '>' মিসিং থাকা।",
+          "solution": "নেক্সট-হপ আইজিপি (IGP) এর মাধ্যমে রিচেবল কি না নিশ্চিত করুন।"
+        },
+        "show ip bgp prefix": {
+          "view": "একটি নির্দিষ্ট রুটের গভীরে তথ্য (AS-Path, Communities) দেখার জন্য।",
+          "problem": "অরিজিনেটর আইডি লুপ অথবা নেক্সট-হপ ইনঅ্যাক্সেসিবল হওয়া।",
+          "solution": "পাথটি কেন বেস্ট হিসেবে সিলেক্ট হচ্ছে না তা ডিবাগ করুন।"
+        },
+        "show ip bgp prefix mask": {
+          "view": "নির্দিষ্ট সাবনেট ট্রাবলশুটিং করার জন্য।"
+        },
+        "show ip bgp labels": {
+          "view": "বিজিবি প্রিফিক্সের জন্য এমপিএলএস লেবেল দেখার জন্য।",
+          "use": "BGP-LU অথবা MPLS VPN ট্রাবলশুট করা।"
+        },
+        "show ip bgp dampened paths": {
+          "view": "ফ্ল্যাপিংয়ের কারণে যেসব রুট সাপ্রেস বা আটকে দেওয়া হয়েছে তাদের লিস্ট।",
+          "solution": "পেনাল্টি টাইমার শেষ হওয়া পর্যন্ত অপেক্ষা করুন অথবা 'clear ip bgp dampening' দিন।"
+        },
+        "show ip bgp flap statistics": {
+          "view": "একটি রুট কতবার ফ্ল্যাপ (আসা-যাওয়া) করেছে তার পরিসংখ্যান।",
+          "problem": "আনস্টেবল লিঙ্ক বা সংযোগ।",
+          "solution": "ফ্ল্যাপিংয়ের উৎস আইএসপি অথবা ইন্টারফেস শনাক্ত করুন।"
+        },
+        "show ip bgp cidr only": {
+          "view": "শুধুমাত্র ক্লাসলেস রুটগুলো দেখার জন্য।",
+          "use": "সাবনেটিং এরর অডিট করা।"
+        },
+        "show ip bgp inconsistent as": {
+          "view": "যেসব রুটের AS_PATH অ্যাট্রিবিউট করাপ্টেড বা ত্রুটিপূর্ণ।",
+          "solution": "সফটওয়্যার বাগ অথবা নেইবার মিসকনফিগারেশন চেক করুন।"
+        },
+        "show ip bgp rib failure": {
+          "view": "বিজিবি রুট পেয়েছে কিন্তু রাউটিং টেবিলে বসাতে ব্যর্থ হয়েছে।",
+          "problem": "একই রুটের জন্য স্ট্যাটিক বা ওএসপিএফ-এ আরও ভালো রুট (কম AD) আছে।",
+          "solution": "বিজিবি-র AD ভ্যালু কমান অথবা অন্য কনফ্লিক্টিং রুট সরিয়ে ফেলুন।"
+        },
+        "show ip bgp suppressed cells": {
+          "view": "অ্যাগ্রিগেশনের কারণে যেসব রুট হাইড বা লুকিয়ে রাখা হয়েছে।"
+        }
+      },
+
+      "Category 3 Attribute Filtering": {
+        "show ip bgp community": { "view": "যেকোনো কমিউনিটি ট্যাগ আছে এমন সমস্ত রুট দেখার জন্য।" },
+        "show ip bgp community value": { "view": "নির্দিষ্ট কমিউনিটি (যেমন: No-Export) দিয়ে রুট ফিল্টার করা।" },
+        "show ip bgp community list": { "view": "ডিফাইন করা কমিউনিটি-লিস্টের সাথে ম্যাচ করা রুটগুলো দেখা।" },
+        "show ip bgp extcommunity": { "view": "এমপিএলএস ভিপিএন-এর জন্য এক্সটেন্ডেড কমিউনিটি (RT/RD) দেখা।" },
+        "show ip bgp quote regexp": { "view": "বিজিবি টেবিলে অ্যাডভান্সড রেজেক্স (Regex) সার্চ করা।" },
+        "show ip bgp regexp": { "view": "AS-PATH প্যাটার্নের (যেমন: ^100$) সাথে ম্যাচ করা রুট দেখা।" },
+        "show ip bgp filter list": { "view": "AS-PATH এক্সেস-লিস্টের মাধ্যমে অনুমোদিত রুটগুলো দেখা।" },
+        "show ip bgp route map": { "view": "নির্দিষ্ট রুট-ম্যাপ লজিকের সাথে ম্যাচ করা রুটগুলো দেখা।" }
+      },
+
+      "Category 4 Connectivity and L4": {
+        "show tcp brief": {
+          "view": "টিসিপি পোর্ট ১৭৯ এর অবস্থা (ESTAB/LISTEN) দেখার জন্য।",
+          "problem": "সেশন 'SYN_SENT' অবস্থায় আটকে থাকা।",
+          "solution": "ফায়ারওয়াল অথবা এক্সেস-লিস্ট পোর্ট ১৭৯ ব্লক করছে কি না চেক করুন।"
+        },
+        "show tcp tcb": { "view": "একটি সেশনের বিস্তারিত টিসিপি কন্ট্রোল ব্লক দেখা।" },
+        "ping IP source": { "view": "বিজিবি সোর্স ইন্টারফেস ব্যবহার করে L3 রিচেবিলিটি টেস্ট করা।" },
+        "telnet IP 179": { "view": "রিমোট নেইবারে পোর্ট ১৭৯ ওপেন আছে কি না তা যাচাই করা।" }
+      },
+
+      "Category 5 Scaling and Groups": {
+        "show ip bgp cluster id": { "view": "রুট রিফ্লেক্টর ক্লাস্টার আইডি ভেরিফিকেশন করা।" },
+        "show ip bgp replication": { "view": "নেইবারদের কাছে আপডেটগুলো কীভাবে কপি হচ্ছে তা দেখা।" },
+        "show ip bgp update group": { "view": "বিজিবি আপডেট প্যাকেজিংয়ের পারফরম্যান্স দেখা।" },
+        "show ip bgp peer group": { "view": "পিয়ার গ্রুপ মেম্বার এবং কনফিগারেশন স্ট্যাটাস দেখা।" },
+        "show ip bgp confederation peers": { "view": "কনফেডারেশনে সাব-এএস (Sub-AS) এর দৃশ্যমানতা দেখা।" }
+      },
+
+      "Category 6 Operations Resets": {
+        "clear ip bgp star": { "action": "হার্ড রিসেট (টিসিপি সেশন ড্রপ করে দেয়)।", "risk": "অত্যধিক রিস্ক (পুরো নেটওয়ার্ক ডাউন হতে পারে)।" },
+        "clear ip bgp star soft": { "action": "সেশন ড্রপ না করে রুট রিফ্রেশ করা।", "risk": "কম রিস্ক (সবসময় এটিই ভালো)।" },
+        "clear ip bgp star soft in": { "action": "ইনবাউন্ড পলিসিগুলো পুনরায় কার্যকর করা।" },
+        "clear ip bgp star soft out": { "action": "আউটবাউন্ড পলিসিগুলো পুনরায় কার্যকর করা।" },
+        "40_clear_ip_bgp_AS_soft": { "action": "একটি নির্দিষ্ট অটোনোমাস সিস্টেমের জন্য সফট রিসেট করা।" }
+      },
+
+      "Category 7 Real time Debugging": {
+        "debug ip bgp": { "view": "গ্লোবাল বিজিবি ইভেন্ট দেখা (সতর্কতা: এটি সিপিইউ লোড বাড়াতে পারে)।" },
+        "debug ip bgp updates": { "view": "প্রিফিক্স আসা এবং চলে যাওয়ার লাইভ ট্র্যাকিং করা।" },
+        "debug ip bgp events": { "view": "সেশন স্টেট পরিবর্তন (Idle -> Active -> Estab) দেখা।" },
+        "debug ip bgp keepalives": { "view": "কিপ-অ্যালাইভ মেসেজ ঠিকঠাক আদান-প্রদান হচ্ছে কি না তা দেখা।" },
+        "debug ip bgp groups": { "view": "গ্রুপ-ভিত্তিক আপডেট ডিবাগ করা।" },
+        "debug ip bgp dampening": { "view": "একটি রুট কেন পেনাল্টি বা সাজার মুখে পড়ছে তা দেখা।" },
+        "debug ip bgp outbound": { "view": "রুট বের হওয়ার সময় ফিল্টার লজিকগুলো কীভাবে কাজ করছে তা দেখা।" },
+        "debug ip tcp transactions": { "view": "বিজিবি-র জন্য টিসিপি হ্যান্ডশেক অথবা রিসেট হওয়ার কারণ দেখা।" }
+      },
+
+      "Category 8 Health Monitoring": {
+        "show processes cpu bgp": { "view": "বিজিবি প্রসেসর ব্যবহারের হার দেখা।", "alert": "রুট কনভারজেন্সের সময় হাই সিপিইউ ইউসেজ।" },
+        "show memory bgp": { "view": "বিজিবি টেবিল দ্বারা মেমরি ব্যবহারের হার দেখা।", "alert": "পুরো ইন্টারনেট রুট (১ মিলিয়ন+) নিতে হাই র‍্যাম প্রয়োজন।" }
+      }
     }
+
+
+
+
+
+
+
+
+
+  },
+  "m20": {
+     "m20s1": {
+        "NAT Introduction & Terminology": "NAT (Network Address Translation) হলো এমন একটি পদ্ধতি যা প্রাইভেট আইপি অ্যাড্রেসকে পাবলিক আইপি অ্যাড্রেসে রূপান্তর করে ইন্টারনেট অ্যাক্সেস নিশ্চিত করে।",
+        "key_concepts": {
+          "inside_local": "ইন্টারনাল ডিভাইসের নিজস্ব প্রাইভেট আইপি (উদা: 192.168.1.5)।",
+          "inside_global": "ইন্টারনেটে যাওয়ার জন্য রাউটারের পাবলিক আইপি (উদা: 203.0.113.1)।",
+          "outside_local": "লোকাল নেটওয়ার্ক থেকে দেখা বাইরের গন্তব্যের আইপি।",
+          "outside_global": "বাইরের হোস্টের প্রকৃত পাবলিক আইপি।"
+        },
+        "benefits": [
+          "IPv4 অ্যাড্রেস সাশ্রয় করে।",
+          "সিকিউরিটি বৃদ্ধি (Internal IP হাইড থাকে)।",
+          "নেটওয়ার্ক ফ্লেক্সিবিলিটি বাড়ায়।"
+        ],
+        "verification_commands": [
+          "show ip nat statistics",
+          "show ip nat translations"
+        ]
+      },
+      "m20s2":{
+        "Static NAT (One-to-One)": "একটি নির্দিষ্ট প্রাইভেট আইপির জন্য একটি ফিক্সড পাবলিক আইপি ম্যাপ করা হয়। এটি সাধারণত ওয়েব বা মেইল সার্ভারের জন্য ব্যবহৃত হয়।",
+        "workflow": "Static NAT সবসময় বাই-ডাইরেকশনাল (Inbound & Outbound) কাজ করে।",
+        "configuration": [
+          "Router(config)# ip nat inside source static 192.168.1.10 203.0.113.10",
+          "Router(config)# interface gig0/0",
+          "Router(config-if)# ip nat inside",
+          "Router(config)# interface gig0/1",
+          "Router(config-if)# ip nat outside"
+        ],
+        "troubleshoot_note": "যদি সোর্স আইপি ভুল থাকে তবে ম্যাপিং কাজ করবে না।"
+      },
+      "m20s3":{
+        "Dynamic NAT (Many-to-Many)": "এখানে একদল প্রাইভেট আইপির জন্য একদল (Pool) পাবলিক আইপি থাকে। ইউজার যখন ইন্টারনেটে যায়, পুল থেকে একটি ফ্রি আইপি তাকে দেওয়া হয়।",
+        "limitations": "পাবলিক আইপি পুল শেষ হয়ে গেলে নতুন ইউজাররা ইন্টারনেট পাবে না যতক্ষণ না কেউ ডিসকানেক্ট হয়।",
+        "configuration": [
+          "Router(config)# access-list 1 permit 192.168.1.0 0.0.0.255",
+          "Router(config)# ip nat pool MY_POOL 203.0.113.1 203.0.113.10 netmask 255.255.255.0",
+          "Router(config)# ip nat inside source list 1 pool MY_POOL",
+          "Router(config)# interface gig0/0 > ip nat inside",
+          "Router(config)# interface gig0/1 > ip nat outside"
+        ],
+        "verification": "show ip nat pool MY_POOL"
+      },
+     "m20s4": {
+        "PAT / NAT Overloading (Many-to-One)": "সবচেয়ে বেশি ব্যবহৃত পদ্ধতি। একটি মাত্র পাবলিক আইপি ব্যবহার করে হাজার হাজার ইউজার ইন্টারনেট পায়। রাউটার এখানে আইপির সাথে ইউনিক 'Port Number' ব্যবহার করে ট্রাফিক আলাদা করে।",
+        "use_case": "বাসা, অফিস বা যেকোনো বড় নেটওয়ার্কে যেখানে পাবলিক আইপি কম থাকে।",
+        "configuration_variants": {
+          "via_interface": [
+            "Router(config)# access-list 1 permit 192.168.1.0 0.0.0.255",
+            "Router(config)# ip nat inside source list 1 interface gig0/1 overload"
+          ],
+          "via_pool": [
+            "Router(config)# ip nat inside source list 1 pool MY_POOL overload"
+          ]
+        },
+        "interface_setup": [
+          "ip nat inside (Local side)",
+          "ip nat outside (ISP side)"
+        ]
+      },
+     "m20s5": {
+        "NAT Configuration A-Z & Troubleshooting": "পুরো NAT প্রসেস ভেরিফাই করার জন্য এবং লজিক্যাল এরর খুঁজে বের করার জন্য এই মডিউলটি দরকার।",
+        "verification_steps": [
+          "Step 1: Check IP connectivity (Ping ISP Gateway)",
+          "Step 2: Verify Inside/Outside interface assignment",
+          "Step 3: Check ACL for allowed subnets",
+          "Step 4: Verify Translation table"
+        ],
+        "critical_commands": {
+          "show_translations": "show ip nat translations (লাইভ সেশন দেখার জন্য)",
+          "show_stats": "show ip nat statistics (হিট/মিস এবং মেমরি চেক করতে)",
+          "debug_mode": "debug ip nat (প্যাকেট ড্রপ বা এরর লাইভ দেখতে)",
+          "clear_table": "clear ip nat translation * (পুরানো সেশন মুছতে)"
+        },
+        "common_traps": [
+          "Outside interface-এ IP address না থাকা।",
+          "ACL-এ 'permit' এর জায়গায় 'deny' থাকা।",
+          "রাউটারে Default Route (0.0.0.0/0) কনফিগার না করা।"
+        ]
+      },
+    "m20s6": {
+      "NAT Troubleshooting & Error Resolution": "NAT কনফিগারেশনের পর ট্রাফিক পাস না হওয়া বা সেশন তৈরি না হওয়ার কারণগুলো চিহ্নিত করা এবং সেগুলোর সমাধান নিশ্চিত করা।",
+      "common issues and solutions": [
+        {
+          "issue": "Missing Inside or Outside Interface",
+          "symptom": "কনফিগারেশন সঠিক কিন্তু 'show ip nat translations' কমান্ডে কোনো ডাটা দেখাচ্ছে না।",
+          "root_cause": "ইন্টারফেসে 'ip nat inside' অথবা 'ip nat outside' কমান্ডটি দিতে ভুলে যাওয়া।",
+          "resolution": "সঠিক ইন্টারফেসে প্রবেশ করে ইনসাইড এবং আউটসাইড রোল ডিফাইন করুন।"
+        },
+        {
+          "issue": "ACL Misconfiguration",
+          "symptom": "নির্দিষ্ট কিছু ইউজার ইন্টারনেট পাচ্ছে না।",
+          "root_cause": "Access-list এ সঠিক সাবনেট পারমিট (Permit) করা হয়নি অথবা ভুল 'Wildcard Mask' ব্যবহার করা হয়েছে।",
+          "resolution": "ACL চেক করুন: 'show ip access-lists' এবং নিশ্চিত করুন আপনার লোকাল নেটওয়ার্ক সেখানে ইনক্লুড আছে।"
+        },
+        {
+          "issue": "NAT Pool Exhaustion",
+          "symptom": "Dynamic NAT এর ক্ষেত্রে কিছু ইউজার শুরুতে কানেক্ট হতে পারলেও পরে অন্যরা পারছে না।",
+          "root_cause": "পাবলিক আইপি পুলের সব আইপি বর্তমানে বিজি (Busy)।",
+          "resolution": "পুল বড় করুন অথবা PAT (Overload) কনফিগার করুন যাতে একটি আইপি দিয়ে সবাই চলতে পারে।"
+        },
+        {
+          "issue": "Routing Issues",
+          "symptom": "প্যাকেট রাউটার পর্যন্ত পৌঁছাচ্ছে কিন্তু বাইরে যাচ্ছে না।",
+          "root_cause": "রাউটারে ডিফল্ট রুট (0.0.0.0 0.0.0.0) কনফিগার করা নেই অথবা আইএসপি থেকে রিটার্ন পাথ নেই।",
+          "resolution": "'ip route 0.0.0.0 0.0.0.0 <ISP_IP>' কনফিগার করুন।"
+        }
+      ],
+      "diagnostic commands": {
+        "basic_check": {
+          "command": "show ip nat translations",
+          "usage": "লাইভ ট্রান্সলেশন টেবিল চেক করার জন্য। এটি খালি থাকলে বুঝতে হবে NAT ট্রিগার হচ্ছে না।"
+        },
+        "statistics check": {
+          "command": "show ip nat statistics",
+          "usage": "পুলের কয়টি আইপি ব্যবহৃত হচ্ছে এবং ইনসাইড/আউটসাইড ইন্টারফেস লিস্ট দেখার জন্য।"
+        },
+        "real time debug": {
+          "command": "debug ip nat",
+          "usage": "রিয়েল-টাইমে প্যাকেট ট্রান্সলেশন এরর দেখার জন্য। (সতর্কতা: হাই ট্রাফিক রাউটারে এটি সিপিইউ বাড়িয়ে দিতে পারে)।"
+        },
+        "force reset": {
+          "command": "clear ip nat translation *",
+          "usage": "পুরানো বা আটকে থাকা সেশনগুলো মুছে নতুন করে টেস্ট করার জন্য।"
+        }
+      },
+      "troubleshooting flowchart": [
+        "Step 1: Ping local router gateway.",
+        "Step 2: Check if NAT table has entries (show ip nat translations).",
+        "Step 3: Verify ACL hits (show access-lists).",
+        "Step 4: Verify routing to ISP (show ip route).",
+        "Step 5: Check Interface status and NAT roles."
+      ]
+    }
+
+  },
+  "m21": {
+     "m21s1": {
+        "DHCP Introduction": "DHCP হলো একটি নেটওয়ার্ক প্রোটোকল যা ক্লায়েন্ট ডিভাইসগুলোকে স্বয়ংক্রিয়ভাবে আইপি অ্যাড্রেস, সাবনেট মাস্ক, গেটওয়ে এবং ডিএনএস সার্ভার তথ্য প্রদান করে।",
+        "key concepts": {
+          "automatic allocation": "স্থায়ীভাবে একটি আইপি এসাইন করা।",
+          "dynamic allocation": "একটি নির্দিষ্ট সময়ের (Lease time) জন্য আইপি প্রদান করা।",
+          "manual allocation": "ম্যাক অ্যাড্রেসের ওপর ভিত্তি করে নির্দিষ্ট আইপি রিজার্ভ করা।"
+        },
+        "benefits": [
+          "আইপি কনফ্লিক্ট দূর করে।",
+          "অ্যাডমিনিস্ট্রেটিভ কাজ কমায়।",
+          "বড় নেটওয়ার্কে আইপি ম্যানেজমেন্ট সহজ করে।"
+        ]
+      },
+      "m21s2":{
+        "DHCP Process (DORA)": "ক্লায়েন্ট এবং সার্ভারের মধ্যে আইপি আদান-প্রদানের ৪টি ধাপকে DORA প্রসেস বলা হয়।",
+        "dora steps": [
+          {
+            "step": "Discover",
+            "action": "Client broadcast করে DHCP সার্ভার খোঁজে।"
+          },
+          {
+            "step": "Offer",
+            "action": "Server ক্লায়েন্টকে একটি আইপি অফার করে।"
+          },
+          {
+            "step": "Request",
+            "action": "Client সেই আইপিটি নেওয়ার জন্য সার্ভারকে রিকোয়েস্ট পাঠায়।"
+          },
+          {
+            "step": "Acknowledgment",
+            "action": "Server ফাইনাল কনফার্মেশন দেয় এবং লিজ টাইম শুরু হয়।"
+          }
+        ],
+        "ports": "UDP Port 67 (Server) এবং UDP Port 68 (Client) ব্যবহৃত হয়।"
+      },
+      "m21s3":{
+        "DHCP Scopes & Address Pools": "স্কোপ বা পুল হলো আইপি অ্যাড্রেসের একটি রেঞ্জ যা থেকে সার্ভার ক্লায়েন্টদের আইপি বিলি করে।",
+        "components": {
+          "address_pool": "বিলিযোগ্য আইপির পুরো রেঞ্জ।",
+          "exclusions": "যেসব আইপি সার্ভার কাউকে দেবে না (যেমন: গেটওয়ে বা সার্ভার আইপি)।",
+          "lease_duration": "কতক্ষণ একটি ক্লায়েন্ট আইপিটি ধরে রাখতে পারবে (ডিফল্ট সাধারণত ২৪ ঘণ্টা বা ১ দিন)।",
+          "reservations": "নির্দিষ্ট ম্যাক অ্যাড্রেসের জন্য ফিক্সড আইপি।"
+        }
+      },
+      "m21s4":{
+        "DHCP Relay Agent": "যখন ক্লায়েন্ট এবং DHCP সার্ভার ভিন্ন ভিন্ন সাবনেটে থাকে, তখন রাউটার রিলে এজেন্ট হিসেবে কাজ করে ব্রডকাস্ট মেসেজকে ইউনিকাস্টে রূপান্তর করে সার্ভারে পাঠায়।",
+        "configuration": [
+          "Router(config)# interface gig0/0 (Client facing interface)",
+          "Router(config-if)# ip helper-address <DHCP_Server_IP>"
+        ],
+        "necessity": "রাউটার ব্রডকাস্ট প্যাকেট পাস করে না, তাই রিলে এজেন্ট ছাড়া ভিন্ন সাবনেটে আইপি পাওয়া সম্ভব নয়।"
+      },
+     "m21s5":{
+        "DHCP Configuration (Cisco IOS)": "একটি সিসকো রাউটারকে DHCP সার্ভার হিসেবে কনফিগার করার পূর্ণাঙ্গ কমান্ড লিস্ট।",
+        "steps": [
+          {
+            "task": "Exclude IPs",
+            "command": "ip dhcp excluded-address 192.168.1.1 192.168.1.10"
+          },
+          {
+            "task": "Create Pool",
+            "command": "ip dhcp pool MY_NETWORK"
+          },
+          {
+            "task": "Define Network",
+            "command": "network 192.168.1.0 255.255.255.0"
+          },
+          {
+            "task": "Default Router",
+            "command": "default-router 192.168.1.1"
+          },
+          {
+            "task": "DNS Server",
+            "command": "dns-server 8.8.8.8"
+          },
+          {
+            "task": "Lease Time",
+            "command": "lease 0 12 (Days Hours)"
+          }
+        ]
+      },
+      "m21s6":{
+        "DHCP Troubleshoot": "DHCP এরর এবং কানেক্টিভিটি ইস্যু সমাধানের কমান্ড এবং পদ্ধতি।",
+        "common issues": [
+          "Pool exhaustion (আইপি শেষ হয়ে যাওয়া)।",
+          "Helper-address ভুল সাবনেটে কনফিগার করা।",
+          "VLAN মিসম্যাচ বা ট্রাঙ্কিং সমস্যা।"
+        ],
+        "verification commands": {
+          "show bindings": "show ip dhcp binding (কোন ডিভাইস কোন আইপি পেল তা দেখার জন্য)",
+          "show pool stats": "show ip dhcp pool (পুলের কতটুকু খালি আছে দেখার জন্য)",
+          "conflict check": "show ip dhcp conflict (আইপি কনফ্লিক্ট লিস্ট)",
+          "debug mode": "debug ip dhcp server events (সার্ভারের লাইভ অ্যাক্টিভিটি দেখার জন্য)",
+          "client side": "ipconfig /release এবং ipconfig /renew (Windows PC-তে)"
+        },
+        "force clear": "clear ip dhcp binding * (সব লিজ ইনফো ডিলিট করে নতুন করে শুরু করার জন্য)"
+      }
+
+  },
+  "m22": {
+     "m22s1":{
+        "NTP Introduction": "NTP (Network Time Protocol) হলো একটি নেটওয়ার্কিং প্রোটোকল যা নেটওয়ার্কের সব ডিভাইসের ঘড়ির সময়কে একটি সুনির্দিষ্ট সময়ের উৎসের সাথে সিঙ্ক্রোনাইজ করতে ব্যবহৃত হয়।",
+        "importance": [
+          "লগ ফাইল (Syslog) এবং ইভেন্ট ট্র্যাকিং নিখুঁত রাখা।",
+          "সার্টিফিকেট ভ্যালিডেশন এবং সিকিউরিটি অথেন্টিকেশন নিশ্চিত করা।",
+          "নেটওয়ার্ক ট্রাবলশুটিং সহজ করা।"
+        ],
+        "port": "UDP Port 123 ব্যবহৃত হয়।"
+      },
+    "m22s2":{
+        "NTP Modes of Operation": "ডিভাইসগুলো একে অপরের সাথে কীভাবে সময়ের তথ্য আদান-প্রদান করবে তা এই মোডগুলো নির্ধারণ করে।",
+        "modes": [
+          {
+            "mode": "Client Mode",
+            "action": "ডিভাইসটি সার্ভারকে রিকোয়েস্ট পাঠায় এবং সময় গ্রহণ করে।"
+          },
+          {
+            "mode": "Server Mode",
+            "action": "ডিভাইসটি অন্যান্য ক্লায়েন্টকে সময়ের তথ্য প্রদান করে।"
+          },
+          {
+            "mode": "Peer Mode",
+            "action": "দুটি রাউটার একে অপরের সাথে সময় সিঙ্ক্রোনাইজ করে (একে অপরের ব্যাকআপ হিসেবে কাজ করে)।"
+          },
+          {
+            "mode": "Broadcast/Multicast Mode",
+            "action": "সার্ভার পুরো নেটওয়ার্কে সময়ের তথ্য ব্রডকাস্ট করে।"
+          }
+        ]
+      },
+      "m22s3":{
+        "NTP Stratum Levels": "Stratum লেভেল নির্ধারণ করে সময়ের উৎসটি রেফারেন্স ক্লক (যেমন: এটমিক ক্লক) থেকে কতটুকু দূরে বা কতটা নির্ভরযোগ্য।",
+        "levels": [
+          {
+            "stratum 0": "আসল সময়ের উৎস যেমন: GPS, Atomic Clock (নেটওয়ার্কে সরাসরি যুক্ত থাকে না)।"
+          },
+          {
+            "stratum 1": "সরাসরি Stratum 0 এর সাথে যুক্ত সার্ভার (সবচেয়ে নির্ভরযোগ্য)।"
+          },
+          {
+            "stratum 2": "Stratum 1 সার্ভার থেকে সময় নেয় (ইন্টারনেটে সবচেয়ে বেশি ব্যবহৃত)।"
+          },
+          {
+            "stratum 15": "সর্বনিম্ন গ্রহণযোগ্য লেভেল।"
+          },
+          {
+            "stratum 16": "অবিশ্বস্ত বা আন-সিঙ্ক্রোনাইজড (সময় গ্রহণ করবে না)।"
+          }
+        ]
+      },
+     "m22s4":{
+        "NTP Authentication": "ভুল বা হ্যাকারদের দেওয়া ভুল সময়ের আপডেট থেকে নেটওয়ার্ককে বাঁচাতে অথেন্টিকেশন ব্যবহার করা হয়।",
+        "key elements": {
+          "key number": "একটি ইউনিক আইডি যা ক্লায়েন্ট এবং সার্ভারে একই হতে হয়।",
+          "md5 key": "এনক্রিপ্টেড পাসওয়ার্ড যা মেসেজের সত্যতা নিশ্চিত করে।",
+          "trusted key": "যে কী-গুলোকে রাউটার বিশ্বাস করবে তার তালিকা।"
+        }
+      },
+      "m22s5":{
+        "NTP Configuration (Cisco IOS)": "রাউটার বা সুইচে NTP সেটআপ করার পূর্ণাঙ্গ কমান্ড গাইড।",
+        "commands": [
+          {
+            "task": "Set NTP Server",
+            "command": "ntp server 162.159.200.1 (Public NTP Server IP)"
+          },
+          {
+            "task": "Set Router as Master",
+            "command": "ntp master 3 (যদি রাউটার নিজেই নিজের ক্লক সোর্স হয়, stratum 3)"
+          },
+          {
+            "task": "Configure Authentication",
+            "command": [
+              "ntp authenticate",
+              "ntp authentication-key 1 md5 CISCO123",
+              "ntp trusted-key 1",
+              "ntp server 10.1.1.1 key 1"
+            ]
+          },
+          {
+            "task": "Set Timezone",
+            "command": "clock timezone BDT 6 0 (বাংলাদেশ স্ট্যান্ডার্ড টাইম)"
+          }
+        ]
+      },
+      "m22s6":{
+        "NTP Troubleshooting": "সময় সিঙ্ক্রোনাইজ না হলে বা এরর দেখা দিলে চেক করার পদ্ধতি।",
+        "verification commands": {
+          "status check": "show ntp status (সময় সিঙ্ক্রোনাইজড কি না এবং stratum কত তা দেখার জন্য)",
+          "association check": "show ntp associations (সার্ভারের সাথে কানেকশন ডিটেইলস দেখার জন্য)",
+          "debug mode": "debug ntp packet / debug ntp events (লাইভ এরর ট্র্যাকিং)",
+          "clock check": "show clock detail (রাউটারের বর্তমান সময় দেখার জন্য)"
+        },
+        "common issues": [
+          "ফায়ারওয়ালে UDP 123 পোর্ট ব্লক থাকা।",
+          "সার্ভার আইপি ভুল হওয়া।",
+          "Stratum লেভেল ১৬ হয়ে যাওয়া।",
+          "অথেন্টিকেশন কী মিসম্যাচ।"
+        ]
+      }
+
+  },
+  "m23": {
+    "m23s1": {
+        "SNMP Introduction": "SNMP হলো একটি অ্যাপ্লিকেশন লেয়ার প্রোটোকল যা নেটওয়ার্ক ডিভাইসের (রাউটার, সুইচ, সার্ভার) পারফরম্যান্স মনিটর এবং ম্যানেজ করতে ব্যবহৃত হয়।",
+        "components": {
+          "snmp manager": "কেন্দ্রীয় সিস্টেম (NMS) যা ডেটা সংগ্রহ করে।",
+          "snmp agent": "ডিভাইসে চলা সফটওয়্যার যা ডেটা পাঠায়।",
+          "mib": "Management Information Base; এটি ডিভাইসের তথ্যের একটি ডেটাবেস স্টোরেজ।",
+          "oid": "Object Identifier; MIB-এর ভেতরে প্রতিটি তথ্যের ইউনিক অ্যাড্রেস।"
+        },
+        "ports": "UDP 161 (Polling) এবং UDP 162 (Traps) ব্যবহৃত হয়।"
+      },
+    "m23s2": {
+        "SNMP Versions (v1, v2c, v3)": "SNMP-এর তিনটি প্রধান ভার্সন রয়েছে যার সিকিউরিটি লেভেল ভিন্ন ভিন্ন।",
+        "versions": [
+          {
+            "v1": "সবচেয়ে পুরনো, সাধারণ কমিউনিটি স্ট্রিং ব্যবহার করে, সিকিউরিটি খুব দুর্বল।"
+          },
+          {
+            "v2c": "সবচেয়ে বেশি ব্যবহৃত; এতে 'GetBulk' মেকানিজম আছে যা দ্রুত ডেটা আদান-প্রদান করে।"
+          },
+          {
+            "v3": "সবচেয়ে আধুনিক এবং সুরক্ষিত; এতে এনক্রিপশন এবং ইউজার-বেসড অথেন্টিকেশন থাকে।"
+          }
+        ]
+      },
+     "m23s3":{
+        "SNMP Communities (RO vs RW)": "v1 এবং v2c-তে কমিউনিটি স্ট্রিং পাসওয়ার্ড হিসেবে কাজ করে যা ডিভাইস অ্যাক্সেস কন্ট্রোল করে।",
+        "types": [
+          {
+            "read_only_ro": "ম্যানেজার শুধু ডেটা দেখতে পারবে, কোনো পরিবর্তন করতে পারবে না।"
+          },
+          {
+            "read_write_rw": "ম্যানেজার ডিভাইসের কনফিগারেশন পরিবর্তন করতে পারবে।"
+          }
+        ],
+        "best_practice": "সব সময় কঠিন পাসওয়ার্ড ব্যবহার করা এবং RW অ্যাক্সেস এড়িয়ে চলা।"
+      },
+      "m23s4":{
+        "SNMP Security Levels (v3 focus)": "SNMPv3 তিনটি বিশেষ সিকিউরিটি লেভেল প্রদান করে যা ডেটাকে সুরক্ষিত রাখে।",
+        "levels": [
+          {
+            "noAuthNoPriv": "কোনো পাসওয়ার্ড বা এনক্রিপশন নেই (শুধুমাত্র ইউজারনেম)।"
+          },
+          {
+            "authNoPriv": "অথেন্টিকেশন (MD5/SHA) আছে কিন্তু ডেটা এনক্রিপশন নেই।"
+          },
+          {
+            "authPriv": "অথেন্টিকেশন এবং এনক্রিপশন (AES/DES) উভয়ই আছে। এটিই সবচেয়ে সুরক্ষিত।"
+          }
+        ]
+      },
+      "m23s5":{
+        "SNMP Configuration (Cisco IOS)": "রাউটারে SNMP কনফিগার করার প্রয়োজনীয় কমান্ডসমূহ।",
+        "commands": [
+          {
+            "task": "Configure SNMP v2c (Read-Only)",
+            "command": "snmp-server community PUBLIC123 RO"
+          },
+          {
+            "task": "Configure SNMP v2c (Read-Write)",
+            "command": "snmp-server community ADMIN456 RW"
+          },
+          {
+            "task": "Enable SNMP Traps",
+            "command": [
+              "snmp-server enable traps",
+              "snmp-server host 192.168.1.100 version 2c PUBLIC123"
+            ]
+          },
+          {
+            "task": "Configure SNMP v3 (Secure)",
+            "command": [
+              "snmp-server group MYGROUP v3 priv",
+              "snmp-server user MYUSER MYGROUP v3 auth sha PASS123 priv aes 128 PASS456"
+            ]
+          }
+        ]
+      },
+     "m23s6":{
+        "SNMP Troubleshoot": "যদি NMS থেকে ডিভাইস দেখা না যায়, তবে ট্রাবলশুটিংয়ের পদ্ধতি।",
+        "verification commands": {
+          "check config": "show snmp (SNMP রান করছে কি না তা দেখার জন্য)",
+          "check community": "show snmp community (কমিউনিটি স্ট্রিংগুলো চেক করতে)",
+          "check stats": "show snmp statistics (কতগুলো প্যাকেট আদান-প্রদান হলো)",
+          "check_user_v3": "show snmp user (v3 ইউজার ডিটেইলস দেখার জন্য)"
+        },
+        "common issues": [
+          "ACL দিয়ে UDP 161/162 ব্লক করে রাখা।",
+          "কমিউনিটি স্ট্রিং (Password) ভুল হওয়া।",
+          "SNMP সার্ভার বা NMS-এর আইপি ভুল কনফিগার করা।"
+        ]
+      }
+
+  },
+  "m24": {
+      "m24s1":{
+        "Standard ACL Introduction": "Standard ACL হলো নেটওয়ার্ক সিকিউরিটির একটি প্রাথমিক ধাপ যা শুধুমাত্র 'Source IP Address'-এর ওপর ভিত্তি করে ট্রাফিক ফিল্টার করে।",
+        "how_it_works": "এটি প্যাকেট চেক করার সময় সোর্স আইপি দেখে এবং আপনার দেওয়া রুল অনুযায়ী সেটি এলাউ বা ব্লক করে। এটি প্রোটোকল (TCP/UDP) বা পোর্ট নম্বর ফিল্টার করতে পারে না।",
+        "use_case": "নির্দিষ্ট কোনো হোস্ট বা পুরো সাবনেটকে নেটওয়ার্ক অ্যাক্সেস থেকে ব্লক বা পারমিট করতে এটি ব্যবহৃত হয়।"
+      },
+      "m24s2":{
+        "ACL Numbers & Ranges": "সিসকো রাউটারে এসিএল-কে চিহ্নিত করার জন্য নির্দিষ্ট নম্বর বা নাম ব্যবহার করা হয়।",
+        "ranges": [
+          {
+            "type": "Standard ACL (Numbered)",
+            "range": "1 - 99 এবং 1300 - 1999"
+          },
+          {
+            "type": "Extended ACL (Numbered)",
+            "range": "100 - 199 এবং 2000 - 2699 (তথ্যর জন্য জানানো হলো)"
+          },
+          {
+            "type": "Named ACL",
+            "range": "যেকোনো আলফানিউমেরিক নাম (উদা: BLOCK_HR_NET)"
+          }
+        ],
+        "wildcard_mask": "এসিএল-এ সাবনেট মাস্কের পরিবর্তে ওয়াইল্ডকার্ড মাস্ক (Inverted Mask) ব্যবহৃত হয়। উদা: 255.255.255.0 এর পরিবর্তে 0.0.0.255।"
+      },
+      "m24s3":{
+        "Permit & Deny Logic": "ACL-এর রুলগুলো উপর থেকে নিচে (Top-to-Bottom) ক্রমানুসারে কাজ করে।",
+        "logic rules": [
+          {
+            "rule": "First Match",
+            "action": "প্যাকেট যখনই কোনো রুলের সাথে ম্যাচ করবে, রাউটার আর নিচের রুলগুলো চেক করবে না।"
+          },
+          {
+            "rule": "Implicit Deny",
+            "action": "প্রতিটি এসিএল-এর শেষে একটি অদৃশ্য 'Deny All' রুল থাকে। অর্থাৎ, কোনো রুলের সাথে ম্যাচ না করলে প্যাকেটটি স্বয়ংক্রিয়ভাবে ড্রপ হবে।"
+          },
+          {
+            "rule": "Any & Host",
+            "action": "নির্দিষ্ট আইপির জন্য 'host' কিওয়ার্ড এবং সবার জন্য 'any' কিওয়ার্ড ব্যবহৃত হয়।"
+          }
+        ]
+      },
+      "m24s4":{
+        "Standard ACL Placement Rule": "Standard ACL কোথায় অ্যাপ্লাই করতে হবে তার একটি গোল্ডেন রুল রয়েছে।",
+        "golden rule": "Standard ACL should be placed as CLOSE to the DESTINATION as possible.",
+        "reason": "যেহেতু এটি শুধু সোর্স আইপি চেক করে, তাই সোর্সের কাছে বসালে এটি অন্য বৈধ গন্তব্যে যাওয়ার ট্রাফিকও ব্লক করে দিতে পারে।"
+      },
+      "m24s5":{
+        "Standard ACL Configuration": "সিসকো আইওএস-এ স্ট্যান্ডার্ড এসিএল কনফিগার করার প্র্যাকটিক্যাল কমান্ডসমূহ।",
+        "numbered acl steps": [
+          "Router(config)# access-list 10 deny 192.168.1.5 0.0.0.0 (Specific Host)",
+          "Router(config)# access-list 10 permit 192.168.1.0 0.0.0.255 (Whole Subnet)",
+          "Router(config)# interface gig0/1",
+          "Router(config-if)# ip access-group 10 out (Destination ইন্টারফেসে অ্যাপ্লাই)"
+        ],
+        "named acl steps": [
+          "Router(config)# ip access-list standard MY_ACL",
+          "Router(config-std-nacl)# deny host 10.1.1.5",
+          "Router(config-std-nacl)# permit any",
+          "Router(config)# interface gig0/1",
+          "Router(config-if)# ip access-group MY_ACL out"
+        ]
+      },
+      "m24s6":{
+        "ACL Troubleshoot & Verification": "এসিএল কাজ না করলে বা ভুল ট্রাফিক ব্লক হলে ভেরিফিকেশনের পদ্ধতি।",
+        "verification commands": {
+          "view all acls": "show access-lists (সব এসিএল এবং ম্যাচ কাউন্ট দেখার জন্য)",
+          "view interface acl": "show ip interface gig0/1 (কোন ইন্টারফেসে কোন এসিএল ইন/আউট আছে তা দেখতে)",
+          "running config": "show running-config | include access-list",
+          "clear counters": "clear access-list counters (ম্যাচ কাউন্ট রিসেট করার জন্য)"
+        },
+        "common issues": [
+          "Wrong Direction: 'In' এর জায়গায় 'Out' অ্যাপ্লাই করা।",
+          "Implicit Deny: শেষে 'Permit Any' না দেওয়ায় সব ট্রাফিক ব্লক হওয়া।",
+          "Sequence Error: ভুল অর্ডারে রুল লেখা (উদা: আগে Permit Any দিয়ে পরে Deny Host দেওয়া)।",
+          "Wildcard Mask Error: ভুল মাস্ক ব্যবহার করা।"
+        ]
+      }
+
+  },
+  "m25": {
+      "m25s1":{
+        "Extended ACL Introduction": "Extended ACL হলো অ্যাডভান্সড ট্রাফিক ফিল্টারিং পদ্ধতি যা সোর্স আইপি, ডেস্টিনেশন আইপি, প্রোটোকল টাইপ (IP, TCP, UDP, ICMP) এবং পোর্ট নম্বরের ওপর ভিত্তি করে সিদ্ধান্ত নিতে পারে।",
+        "capabilities": "এটি শুধুমাত্র একটি নেটওয়ার্ক ব্লক করার বদলে নির্দিষ্ট কোনো সার্ভিস (যেমন: শুধু ফেসবুক বা শুধু ইমেইল) ব্লক বা এলাউ করতে সক্ষম।",
+        "flexibility": "Standard ACL-এর সীমাবদ্ধতা দূর করে এটি সূক্ষ্ম কন্ট্রোল প্রদান করে।"
+      },
+      "m25s2":{
+        "ACL Number & Range": "Extended ACL চিহ্নিত করার জন্য সিসকো নির্দিষ্ট নম্বর রেঞ্জ বরাদ্দ করেছে।",
+        "ranges": [
+          {
+            "type": "Extended ACL (Numbered)",
+            "range": "100 - 199 এবং 2000 - 2699"
+          },
+          {
+            "type": "Named Extended ACL",
+            "range": "যেকোনো বর্ণনামূলক নাম (উদা: BLOCK_HTTP_SALES)"
+          }
+        ]
+      },
+      "m25s3":{
+        "Protocol Filtering": "Extended ACL লেয়ার ৪ প্রোটোকলের ওপর ভিত্তি করে প্যাকেট ফিল্টার করতে পারে।",
+        "common protocols": [
+          { "protocol": "IP", "usage": "সব ধরনের আইপি ট্রাফিক (TCP, UDP, ICMP সব মিলিয়ে)।" },
+          { "protocol": "TCP", "usage": "কানেকশন ওরিয়েন্টেড ট্রাফিক যেমন HTTP, HTTPS, FTP, SSH, Telnet।" },
+          { "protocol": "UDP", "usage": "কানেকশনলেস ট্রাফিক যেমন DNS, DHCP, SNMP, TFTP।" },
+          { "protocol": "ICMP", "usage": "পিং (Ping) এবং ট্রেসারুট ট্রাফিক।" }
+        ]
+      },
+      "m25s4":{
+        "Port Filtering (Operator & Port)": "নির্দিষ্ট অ্যাপ্লিকেশন সার্ভিস কন্ট্রোল করার জন্য পোর্ট ফিল্টারিং ব্যবহৃত হয়।",
+        "operators": [
+          { "eq": "Equal (নির্দিষ্ট পোর্টের জন্য)", "neq": "Not Equal" },
+          { "gt": "Greater Than", "lt": "Less Than", "range": "একটি নির্দিষ্ট পোর্টের সীমা" }
+        ],
+        "common_ports": {
+          "20/21": "FTP",
+          "22": "SSH",
+          "23": "Telnet",
+          "53": "DNS",
+          "80": "HTTP",
+          "443": "HTTPS"
+        }
+      },
+      "m25s5":{
+        "Extended ACL Placement Rule": "Extended ACL কোথায় অ্যাপ্লাই করতে হবে তার একটি গুরুত্বপূর্ণ নিয়ম রয়েছে।",
+        "golden rule": "Extended ACL should be placed as CLOSE to the SOURCE as possible.",
+        "reason": "যেহেতু এটি ডেস্টিনেশন আইপি জানে, তাই সোর্সের কাছে বসালে অপ্রয়োজনীয় ট্রাফিক নেটওয়ার্কে প্রবেশের আগেই ফিল্টার হয়ে যায়, যা ব্যান্ডউইথ সাশ্রয় করে।"
+      },
+      "m25s6":{
+        "Extended ACL Configuration": "সিসকো আইওএস-এ এক্সটেন্ডেড এসিএল কনফিগার করার প্র্যাকটিক্যাল সিনারিও।",
+        "syntax": "access-list [ID] [action] [protocol] [source] [wildcard] [destination] [wildcard] eq [port]",
+        "scenarios": [
+          {
+            "task": "Block Web access from Host A to Server B",
+            "command": "access-list 101 deny tcp host 192.168.1.5 host 10.1.1.100 eq 80"
+          },
+          {
+            "task": "Allow Ping but block everything else",
+            "command": [
+              "access-list 101 permit icmp any any",
+              "access-list 101 deny ip any any"
+            ]
+          },
+          {
+            "task": "Apply to Interface",
+            "command": [
+              "interface gig0/0",
+              "ip access-group 101 in"
+            ]
+          }
+        ]
+      },
+      "m25s7":{
+        "ACL Verification": "কনফিগারেশন চেক এবং এরর খুঁজে বের করার পদ্ধতি।",
+        "verification commands": {
+          "view hits": "show access-lists (কোন লাইনে কতগুলো প্যাকেট ম্যাচ করেছে তা দেখতে)",
+          "interface status": "show ip interface (ইন্টারফেসে এসিএল অ্যাপ্লাই করা আছে কি না চেক করতে)",
+          "running config": "show run | section ip access-list",
+          "log option": "রুলের শেষে 'log' কিওয়ার্ড যোগ করে কনসোলে লাইভ রিপোর্ট দেখা।"
+        },
+        "troubleshooting tips": [
+          "নিশ্চিত করুন যে শেষে Implicit Deny রুলের কারণে বৈধ ট্রাফিক আটকে যাচ্ছে না।",
+          "সোর্স এবং ডেস্টিনেশন আইপি এবং ওয়াইল্ডকার্ড মাস্ক পুনরায় চেক করুন।",
+          "পোর্ট নম্বর কি সঠিক প্রোটোকলের (TCP নাকি UDP) অধীনে দেওয়া হয়েছে?"
+        ]
+      }
+  },
+  "m26": {
+      "m26s1":{
+        "Port Security Introduction": "Port Security হলো একটি লেয়ার ২ সিকিউরিটি ফিচার যা একটি নির্দিষ্ট সুইচ পোর্টে কোন ডিভাইসটি কানেক্ট হতে পারবে তা নিয়ন্ত্রণ করে।",
+        "purpose": [
+          "MAC Address Spoofing বা হ্যাকিং রোধ করা।",
+          "অননুমোদিত ডিভাইস বা হাব/সুইচ নেটওয়ার্কে যুক্ত করা বন্ধ করা।",
+          "CAM Table Overflow অ্যাটাক থেকে রক্ষা করা।"
+        ],
+        "scope": "এটি শুধুমাত্র অ্যাক্সেস পোর্টে (Access Port) কাজ করে, ট্রাঙ্ক পোর্টে নয়।"
+      },
+      "m26s2":{
+        "MAC Address Learning Methods": "সুইচ কীভাবে পোর্টের জন্য অনুমোদিত ম্যাক অ্যাড্রেস চিনবে তার তিনটি পদ্ধতি রয়েছে।",
+        "methods": [
+          {
+            "type": "Static MAC",
+            "details": "অ্যাডমিনিস্ট্রেটর ম্যানুয়ালি ম্যাক অ্যাড্রেস কনফিগার করে দেয়। এটি সবচেয়ে সুরক্ষিত কিন্তু মেইনটেন্যান্স কঠিন।"
+          },
+          {
+            "type": "Dynamic MAC",
+            "details": "সুইচ নিজে থেকে প্রথম কানেক্ট হওয়া ডিভাইসের ম্যাক শিখে নেয়। কিন্তু রিবুট করলে এটি মুছে যায়।"
+          },
+          {
+            "type": "Sticky MAC",
+            "details": "এটি ডাইনামিকভাবে ম্যাক শিখে এবং কনফিগারেশনে সেভ করে রাখে। রিবুট করলেও এটি হারায় না।"
+          }
+        ]
+      },
+      "m26s3":{
+        "Port Security Limits & Modes": "একটি পোর্টে সর্বোচ্চ কতটি ম্যাক অ্যাড্রেস এলাউ করা হবে তা নির্ধারণ করা।",
+        "key_elements": {
+          "maximum_limit": "ডিফল্টভাবে ১টি ম্যাক এলাউ থাকে, তবে প্রয়োজন অনুযায়ী বাড়ানো যায় (উদা: যদি পোর্টের সাথে আইপি ফোন থাকে)।",
+          "aging_timer": "একটি ম্যাক কতক্ষণ ইন-অ্যাক্টিভ থাকলে সেটি পোর্ট থেকে রিমুভ হবে তা নির্ধারণ করা।"
+        }
+      },
+      "m26s4":{
+        "Violation Modes": "যখন কোনো অননুমোদিত ডিভাইস (অচেনা ম্যাক) পোর্টে কানেক্ট হয়, তখন সুইচ কী অ্যাকশন নেবে তা নির্ধারণ করে।",
+        "modes": [
+          {
+            "mode": "Protect",
+            "action": "অচেনা ডিভাইসের প্যাকেট ড্রপ করে দেয়, কিন্তু পোর্ট আপ থাকে এবং কোনো নোটিফিকেশন পাঠায় না।"
+          },
+          {
+            "mode": "Restrict",
+            "action": "প্যাকেট ড্রপ করে, একটি লগ মেসেজ/SNMP ট্র্যাপ পাঠায় এবং ভায়োলেশন কাউন্টার বাড়ায়।"
+          },
+          {
+            "mode": "Shutdown (Default)",
+            "action": "পোর্টটিকে তাৎক্ষণিকভাবে 'error-disabled' স্টেটে পাঠিয়ে পুরোপুরি বন্ধ করে দেয়। অ্যাডমিনকে ম্যানুয়ালি ঠিক করতে হয়।"
+          }
+        ]
+      },
+      "m26s5":{
+        "Port Security Configuration": "সিসকো ক্যাটালিস্ট সুইচে পোর্ট সিকিউরিটি এনাবল করার কমান্ড গাইড।",
+        "steps": [
+          "Switch(config)# interface range fa0/1 - 10",
+          "Switch(config-if-range)# switchport mode access (মাস্ট কমান্ড)",
+          "Switch(config-if-range)# switchport port-security (ফিচার এনাবল)",
+          "Switch(config-if-range)# switchport port-security maximum 2",
+          "Switch(config-if-range)# switchport port-security mac-address sticky",
+          "Switch(config-if-range)# switchport port-security violation restrict"
+        ]
+      },
+      "m26s6":{
+        "Port Security Configuration": "পোর্ট সিকিউরিটি কাজ করছে কি না এবং এরর-ডিসাবলড পোর্ট ঠিক করার পদ্ধতি।",
+        "verification commands": {
+          "summary check": "show port-security (সব পোর্টের সিকিউরিটি স্ট্যাটাস দেখতে)",
+          "interface check": "show port-security interface fa0/1 (নির্দিষ্ট পোর্টের ভায়োলেশন কাউন্ট দেখতে)",
+          "mac check": "show port-security address (শিখে নেওয়া ম্যাক অ্যাড্রেসগুলোর লিস্ট দেখতে)"
+        },
+        "common issues": [
+          "ইন্টারফেসটি 'Access Mode'-এ না থাকলে কমান্ড কাজ করবে না।",
+          "Sticky MAC সেভ না করলে (wr) রিবুট দিলে সিকিউরিটি নষ্ট হবে।",
+          "Error-disabled পোর্ট ঠিক করতে interface মোডে গিয়ে প্রথমে 'shutdown' এবং পরে 'no shutdown' দিতে হয়।"
+        ]
+      }
+  },
+  "m27": {
+      "m27s1":{
+        "WAN Introduction": "WAN হলো এমন একটি নেটওয়ার্ক যা বিশাল ভৌগোলিক এলাকা (দেশ বা মহাদেশ) জুড়ে বিস্তৃত এবং বিভিন্ন LAN-কে সংযুক্ত করে।",
+        "key_characteristics": [
+          "এটি সাধারণত লিজড লাইন বা সার্ভিস প্রোভাইডারের মাধ্যমে চলে।",
+          "LAN-এর তুলনায় এর ব্যান্ডউইথ কম কিন্তু কভারেজ অনেক বেশি।",
+          "এটি OSI মডেলের Physical এবং Data Link লেয়ারে কাজ করে।"
+        ],
+        "devices": "Routers, CSU/DSU, WAN Switches, Modems."
+      },
+      "m27s2":{
+        "WAN Connection Types": "সার্ভিস প্রোভাইডাররা বিভিন্নভাবে WAN কানেক্টিভিটি প্রদান করে থাকে।",
+        "types": [
+          {
+            "type": "Dedicated (Leased Lines)",
+            "example": "T1, T3, E1, E3 (Point-to-Point)."
+          },
+          {
+            "type": "Circuit Switched",
+            "example": "ISDN, PSTN (পুরানো এনালগ কানেকশন)।"
+          },
+          {
+            "type": "Packet Switched",
+            "example": "Frame Relay, ATM, MPLS (আধুনিক ও সাশ্রয়ী)।"
+          },
+          {
+            "type": "Public WAN",
+            "example": "Internet (VPN, DSL, Cable)."
+          }
+        ]
+      },
+      "m27s3":{
+        "HDLC (High Level Data Link Control)": "এটি সিসকো রাউটারে সিরিয়াল লিংকের জন্য ডিফল্ট এনক্যাপসুলেশন প্রোটোকল।",
+        "features": [
+          "এটি পয়েন্ট-টু-পয়েন্ট লিংকে কাজ করে।",
+          "সিসকো নিজস্ব HDLC ব্যবহার করে যাতে মাল্টি-প্রোটোকল সাপোর্ট থাকে।",
+          "অন্যান্য ভেন্ডরের সাথে এটি সরাসরি কম্প্যাটিবল নয়।"
+        ],
+        "command": "Router(config-if)# encapsulation hdlc"
+      },
+      "m27s4":{
+        "PPP (Point to Point Protocol)": "এটি একটি স্ট্যান্ডার্ড প্রোটোকল যা ভিন্ন ভিন্ন ভেন্ডরের রাউটারের মধ্যে কানেক্টিভিটি নিশ্চিত করে।",
+        "components": [
+          { "LCP": "Link Control Protocol; লিংক তৈরি এবং মেইনটেইন করে।" },
+          { "NCP": "Network Control Protocol; লেয়ার ৩ প্রোটোকল (IP, IPX) কনফিগার করে।" }
+        ],
+        "features": "Error detection, Compression, Multi-link support, এবং Authentication."
+      },
+      "m27s5":{
+        "PPP Authentication (PAP & CHAP)": "সিকিউরিটির জন্য PPP লিংকে ইউজারনেম এবং পাসওয়ার্ড ব্যবহার করা হয়।",
+        "methods": [
+          {
+            "PAP": "Password Authentication Protocol; পাসওয়ার্ড প্লেইন টেক্সট হিসেবে পাঠায় (অনিরাপদ)।"
+          },
+          {
+            "CHAP": "Challenge Handshake Authentication Protocol; থ্রি-ওয়ে হ্যান্ডশেক এবং হ্যাশিং ব্যবহার করে (নিরাপদ)।"
+          }
+        ],
+        "configuration": [
+          "Router(config)# username R2 password CISCO",
+          "Router(config-if)# encapsulation ppp",
+          "Router(config-if)# ppp authentication chap"
+        ]
+      },
+      "m27s6":{
+        "Frame Relay (Legacy Concept)": "এটি একটি সাশ্রয়ী প্যাকেট সুইচড টেকনোলজি যা ভার্চুয়াল সার্কিট ব্যবহার করে।",
+        "key_terms": [
+          { "DLCI": "Data Link Connection Identifier; এটি ভার্চুয়াল সার্কিটকে চিহ্নিত করে।" },
+          { "LMI": "Local Management Interface; রাউটার ও সুইচ এর মধ্যে ম্যানেজমেন্ট মেসেজ পাঠায়।" },
+          { "PVC": "Permanent Virtual Circuit; সবসময় সচল থাকা কানেকশন।" }
+        ],
+        "command": "Router(config-if)# encapsulation frame-relay"
+      },
+      "m27s7":{
+        "WAN Design Considerations": "একটি ভালো WAN ডিজাইন করার সময় যে বিষয়গুলো খেয়াল রাখতে হয়।",
+        "factors": [
+          "Bandwidth Requirement: ইউজারের সংখ্যার ওপর ভিত্তি করে লিংকের স্পিড নির্ধারণ করা।",
+          "Redundancy: একটি লিংক ডাউন হলে যেন অন্য লিংক দিয়ে ট্রাফিক যেতে পারে (Dual-homing)।",
+          "Latency: ভয়েস বা ভিডিও কল এর জন্য কম ল্যাটেন্সি নিশ্চিত করা।",
+          "Cost vs Reliability: বাজেট অনুযায়ী MPLS নাকি VPN ব্যবহার করা হবে তার সিদ্ধান্ত।"
+        ]
+      },
+      "m27s8":{
+        "WAN Troubleshooting": "সিরিয়াল বা WAN লিংক ডাউন থাকলে যেভাবে ডায়াগনস্টিক করতে হয়।",
+        "verification commands": {
+          "interface status": "show ip interface brief (ইন্টারফেস আপ আছে কি না দেখতে)",
+          "protocol check": "show interfaces serial 0/0 (এনক্যাপসুলেশন টাইপ এবং এরর দেখতে)",
+          "ppp debug": "debug ppp authentication (পাসওয়ার্ড বা অথেন্টিকেশন এরর চেক করতে)",
+          "controller status": "show controllers serial 0/0 (ক্লক রেট বা ক্যাবল সমস্যা চেক করতে)"
+        },
+        "common issues": [
+          "Encapsulation Mismatch (একপাশে HDLC অন্যপাশে PPP)।",
+          "Authentication Error (ইউজারনেম বা পাসওয়ার্ড ভুল)।",
+          "Clock Rate missing (DCE রাউটারে ক্লক রেট না দেওয়া)।",
+          "Keepalive failure (লিংকে নয়েজ বা ফিজিক্যাল সমস্যা)।"
+        ]
+      }
+
+  },
+  "m28": {
+     "m28s1":{
+        "VPN Introduction": "VPN হলো একটি পাবলিক নেটওয়ার্কের অবকাঠামো ব্যবহার করে তৈরি করা একটি প্রাইভেট লজিক্যাল নেটওয়ার্ক। এটি মূলত সিকিউরিটি এবং কস্ট-কাটিংয়ের জন্য ব্যবহৃত হয়।",
+        "core security pillars": {
+          "confidentiality": "Encryption-এর মাধ্যমে ডেটাকে অপাঠ্য করা হয়।",
+          "integrity": "Hashing-এর মাধ্যমে নিশ্চিত করা হয় যে ডেটা মাঝপথে পরিবর্তন হয়নি।",
+          "authentication": "নিশ্চিত করা হয় যে প্রেরক এবং প্রাপক উভয়ই বৈধ।",
+          "anti replay": "একই প্যাকেট বারবার পাঠিয়ে নেটওয়ার্ক হ্যাক করা রোধ করে।"
+        }
+      },
+      "m28s2":{
+        "VPN Types": "ব্যবহারের ক্ষেত্র অনুযায়ী ভিপিএন মূলত দুই ভাগে বিভক্ত।",
+        "types": [
+          {
+            "category": "Site-to-Site VPN",
+            "details": "স্থায়ী কানেকশন। দুটি অফিসের রাউটারের মধ্যে সবসময় টানেল আপ থাকে। ইউজাররা কোনো সফটওয়্যার ছাড়াই এটি ব্যবহার করতে পারে।",
+            "protocol": "IPsec"
+          },
+          {
+            "category": "Remote Access VPN",
+            "details": "অস্থায়ী কানেকশন। ইউজার একটি ক্লায়েন্ট সফটওয়্যার (যেমন AnyConnect) দিয়ে অফিসের ফায়ারওয়াল বা রাউটারে যুক্ত হয়।",
+            "protocol": "SSL/TLS বা IPsec"
+          }
+        ]
+      },
+      "m28s3":{
+        "Tunneling Protocols": "টানেলিং হলো একটি প্যাকেটের ওপর আরেকটি হেডার লাগিয়ে তাকে গন্তব্যে নিয়ে যাওয়া।",
+        "protocols": [
+          {
+            "name": "GRE (Generic Routing Encapsulation)",
+            "feature": "সব ধরনের লেয়ার ৩ প্যাকেট (Multicast, Routing updates) সাপোর্ট করে কিন্তু কোনো সিকিউরিটি নেই।",
+            "config_sample": "interface Tunnel0; ip address 10.0.0.1 255.255.255.0; tunnel source gig0/0; tunnel destination 203.0.113.2"
+          },
+          {
+            "name": "IPsec (IP Security)",
+            "feature": "এটি একটি ফ্রেমওয়ার্ক যা এনক্রিপশন এবং অথেন্টিকেশন প্রদান করে।",
+            "modes": "Transport Mode (শুধু ডেটা এনক্রিপ্ট করে) এবং Tunnel Mode (পুরো প্যাকেট এনক্রিপ্ট করে)।"
+          }
+        ]
+      },
+      "m28s4":{
+        "Encryption Basics": "ডেটা সুরক্ষার জন্য ব্যবহৃত গাণিতিক মেকানিজম।",
+        "symmetric_encryption": "একই কী (Key) দিয়ে লক এবং আনলক করা হয় (AES, 3DES, DES)। দ্রুতগতির জন্য এটিই ভিপিএন-এ ব্যবহৃত হয়।",
+        "asymmetric_encryption": "পাবলিক এবং প্রাইভেট কী জোড়া ব্যবহার করা হয় (RSA, DH)। এটি মূলত কী-এক্সচেঞ্জ এর জন্য ব্যবহৃত হয়।",
+        "hashing": "MD5, SHA-1, SHA-2 (HMAC) যা ডেটার ইনটিগ্রিটি চেক করে।"
+      },
+      "m28s5":{
+        "VPN Authentication & IPsec Phases": "IPsec VPN মূলত দুটি ধাপে বা ফেজে তৈরি হয়।",
+        "phase 1 isakmp": {
+          "goal": "একটি নিরাপদ ম্যানেজমেন্ট চ্যানেল তৈরি করা।",
+          "parameters": "HAGLE: Hash, Authentication (PSK/Cert), Group (DH), Lifetime, Encryption.",
+          "config": "crypto isakmp policy 10; encryption aes; hash sha256; authentication pre-share; group 14"
+        },
+        "phase 2 ipsec": {
+          "goal": "আসল ইউজার ডেটা পাঠানোর জন্য প্যারামিটার সেট করা।",
+          "parameters": "Transform Set (Encryption & Hash algorithms).",
+          "config": "crypto ipsec transform-set MY_SET esp-aes esp-sha256-hmac"
+        }
+      },
+    "m28s6": {
+      "VPN Design Considerations": "একটি ভিপিএন নেটওয়ার্ক ডিজাইন করার সময় যে বিষয়গুলো মাথায় রাখতে হয়।",
+      "factors": [
+        "Throughput: এনক্রিপশনের কারণে ব্যান্ডউইথ কিছুটা কমে যায়, তাই রাউটারের প্রসেসিং ক্ষমতা চেক করা।",
+        "Redundancy: প্রধান ভিপিএন লিংক ডাউন হলে ব্যাকআপ হিসেবে অন্য ইন্টারনেট প্রোভাইডার ব্যবহার করা।",
+        "Split Tunneling: ইউজার কি সব ট্রাফিক ভিপিএন দিয়ে পাঠাবে নাকি শুধু অফিসের ট্রাফিক? সেটি নির্ধারণ করা।",
+        "Scalability: ভবিষ্যতে ব্রাঞ্চ অফিস বাড়লে যেন সহজে কানেক্ট করা যায় (যেমন: DMVPN ব্যবহার)।"
+      ]
+    }
+  },
+  "m29": {
+      "m29s1":{
+        "Site-to-Site VPN Introduction": "Site-to-Site VPN হলো দুটি ভৌগোলিকভাবে আলাদা অফিসের (যেমন: HQ এবং Branch) রাউটারের মধ্যে একটি স্থায়ী এবং নিরাপদ টানেল যা পাবলিক ইন্টারনেটের ওপর দিয়ে চলে।",
+        "working_principle": "এটি ইনভিজিবল বা স্বচ্ছভাবে কাজ করে। ইউজাররা বুঝতেও পারে না যে তাদের ডাটা ইন্টারনেটের ওপর দিয়ে যাচ্ছে, কারণ এটি প্রাইভেট টু প্রাইভেট আইপি কমিউনিকেশন নিশ্চিত করে।",
+        "key_benefits": ["ব্যায়বহুল লিজড লাইনের বিকল্প", "ইন-ট্রানজিট ডাটা সিকিউরিটি", "স্কেলেবিলিটি"]
+      },
+      "m29s2":{
+        "VPN Tunnel Concept & Encapsulation": "টানেল হলো একটি প্যাকেটের ভেতরে আরেকটি প্যাকেট মুড়িয়ে পাঠানোর প্রক্রিয়া।",
+        "encapsulation_steps": [
+          "অরিজিনাল আইপি প্যাকেট (Private IP) নেওয়া হয়।",
+          "প্যাকেটটি এনক্রিপ্ট করা হয়।",
+          "একটি নতুন আইপি হেডার (Public IP) যোগ করা হয় যাতে এটি ইন্টারনেটে রাউট হতে পারে।"
+        ],
+        "logic": "পাবলিক ইন্টারনেট শুধু বাইরের হেডারটি দেখে, ভেতরের প্রাইভেট ডাটা ডিক্রিপ্ট করার ক্ষমতা তার নেই।"
+      },
+      "m29s3":{
+        "IPsec Framework Overview": "IPsec কোনো একক প্রোটোকল নয়, এটি কতগুলো প্রোটোকলের সমষ্টি যা সিকিউরিটি নিশ্চিত করে।",
+        "components": {
+          "AH (Authentication Header)": "ডাটা ইনটিগ্রিটি দেয় কিন্তু এনক্রিপশন দেয় না (বর্তমানে কম ব্যবহৃত)।",
+          "ESP (Encapsulating Security Payload)": "এটি এনক্রিপশন, অথেন্টিকেশন এবং ইনটিগ্রিটি সব প্রদান করে (সর্বাধিক ব্যবহৃত)।",
+          "Transport_Mode": "শুধুমাত্র পেলোড এনক্রিপ্ট করে (End-to-End)।",
+          "Tunnel_Mode": "পুরো প্যাকেট এনক্রিপ্ট করে নতুন হেডার বসায় (Site-to-Site এর জন্য এটিই ডিফল্ট)।"
+        }
+      },
+      "m29s4":{
+        "IKE Phases (The Negotiation Process)": "টানেল তৈরি হওয়ার আগে দুই রাউটারকে কিছু শর্তে একমত হতে হয়।",
+        "phase_1_isakmp": {
+          "purpose": "নিরাপদ ম্যানেজমেন্ট টানেল তৈরি করা।",
+          "parameters": "HAGLE: Hash (SHA), Authentication (PSK), Group (DH), Lifetime, Encryption (AES)."
+        },
+        "phase_2_ipsec": {
+          "purpose": "ইউজার ডাটা ট্রান্সফার করার জন্য টানেল তৈরি করা।",
+          "parameters": "Transform Set (Encryption + Hashing algorithm selection)."
+        }
+      },
+      "m29s5":{
+        "Configuration:": "Full Dual-Side Configuration (Detailed)",
+        "Full Dual-Side Configuration (Detailed)": [
+          "access-list 101 permit ip 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255",
+          "crypto isakmp policy 10; encryption aes; hash sha; authentication pre-share; group 2",
+          "crypto isakmp key CISCO_VPN_KEY address 203.0.113.2",
+          "crypto ipsec transform-set TSET esp-aes esp-sha-hmac",
+          "crypto map MY_MAP 10 ipsec-isakmp; set peer 203.0.113.2; set transform-set TSET; match address 101",
+          "interface gig0/0; crypto map MY_MAP"
+        ],
+        "site_b_branch_config": [
+          "access-list 101 permit ip 192.168.2.0 0.0.0.255 192.168.1.0 0.0.0.255 (Mirror Image ACL)",
+          "crypto isakmp policy 10; encryption aes; hash sha; authentication pre-share; group 2",
+          "crypto isakmp key CISCO_VPN_KEY address 203.0.113.1",
+          "crypto ipsec transform-set TSET esp-aes esp-sha-hmac",
+          "crypto map MY_MAP 10 ipsec-isakmp; set peer 203.0.113.1; set transform-set TSET; match address 101",
+          "interface gig0/0; crypto map MY_MAP"
+        ]
+      },
+      "m29s6":{
+        "Verification": "টানেল আপ না হলে যেভাবে চেক করবেন।",
+        "commands": {
+          "phase 1 check": "show crypto isakmp sa (Status 'QM_IDLE' হতে হবে)",
+          "phase 2 check": "show crypto ipsec sa (Encaps/Decaps কাউন্টার বাড়তে হবে)",
+          "acl check": "show access-lists (দেখুন প্যাকেট ম্যাচ করছে কি না)",
+          "Routing check": "show ip route (নিশ্চিত করুন যে পাবলিক আইপি একে অপরকে পিং করতে পারছে)"
+        },
+        "common errors": [
+          "Mismatch in HAGLE parameters (Phase 1 mismatch)",
+          "Mismatch in Transform-set (Phase 2 mismatch)",
+          "ACL Not Mirror: সাইট-এ তে যেটা সোর্স সাইট-বি তে সেটা গন্তব্য হতে হবে",
+          "Firewall blocking UDP 500 or ESP (Protocol 50)"
+        ]
+      }
+  },
+  "m30": {
+      "m30s1":{
+        "Remote Access VPN Introduction": "Remote Access VPN হলো এমন একটি প্রযুক্তি যা একজন ইন্ডিভিজুয়াল ইউজারকে (যেমন: রিমোট ওয়ার্কার) ইন্টারনেটের মাধ্যমে নিরাপদভাবে তার অফিসের ইন্টারনাল নেটওয়ার্কে যুক্ত হতে সাহায্য করে।",
+        "core function": "এটি ইউজারের কম্পিউটার এবং অফিসের গেটওয়ের (VPN Concentrator/Firewall) মধ্যে একটি টানেল তৈরি করে, যার ফলে ইউজার মনে করে সে অফিসের লোকাল নেটওয়ার্কে বসেই কাজ করছে।",
+        "business need": ["ওয়ার্ক ফ্রম হোম সুবিধা", "মোবাইল ইউজারদের জন্য সিকিউর কানেক্টিভিটি", "ব্যয়বহুল ডেডিকেটেড লাইনের বিকল্প"]
+      },
+      "m30s2":{
+        "VPN Client Types": "ইউজার কীভাবে ভিপিএন-এ কানেক্ট হবে তার ওপর ভিত্তি করে এটি দুই প্রকার।",
+        "client_types": [
+          {
+            "type": "Client-Based (Cisco AnyConnect)",
+            "details": "ইউজারের পিসি বা ফোনে একটি নির্দিষ্ট সফটওয়্যার ইন্সটল থাকে। এটি ফুল-টানেলিং সাপোর্ট করে এবং সব ধরনের অ্যাপ্লিকেশন প্রোটোকল হ্যান্ডেল করতে পারে।"
+          },
+          {
+            "type": "Clientless (SSL/TLS VPN)",
+            "details": "কোনো সফটওয়্যার প্রয়োজন হয় না। ইউজার শুধু ব্রাউজারে গিয়ে একটি URL হিট করে (HTTPS)। এটি সাধারণত ওয়েব-বেসড অ্যাপ্লিকেশন এবং ফাইল শেয়ারিংয়ের জন্য ব্যবহৃত হয়।"
+          }
+        ]
+      },
+      "m30s3":{
+        "Authentication Methods (AAA)": "রিমোট ইউজারদের আইডেন্টিটি ভেরিফাই করার জন্য ব্যবহৃত বিভিন্ন মেকানিজম।",
+        "methods": [
+          { "Local_Auth": "ভিপিএন গেটওয়ে বা রাউটারে ইউজারনেম এবং পাসওয়ার্ড সেভ থাকে।" },
+          { "External_Server": "RADIUS বা TACACS+ সার্ভার ব্যবহার করে সেন্ট্রালাইজড অথেন্টিকেশন।" },
+          { "MFA": "Multi-Factor Authentication (যেমন: পাসওয়ার্ডের সাথে মোবাইলে আসা OTP বা Duo Security)।" },
+          { "Certificates": "ডিজিটাল সার্টিফিকেট (PKI) ব্যবহার করে অটোমেটিক অথেন্টিকেশন।" }
+        ]
+      },
+      "m30s4":{
+        "VPN Tunneling & Encryption (SSL vs IPsec)": "ডাটা সুরক্ষিত রাখার জন্য ব্যবহৃত প্রোটোকল এবং এনক্রিপশন লজিক।",
+        "comparison": {
+          "SSL_TLS_VPN": "TCP পোর্ট ৪৪৩ ব্যবহার করে। ফায়ারওয়াল ফ্রেন্ডলি এবং সহজে কনফিগারযোগ্য।",
+          "IPsec_Remote_VPN": "UDP ৫০০/৪৫০০ পোর্ট ব্যবহার করে। অনেক বেশি সিকিউর কিন্তু অনেক সময় ফায়ারওয়ালে আটকে যায়।"
+        },
+        "encryption": "AES-256 (Encryption), SHA-2 (Integrity), RSA (Key Exchange)।"
+      },
+      "m30s5":{
+        "Configuration": "Remote Access VPN Configuration (Dual Side)",
+        "server_side_router_config": [
+          "ip local pool VPN_POOL 192.168.100.1 192.168.100.50 (Assign IP to Clients)",
+          "aaa new-model; aaa authentication login VPN_AUTH local",
+          "username remote_user password CISCO_PASS",
+          "crypto isakmp client configuration group VPN_GROUP; key GROUP_PASS; pool VPN_POOL",
+          "crypto isakmp policy 10; encryption aes; hash sha; authentication pre-share; group 2",
+          "crypto ipsec transform-set TSET esp-aes esp-sha-hmac",
+          "crypto dynamic-map DYN_MAP 10; set transform-set TSET; reverse-route",
+          "crypto map MY_MAP 60000 ipsec-isakmp dynamic DYN_MAP",
+          "interface gig0/0; crypto map MY_MAP"
+        ],
+        "client_side_logic": [
+          "Install Cisco AnyConnect Client.",
+          "Enter Public IP of VPN Server: 203.0.113.1",
+          "Enter Group Name & Group Password (configured on server).",
+          "Enter Individual Username & Password (remote_user/CISCO_PASS).",
+          "Establish Tunnel and receive IP from VPN_POOL (e.g., 192.168.100.1)."
+        ]
+      },
+      "m30s6":{
+        "Verification": "ইউজার কানেক্ট হতে না পারলে ট্রাবলশুটিংয়ের স্টেপস।",
+        "commands": {
+          "active_sessions": "show crypto session (কতজন ইউজার বর্তমানে কানেক্টেড তা দেখতে)",
+          "check_ip_assignment": "show ip dhcp binding (ক্লায়েন্ট আইপি পেল কি না দেখতে)",
+          "isakmp_debug": "debug crypto isakmp (পাসওয়ার্ড বা অথেন্টিকেশন এরর দেখতে)",
+          "ipsec_debug": "debug crypto ipsec (টানেল ফেজ ২ এর সমস্যা দেখতে)"
+        },
+        "common_issues": [
+          "Pool Exhaustion: পুলের সব আইপি শেষ হয়ে যাওয়া।",
+          "NAT Traversal: রাউটার এবং ইউজারের মাঝখানে ন্যাটিং পোর্টের সমস্যা (UDP 4500 এনাবল থাকা জরুরি)।",
+          "ACL Blocking: ইনবাউন্ড ট্রাফিক এসিএল দিয়ে ব্লক থাকা।",
+          "Split Tunneling Error: ইউজার কানেক্ট হওয়ার পর ইন্টারনেট না পাওয়া (শুধু অফিসের নেটওয়ার্ক পাচ্ছে কি না তা চেক করা)।"
+        ]
+      }
+  },
+  "m31": {
+    "m31s1": {
+      "Network Automation Introduction": "নেটওয়ার্ক অটোমেশন হলো সফটওয়্যার ব্যবহার করে নেটওয়ার্ক রিসোর্স এবং সার্ভিসগুলোর প্রভিশনিং, কনফিগারেশন, ম্যানেজমেন্ট এবং টেস্টিংকে স্বয়ংক্রিয় করার প্রক্রিয়া। এটি প্রথাগত 'Box-by-Box' ম্যানেজমেন্ট থেকে 'Network-as-Code' মডেলে রূপান্তর ঘটায়।",
+      "evolution of network management": [
+        {
+          "era": "Traditional Era",
+          "method": "Manual CLI (SSH/Telnet)",
+          "drawbacks": "ধীরগতি, হিউম্যান এরর (Typo), স্কেলেবিলিটি সমস্যা, এবং কনফিগারেশন ড্রিফট (একই নেটওয়ার্কে বিভিন্ন ডিভাইসে ভিন্ন ভিন্ন কনফিগ)।"
+        },
+        {
+          "era": "Scripting Era",
+          "method": "Basic Python/Bash Scripts",
+          "benefits": "টাস্ক অটোমেশন শুরু হয়, তবে স্ক্রিপ্টগুলো খুব বেশি ভেন্ডর-স্পেসিফিক এবং রক্ষণাবেক্ষণ করা কঠিন ছিল।"
+        },
+        {
+          "era": "Modern Automation Era",
+          "method": "SDN, APIs, and Configuration Management Tools (Ansible/Terraform)",
+          "benefits": "ইন্টেন্ট-বেসড নেটওয়ার্কিং, ভেন্ডর এগনস্টিক, এবং ফুল লাইফসাইকেল অটোমেশন।"
+        }
+      ],
+      "core of Automation": {
+        "idempotency": "অটোমেশনের সবচেয়ে শক্তিশালী লজিক। আপনি যদি একই কনফিগারেশন স্ক্রিপ্ট ১০ বার রান করেন, তবে সিস্টেমের স্টেট যদি অলরেডি কাঙ্ক্ষিত অবস্থায় থাকে, তবে সে নতুন করে কোনো পরিবর্তন করবে না। এটি এরর কমায়।",
+        "declarative vs imperative": {
+          "imperative": "রাউটারকে বলা 'কিভাবে' করতে হবে (Step-by-step commands)। উদাহরণ: 'Enter Global config mode, then type interface vlan 10...'",
+          "declarative": "রাউটারকে বলা 'আমি কি চাই' (The Goal)। উদাহরণ: 'I want VLAN 10 to exist.' টুলটি নিজেই খুঁজে বের করবে কিভাবে এটি করতে হবে।"
+        },
+        "source of truth": "নেটওয়ার্কের আসল কনফিগারেশন ডাটা রাউটারে থাকবে না; এটি থাকবে একটি ভার্সন-কন্ট্রোলড ডাটাবেসে (যেমন Git বা NetBox)।"
+      },
+      "automation lifecycle steps": {
+        "step 1 discovery": "নেটওয়ার্ক টপোলজি এবং ডিভাইসগুলো খুঁজে বের করা এবং ইনভেন্টরি তৈরি করা।",
+        "step 2 provisioning": "নতুন ডিভাইস বা সার্ভিস নেটওয়ার্কে যুক্ত করা (Zero Touch Provisioning - ZTP)।",
+        "step 3 configuration": "পলিসি এবং সিকিউরিটি সেটিংস পুশ করা।",
+        "step 4 validation": "কনফিগারেশন ঠিকঠাক কাজ করছে কি না তা টেস্ট করা (যেমন: Connectivity check via PyATS)।",
+        "step 5 compliance": "পুরো নেটওয়ার্ক কোম্পানির স্ট্যান্ডার্ড সিকিউরিটি পলিসি মেনে চলছে কি না তা নিশ্চিত করা।"
+      },
+      "technical building blocks": {
+        "data formats": ["JSON (JavaScript Object Notation)", "YAML (YAML Ain't Markup Language)", "XML (Extensible Markup Language)"],
+        "data models": "YANG (Yet Another Next Generation) - যা ডিভাইসের ফিচারগুলোকে একটি স্ট্রাকচার্ড মডেলে প্রকাশ করে।",
+        "transport protocols": ["SSH", "HTTP/HTTPS", "NETCONF", "RESTCONF"]
+      },
+      "business benefits": {
+        "agility": "নতুন সার্ভিস লঞ্চ করতে কয়েক দিনের বদলে কয়েক মিনিট সময় লাগে।",
+        "reliability": "মানুষের ভুল (Human Error) ৯৫% পর্যন্ত কমে যায়।",
+        "visibility": "রিয়েল-টাইম টেলিমেট্রি ডাটার মাধ্যমে নেটওয়ার্কের অবস্থা স্পষ্টভাবে বোঝা যায়।"
+      }
+    },
+    "m31a2": {
+      "SDN Basics": "SDN হলো এমন একটি নেটওয়ার্কিং আর্কিটেকচার যা নেটওয়ার্কের কন্ট্রোল প্লেন (বিবেচনা/সিদ্ধান্ত) এবং ডেটা প্লেন (প্যাকেট ফরওয়ার্ডিং)-কে আলাদা করে এবং একটি সেন্ট্রাল কন্ট্রোলারের মাধ্যমে পুরো নেটওয়ার্ক পরিচালনা করে।",
+      "the three planes": {
+        "data plane": {
+          "alias": "Forwarding Plane",
+          "function": "এটি ফিজিক্যাল লেয়ারে কাজ করে। যখন একটি প্যাকেট আসে, এটি শুধুমাত্র কন্ট্রোল প্লেন থেকে আসা ইনস্ট্রাকশন (Flow Table) অনুযায়ী প্যাকেটটি নেক্সট হপে পাঠিয়ে দেয়।",
+          "components": "ASIC (Application-Specific Integrated Circuits), Physical Interfaces, CPU (low-level processing)।"
+        },
+        "control plane": {
+          "alias": "The Brain",
+          "function": "এটি নির্ধারণ করে প্যাকেটটি কোন পথ দিয়ে যাবে। ট্র্যাডিশনাল রাউটারে এটি প্রতিটি ডিভাইসের ভেতরে থাকে, কিন্তু SDN-এ এটি কন্ট্রোলারে চলে যায়।",
+          "protocols": "OSPF, BGP, EIGRP, STP (Traditional); OpenFlow, NETCONF (SDN)।"
+        },
+        "management plane": {
+          "alias": "Administrative Interface",
+          "function": "ডিভাইস কনফিগারেশন, মনিটরিং এবং অ্যাডমিনিস্ট্রেশনের জন্য ব্যবহৃত হয়।",
+          "access_methods": "SSH, SNMP, HTTP/HTTPS, REST APIs।"
+        }
+      },
+      "sdn architecture layers": [
+        {
+          "layer": "Application Layer",
+          "role": "বিজনেস লজিক এবং নেটওয়ার্ক সার্ভিস যেমন: Firewall, Load Balancer, এবং IDS/IPS। এখানে ইউজার অ্যাপ্লিকেশন থাকে যা নেটওয়ার্কের আচরণ নিয়ন্ত্রণ করতে চায়।"
+        },
+        {
+          "interface": "Northbound API",
+          "role": "এটি অ্যাপ্লিকেশন লেয়ার এবং কন্ট্রোল লেয়ারের মধ্যে যোগাযোগের সেতু। সাধারণত REST API ব্যবহার করে।"
+        },
+        {
+          "layer": "Control Layer (The Controller)",
+          "role": "SDN-এর কেন্দ্রীয় মস্তিষ্ক। এটি পুরো নেটওয়ার্কের টপোলজি জানে এবং অ্যাপ্লিকেশন লেয়ারের রিকোয়েস্ট অনুযায়ী ফ্লো-টেবিল জেনারেট করে।"
+        },
+        {
+          "interface": "Southbound API",
+          "role": "এটি কন্ট্রোলার এবং ফিজিক্যাল ডিভাইসের মধ্যে যোগাযোগের মাধ্যম। এর মাধ্যমে কন্ট্রোলার সুইচগুলোকে কমান্ড দেয় (উদা: OpenFlow, RESTCONF, P4)।"
+        },
+        {
+          "layer": "Infrastructure Layer",
+          "role": "ফিজিক্যাল সুইচ এবং রাউটার যা শুধুমাত্র ডাটা প্লেন হিসেবে কাজ করে।"
+        }
+      ],
+      "traditional vs sdn comparison": {
+        "intelligence": {
+          "traditional": "Decentralized (প্রতিটি রাউটার আলাদাভাবে চিন্তা করে)।",
+          "sdn": "Centralized (কন্ট্রোলার সবার হয়ে চিন্তা করে)।"
+        },
+        "configuration": {
+          "traditional": "Box-by-Box (ম্যানুয়ালি প্রতিটি ডিভাইসে লগইন করতে হয়)।",
+          "sdn": "Policy-based (এক জায়গা থেকে সবার জন্য পলিসি পুশ করা হয়)।"
+        },
+        "innovation speed": {
+          "traditional": "ধীর (ভেন্ডর হার্ডওয়্যারের ওপর নির্ভরশীল)।",
+          "sdn": "দ্রুত (সফটওয়্যার কোডিংয়ের মাধ্যমে নতুন ফিচার যোগ করা যায়)।"
+        }
+      },
+      "key benefits of sdn": {
+        "centralized management": "পুরো নেটওয়ার্কের একটি 'Single Pane of Glass' ভিউ পাওয়া যায়।",
+        "dynamic scalability": "ট্রাফিক লোড অনুযায়ী নেটওয়ার্ক রিসোর্স অটোমেটিক বাড়ানো বা কমানো যায়।",
+        "reduced opex": "অটোমেশনের কারণে মানুষের শ্রম এবং ভুলের পরিমাণ কমে যায়, ফলে খরচ কমে।",
+        "vendor neutrality": "সফটওয়্যার এবং হার্ডওয়্যার আলাদা হওয়ায় বিভিন্ন ভেন্ডরের ডিভাইস একসাথে ব্যবহার করা সহজ হয়।"
+      },
+      "sdn deployment models": [
+        {
+          "model": "Open SDN",
+          "detail": "সম্পূর্ণ ওপেন স্ট্যান্ডার্ড যেমন OpenFlow ব্যবহার করে তৈরি।"
+        },
+        {
+          "model": "Overlay SDN",
+          "detail": "ফিজিক্যাল নেটওয়ার্কের (Underlay) ওপর একটি লজিক্যাল নেটওয়ার্ক তৈরি করা (উদা: VXLAN, IPsec)।"
+        },
+        {
+          "model": "API-based SDN",
+          "detail": "ট্র্যাডিশনাল নেটওয়ার্ককে পরিবর্তন না করে API-এর মাধ্যমে অটোমেশন করা (সিসকোর বর্তমান অ্যাপ্রোচ)।"
+        }
+      ]
+    },
+    "m31s3": {
+      "Controllers Overview": "নেটওয়ার্ক কন্ট্রোলার হলো একটি সেন্ট্রালাইজড সফটওয়্যার অ্যাপ্লিকেশন যা নেটওয়ার্কের বুদ্ধিমত্তা ধারণ করে। এটি নর্থবাউন্ড ইন্টারফেসের মাধ্যমে অ্যাপ্লিকেশন থেকে পলিসি গ্রহণ করে এবং সাউথবাউন্ড ইন্টারফেসের মাধ্যমে ফিজিক্যাল ডিভাইসে সেই পলিসি পুশ করে।",
+      "key functions of a controller": {
+        "inventory management": "নেটওয়ার্কের সব ডিভাইসকে অটোমেটিক খুঁজে বের করা এবং তাদের লাইভ স্ট্যাটাস ট্র্যাক করা।",
+        "topology awareness": "পুরো নেটওয়ার্কের একটি ম্যাপ তৈরি করা এবং কোন লিঙ্কে কতটা ট্রাফিক আছে তা জানা।",
+        "policy automation": "ইউজারের দেওয়া লজিক্যাল পলিসিকে (উদা: 'HR নেটওয়ার্ক শুধু ইন্টারনেট পাবে') টেকনিক্যাল কমান্ডে রূপান্তর করা।",
+        "network assurance": "টেলিম্যাট্রি ডাটা অ্যানালাইসিস করে নেটওয়ার্কে কোনো সমস্যা হওয়ার আগেই সংকেত দেওয়া।"
+      },
+      "major cisco_controllers": [
+        {
+          "name": "Cisco DNA Center (DNAC)",
+          "focus_domain": "Enterprise, Campus, and Wireless Networks.",
+          "architecture": "এটি সিসকোর 'Intent-Based Networking' (IBN) এর কেন্দ্রবিন্দু।",
+          "key_features": [
+            "Plug and Play (PnP): নতুন রাউটার বা সুইচ ক্যাবল লাগালেই অটো-কনফিগার হয়ে যাবে।",
+            "Software Management (SWIM): এক ক্লিকে পুরো নেটওয়ার্কের ওএস (OS) আপডেট করা।",
+            "Path Trace: একটি প্যাকেট সোর্স থেকে ডেস্টিনেশনে যেতে কোন কোন রাউটার হয়ে যাচ্ছে তা ভিজ্যুয়ালি দেখা।"
+          ]
+        },
+        {
+          "name": "Cisco APIC (Application Policy Infrastructure Controller)",
+          "focus_domain": "Data Centers (Cisco ACI Architecture).",
+          "architecture": "লিফ-স্পাইন (Leaf-Spine) টপোলজিতে কাজ করে। এটি ইউজারের রিকোয়েস্ট অনুযায়ী নেটওয়ার্ককে একটি অ্যাপ্লিকেশনের মতো ট্রিট করে।",
+          "key_features": [
+            "Endpoint Groups (EPG): ইউজারের আইপি নয়, বরং তাদের গ্রুপের ওপর ভিত্তি করে সিকিউরিটি দেওয়া।",
+            "Multi-Tenancy: একই ডাটা সেন্টারকে ভার্চুয়ালি আলাদা আলাদা কাস্টমারের জন্য ভাগ করা।"
+          ]
+        },
+        {
+          "name": "Cisco vManage",
+          "focus_domain": "SD-WAN (Software-Defined WAN).",
+          "architecture": "হাজার হাজার ব্রাঞ্চ অফিসের রাউটারকে এক জায়গা থেকে ম্যানেজ করা।",
+          "key_features": [
+            "Centralized Templates: একটি টেম্প্লেট তৈরি করে ১০০০টি রাউটারে একসাথে কনফিগ পুশ করা।",
+            "Application Aware Routing: জুম কল বা ভয়েস ট্রাফিককে অটোমেটিক সবচেয়ে ভালো ইন্টারনেট লিঙ্কে পাঠিয়ে দেওয়া।"
+          ]
+        }
+      ],
+      "controller interfaces": {
+        "northbound api": {
+          "description": "এটি কন্ট্রোলারের উপরের লেয়ার (Application/Manager) এর সাথে যোগাযোগ করে।",
+          "common protocol": "REST API (using JSON or XML)."
+        },
+        "southbound api": {
+          "description": "এটি কন্ট্রোলারের নিচের লেয়ার (Switches/Routers) এর সাথে যোগাযোগ করে।",
+          "common protocols": "NETCONF, RESTCONF, SNMP, OpenFlow, gRPC."
+        }
+      },
+      "benefits of centralized control": {
+        "consistency": "পুরো নেটওয়ার্কে একই ধরনের পলিসি বজায় থাকে, আলাদা আলাদা রাউটারে আলাদা সেটিংস হওয়ার ভয় থাকে না।",
+        "rapid deployment": "নতুন সার্ভিস বা কনফিগারেশন মিনিটের মধ্যে পুরো এন্টারপ্রাইজে ছড়িয়ে দেওয়া যায়।",
+        "operational efficiency": "একজন নেটওয়ার্ক ইঞ্জিনিয়ার এখন আগের চেয়ে অনেক বড় নেটওয়ার্ক একা সামলাতে পারেন।"
+      },
+      "troubleshooting at controller level": [
+        "Connectivity issues between Controller and Agent (Southbound failure).",
+        "API Response Codes (401 Unauthorized, 404 Not Found, 500 Server Error).",
+        "Certificate Mismatch (Trust issues between device and DNAC/vManage)."
+      ]
+    },
+    "m31s4": {
+      "APIs in Networking": "API (Application Programming Interface) হলো একটি সফটওয়্যার ইন্টারফেস যা দুটি ভিন্ন সিস্টেমকে (যেমন: পাইথন স্ক্রিপ্ট এবং সিসকো রাউটার) একে অপরের সাথে তথ্য আদান-প্রদান করতে সাহায্য করে।",
+      "core api types in networking": [
+        {
+          "type": "Northbound API",
+          "direction": "Controller to Application/User.",
+          "usage": "ইউজার যখন কন্ট্রোলারের ড্যাশবোর্ড বা কাস্টম অ্যাপ ব্যবহার করে নেটওয়ার্কের অবস্থা দেখতে চায়।"
+        },
+        {
+          "type": "Southbound API",
+          "direction": "Controller to Network Hardware (Router/Switch).",
+          "usage": "কন্ট্রোলার যখন ফিজিক্যাল ডিভাইসে কনফিগারেশন পুশ করে (উদা: NETCONF, SNMP)।"
+        }
+      ],
+      "rest api": {
+        "full form": "REpresentational State Transfer",
+        "logic": "এটি স্টেটলেস (Stateless) এবং HTTP প্রোটোকলের ওপর ভিত্তি করে কাজ করে। এটি বর্তমানে অটোমেশনে সবচেয়ে জনপ্রিয়।",
+        "components": {
+          "url uri": "নির্দিষ্ট রিসোর্সের ঠিকানা (উদা: https://router-ip/restconf/data/interfaces)।",
+          "methods verbs": [
+            { "method": "GET", "action": "ডাটা রিড করা (Show command-এর মতো)।" },
+            { "method": "POST", "action": "নতুন ডাটা তৈরি করা (Create)।" },
+            { "method": "PUT", "action": "বিদ্যমান ডাটা পুরোপুরি রিপ্লেস করা (Update/Replace)।" },
+            { "method": "PATCH", "action": "আংশিক পরিবর্তন করা (Partial Update)।" },
+            { "method": "DELETE", "action": "কনফিগারেশন মুছে ফেলা (Remove)।" }
+          ],
+          "headers": {
+            "Content Type": "আমরা কী ফরম্যাটে ডাটা পাঠাচ্ছি (উদা: application/json)।",
+            "Accept": "আমরা কী ফরম্যাটে রেসপন্স চাই (উদা: application/xml)।",
+            "Authorization": "ইউজার আইডেন্টিটি (Basic Auth বা Token)।"
+          },
+          "status codes": {
+            "200_201": "Success (সফল হয়েছে)।",
+            "401": "Unauthorized (পাসওয়ার্ড ভুল)।",
+            "404": "Not Found (ইউআরএল ভুল)।",
+            "500": "Internal Server Error (রাউটারে সমস্যা)।"
+          }
+        }
+      },
+      "modern protocols comparison": [
+        {
+          "protocol": "NETCONF",
+          "transport": "SSH (Port 830)",
+          "data_format": "XML",
+          "strength": "ট্রানজেকশন সাপোর্ট করে (একসাথে অনেক কনফিগ পুশ করা এবং এরর হলে অটো-রোলব্যাক)।"
+        },
+        {
+          "protocol": "RESTCONF",
+          "transport": "HTTP/S (Port 443)",
+          "data_format": "JSON or XML",
+          "strength": "নেটকনফের হালকা ভার্সন, ওয়েব ডেভেলপারদের জন্য সহজ এবং মডার্ন।"
+        },
+        {
+          "protocol": "gRPC",
+          "transport": "HTTP/2",
+          "data_format": "Protocol Buffers",
+          "strength": "অত্যন্ত দ্রুত, রিয়েল-টাইম স্ট্রিমিং টেলিম্যাট্রির জন্য সেরা।"
+        }
+      ],
+      "data serialization formats": {
+        "JSON": {
+          "pros": "হিউম্যান রিডেবল, পাইথন ডিকশনারির সাথে মিল আছে, অনেক হালকা।",
+          "example": "{ 'interface': 'GigabitEthernet1', 'status': 'up' }"
+        },
+        "XML": {
+          "pros": "স্ট্রাকচার্ড এবং ডাটা ভ্যালিডেশন সহজ, NETCONF-এ ব্যবহৃত হয়।",
+          "example": "<interface><name>GigabitEthernet1</name><status>up</status></interface>"
+        },
+        "YAML": {
+          "pros": "কনফিগারেশন ফাইল এবং অ্যানসিবল প্লেবুকের জন্য সেরা।",
+          "example": "interface: GigabitEthernet1\nstatus: up"
+        }
+      },
+      "data modeling with yang": {
+        "definition": "YANG (Yet Another Next Generation) হলো একটি ডাটা মডেলিং ল্যাঙ্গুয়েজ।",
+        "importance": "রাউটারের ইন্টারফেস বা রাউটিং প্রোটোকল দেখতে কেমন হবে, তার একটি স্ট্যান্ডার্ড ম্যাপ বা স্কিমা তৈরি করে দেয় YANG।"
+      }
+    },
+    "m31s5": {
+      "Automation & Configuration Management Tools": "অটোমেশন টুলস হলো সেই সফটওয়্যার যা নেটওয়ার্ক ডিভাইসের কনফিগারেশন, প্রভিশনিং এবং কমপ্লায়েন্স ম্যানেজমেন্টকে স্কেলেবল করে তোলে। এটি ম্যানুয়াল কাজকে 'Automated Workflows'-এ রূপান্তর করে।",
+      "core classification": {
+        "agentless": {
+          "definition": "ডিভাইসে কোনো অতিরিক্ত সফটওয়্যার ইন্সটল করতে হয় না। এটি SSH বা NETCONF ব্যবহার করে কাজ করে।",
+          "tools": ["Ansible", "Terraform", "Python Scripts"],
+          "benefit": "নেটওয়ার্ক ডিভাইসের (রাউটার/সুইচ) জন্য সেরা, কারণ এসব ডিভাইসে আলাদা সফটওয়্যার ইন্সটল করা যায় না।"
+        },
+        "agent based": {
+          "definition": "প্রতিটি টার্গেট ডিভাইসে একটি 'Agent' সফটওয়্যার চলতে হয় যা সার্ভারের সাথে যোগাযোগ করে।",
+          "tools": ["Puppet", "Chef"],
+          "benefit": "সার্ভার এবং লিনাক্স এনভায়রনমেন্টের জন্য অত্যন্ত শক্তিশালী।"
+        }
+      },
+      "major tools": [
+        {
+          "name": "Ansible (The Industry Leader)",
+          "language": "YAML (Playbooks)",
+          "architecture": "Push Model (সার্ভার থেকে কনফিগ ডিভাইসে পুশ করা হয়)।",
+          "working logic": "এটি মডিউল (Modules) ব্যবহার করে। যেমন: 'ios_config' মডিউল দিয়ে সিসকো ডিভাইসে কনফিগ পাঠানো হয়।",
+          "pros": "খুবই সহজে শেখা যায়, স্ক্রিপ্টিং ছাড়াই কাজ করা সম্ভব, ভেন্ডর এগনস্টিক।"
+        },
+        {
+          "name": "Puppet",
+          "language": "Ruby (Domain Specific Language)",
+          "architecture": "Pull Model (ডিভাইস নিজে সার্ভার থেকে কনফিগ টেনে নেয়)।",
+          "working logic": "এটি 'Manifests' এবং 'Resources' এর ওপর ভিত্তি করে চলে।",
+          "pros": "বিশাল নেটওয়ার্ক বা এন্টারপ্রাইজের জন্য অত্যন্ত স্টেবল এবং শক্তিশালী।"
+        },
+        {
+          "name": "Terraform",
+          "language": "HCL (HashiCorp Configuration Language)",
+          "architecture": "Infrastructure as Code (IaC)",
+          "working logic": "এটি মূলত ক্লাউড এবং ভার্চুয়াল নেটওয়ার্ক (SDN) প্রভিশনিং এর জন্য ব্যবহৃত হয়।",
+          "pros": "নেটওয়ার্কের বর্তমান অবস্থা (State) ট্র্যাক রাখতে পারে।"
+        }
+      ],
+      "python libraries for networking": {
+        "netmiko": {
+          "role": "Multi-vendor CLI automation library.",
+          "usage": "SSH এর মাধ্যমে কমান্ড পাঠানো এবং আউটপুট পার্স করার জন্য সবচেয়ে সহজ লাইব্রেরি।"
+        },
+        "napalm": {
+          "role": "Network Automation and Programmability Abstraction Layer.",
+          "usage": "বিভিন্ন ভেন্ডরের ডিভাইস থেকে একই ধরনের ডাটা (Getters) রিড করার জন্য জাদুকরী লাইব্রেরি।"
+        },
+        "pyats": {
+          "role": "Cisco's official test automation framework.",
+          "usage": "নেটওয়ার্কের হেলথ চেক এবং কনফিগারেশন ভেরিফিকেশনের জন্য ব্যবহৃত হয়।"
+        }
+      },
+      "push vs pull mechanisms": {
+        "push model": {
+          "logic": "Central Server -> Commands -> Device.",
+          "use_case": "তাৎক্ষণিক কোনো পরিবর্তন বা কনফিগ আপডেট করতে এটি সেরা (Ansible)।"
+        },
+        "pull model": {
+          "logic": "Device -> Checks Server -> Updates Itself.",
+          "use_case": "কনফিগারেশন ড্রিফট (Config Drift) রোধ করতে এবং দীর্ঘমেয়াদী স্ট্যাবিলিটির জন্য সেরা (Puppet)।"
+        }
+      },
+      "tool selection criteria": [
+        "ভেন্ডর সাপোর্ট: আপনার রাউটার/সুইচ কি ওই টুল সাপোর্ট করে?",
+        "লার্নিং কার্ভ: আপনার টিমের কি পাইথন নাকি YAML জ্ঞান আছে?",
+        "স্কেলেবিলিটি: টুলটি কি ১০০০+ ডিভাইস হ্যান্ডেল করতে পারবে?",
+        "কমিউনিটি সাপোর্ট: সমস্যা হলে কি অনলাইনে দ্রুত সমাধান পাওয়া যাবে?"
+      ]
+    },
+    "m31s6": {
+      "title": "Configuration Automation: Infrastructure as Code (IaC)",
+      "overview": "কনফিগারেশন অটোমেশন হলো ম্যানুয়াল টাইপিংয়ের পরিবর্তে টেমপ্লেট এবং ডাটা ফাইলের সমন্বয়ে স্বয়ংক্রিয়ভাবে নেটওয়ার্ক কনফিগারেশন তৈরি এবং পুশ করার প্রক্রিয়া। এর মূল লক্ষ্য হলো 'Human Error' শূন্যে নামিয়ে আনা এবং 'Consistency' বজায় রাখা।",
+      "key components of ia c": {
+        "templates": {
+          "logic": "এটি একটি ব্লু-প্রিন্ট বা কঙ্কাল যেখানে কনফিগারেশনের ফিক্সড অংশগুলো থাকে।",
+          "tool": "Jinja2 (Python এবং Ansible-এ সবচেয়ে বেশি ব্যবহৃত টেমপ্লেটিং ইঞ্জিন)।"
+        },
+        "variables data": {
+          "logic": "প্রতিটি ডিভাইসের জন্য আলাদা তথ্য (যেমন: IP, Hostname) এখানে থাকে।",
+          "format": "YAML বা JSON।"
+        },
+        "logic engine": {
+          "logic": "এটি টেমপ্লেট এবং ডাটাকে জোড়া লাগিয়ে ফাইনাল কনফিগারেশন তৈরি করে।",
+          "tool": "Ansible Playbook বা Python Script।"
+        }
+      },
+      "jinja2 templating": {
+        "definition": "Jinja2 হলো এমন একটি ভাষা যা টেক্সট ফাইলের ভেতরে লজিক (If/Else, For Loops) যোগ করতে পারে।",
+        "example syntax": [
+          "Variables: {{ interface_name }}",
+          "Loops: {% for vlan in vlan_list %}",
+          "Conditionals: {% if speed == '1000' %}"
+        ],
+        "use case": "একই ইন্টারফেস কনফিগারেশন ১০০টি সুইচে পাঠানোর সময় শুধু VLAN আইডি লুপের মাধ্যমে পরিবর্তন করা।"
+      },
+      "yaml the data format": {
+        "structure": "YAML মূলত Key-Value পেয়ার এবং ইনডেন্টেশন (Space) এর ওপর ভিত্তি করে চলে।",
+        "example_data": "--- \n hostname: R1 \n interfaces: \n   - name: Gig0/1 \n     ip: 10.1.1.1",
+        "best_practices": "ট্যাবে (Tab) এর পরিবর্তে স্পেস ব্যবহার করা এবং প্রতিটি ফাইলের শুরুতে '---' দেওয়া।"
+      },
+      "ansible playbook architecture": {
+        "inventory": "hosts.ini ফাইল যেখানে ডিভাইসের আইপি এবং গ্রুপ (Core, Access) থাকে।",
+        "playbook": "YAML ফাইল যা 'কি কাজ করতে হবে' তার স্টেপগুলো বলে দেয়।",
+        "modules": "Cisco IOS-এর জন্য নির্দিষ্ট মডিউল (ios_config, ios_l3_interface)।"
+      },
+      "Automation workflow steps": [
+        {
+          "step": "1. Data Gathering",
+          "action": "ইউজার বা ডাটাবেস থেকে ইন্টারফেস বা রাউটিং তথ্য সংগ্রহ করা।"
+        },
+        {
+          "step": "2. Rendering",
+          "action": "Jinja2 টেমপ্লেটের ভেতরে YAML ডাটা পুশ করে 'Ready-to-deploy' কনফিগারেশন ফাইল তৈরি।"
+        },
+        {
+          "step": "3. Push/Deploy",
+          "action": "Ansible বা Python-এর মাধ্যমে কানেক্ট হয়ে কমান্ডগুলো রাউটারে পাঠানো।"
+        },
+        {
+          "step": "4. Verification",
+          "action": "কমান্ড কাজ করছে কি না তা 'Show' কমান্ড দিয়ে চেক করা।"
+        }
+      ],
+      "benefits of templating": {
+        "consistency": "পুরো নেটওয়ার্কের সব রাউটারে একই ফরম্যাটে কনফিগ থাকবে (Standardization)।",
+        "speed": "হাতে কনফিগ করতে ২ ঘণ্টা লাগলে অটোমেশনে ২ সেকেন্ড লাগবে।",
+        "rollback": "ভুল হলে সহজেই আগের ভার্সন বা টেমপ্লেটে ফিরে যাওয়া যায়।"
+      },
+      "common troubleshooting": {
+        "syntax error": "YAML ইনডেন্টেশন ভুল হলে প্লেবুক রান করবে না।",
+        "template mismatch": "টেমপ্লেটে থাকা ভেরিয়েবল নাম এবং ডাটা ফাইলের ভেরিয়েবল নাম অমিল থাকা।",
+        "connectivity": "SSH কী-এক্সচেঞ্জ এরর বা ফায়ারওয়ালের কারণে অটোমেশন সার্ভার রাউটারে ঢুকতে না পারা।"
+      }
+    },
+    "m31s7": {
+       "Monitoring and Alerts": "অটোমেটেড নেটওয়ার্কে মনিটরিং হলো একটি কন্টিনিউয়াস প্রসেস যা নেটওয়ার্কের হেলথ, পারফরম্যান্স এবং সিকিউরিটি ডাটা সংগ্রহ করে। অ্যালার্ট সিস্টেম সেই ডাটা অ্যানালাইসিস করে কোনো অস্বাভাবিকতা (Anomaly) দেখা দিলে তাৎক্ষণিক নোটিফিকেশন পাঠায়।",
+        "monitoring evolution": {
+          "legacy snmp": {
+            "model": "Pull Model (Polling)",
+            "mechanism": "NMS (Network Management System) প্রতি ৫ বা ১০ মিনিট পর পর রাউটারকে রিকোয়েস্ট পাঠায় (GET Request)।",
+            "drawbacks": "এটি রিয়েল-টাইম নয়। নেটওয়ার্ক ট্রাফিক বাড়লে এটি রাউটারের সিপিইউ-এর ওপর চাপ সৃষ্টি করে এবং ডাটা গ্যাপ তৈরি হয়।"
+          },
+          "modern streaming telemetry": {
+            "model": "Push Model (Subscription)",
+            "mechanism": "রাউটারকে একবার বলে দেওয়া হয় কোন ডাটা প্রয়োজন। এরপর রাউটার নিজেই নির্দিষ্ট সময় পর পর বা কোনো ইভেন্ট ঘটলে ডাটা পুশ করে।",
+            "protocols": ["gRPC", "NETCONF-Push", "Google Protocol Buffers (Protobuf)"],
+            "benefits": "অত্যন্ত সূক্ষ্ম ডাটা (Granular data), কম ব্যান্ডউইথ খরচ এবং মিলি-সেকেন্ডের আপডেট।"
+          }
+        },
+        "the monitoring stack tools": [
+          {
+            "tool": "Prometheus / InfluxDB",
+            "role": "Time-Series Database; এটি সময় অনুযায়ী নেটওয়ার্কের ডাটা (উদা: ইন্টারফেস ব্যান্ডউইথ) জমা রাখে।"
+          },
+          {
+            "tool": "Grafana",
+            "role": "Visualization; টেলিম্যাট্রি ডাটাকে সুন্দর গ্রাফ এবং ড্যাশবোর্ডে রূপান্তর করে যা দেখে ইঞ্জিনিয়াররা সহজে বুঝতে পারে।"
+          },
+          {
+            "tool": "ELK Stack (Elasticsearch, Logstash, Kibana)",
+            "role": "Log Management; নেটওয়ার্কের সব সিসলগ (Syslog) ফাইলকে অ্যানালাইসিস এবং সার্চ করার জন্য ব্যবহৃত হয়।"
+          }
+        ],
+        "automated alerting workflow": {
+          "step 1 collection": "Streaming Telemetry বা SNMP-এর মাধ্যমে ডাটা সংগ্রহ করা।",
+          "step 2 threshold definition": "একটি লিমিট সেট করা (উদা: CPU Usage > 85%)।",
+          "step 3 analysis": "অটোমেশন ইঞ্জিন (যেমন: Cisco DNA Assurance) ডাটা চেক করে দেখে লিমিট ক্রস করেছে কি না।",
+          "step 4 action": "যদি লিমিট ক্রস করে, তবে Webhook ব্যবহার করে Slack, Microsoft Teams, বা Email-এ অ্যালার্ট পাঠানো।"
+        },
+        "alert types and severities": {
+          "critical": "ইন্টারফেস ডাউন বা রাউটার রিবুট। (Immediate Action Required)",
+          "warning": "সিপিইউ লোড বেশি বা মেমরি ফুল হতে চলেছে। (Proactive Check)",
+          "informational": "নতুন কনফিগারেশন পুশ করা হয়েছে। (Logging only)"
+        },
+        "self healing network concept": {
+          "definition": "যখন কোনো অ্যালার্ট জেনারেট হয়, তখন অটোমেশন স্ক্রিপ্ট নিজেই সেই সমস্যা সমাধান করার চেষ্টা করে।",
+          "example": "যদি একটি লিঙ্ক ডাউন হয়, তবে অটোমেশন স্ক্রিপ্ট নিজে থেকেই ব্যাকআপ লিঙ্ক বা নতুন রাউটিং পাথ চালু করে দিবে।"
+        }
+      },
+    "m31s8":{
+      "Verification": "অটোমেশনে 'কনফিগারেশন' করা কাজের অর্ধেক, বাকি অর্ধেক হলো 'ভেরিফিকেশন'। এটি নিশ্চিত করে যে নেটওয়ার্কের বর্তমান অবস্থা (Actual State) আপনার চাওয়া অবস্থার (Desired State) সাথে মিলেছে কি না।",
+      "verification frameworks": [
+        {
+          "name": "pyATS (Python Automated Test System)",
+          "developer": "Cisco",
+          "role": "এটি নেটওয়ার্কের হেলথ চেক করার জন্য সবচেয়ে শক্তিশালী ফ্রেমওয়ার্ক। এটি 'Golden Configuration' এর সাথে বর্তমান কনফিগ তুলনা করতে পারে।",
+          "feature": "Stateful Verification; যেমন: OSPF নেইবার আপ আছে কি না বা ট্রাফিক ড্রপ হচ্ছে কি না তা অটোমেটিক চেক করা।"
+        },
+        {
+          "name": "Postman",
+          "role": "API টেস্টিং টুল।",
+          "usage": "RESTCONF বা NETCONF কল করার আগে URL এবং অথেন্টিকেশন ঠিক আছে কি না তা চেক করা।"
+        }
+      ],
+      "verification methods": {
+        "pre_change verification": "কনফিগারেশন পুশ করার আগে নেটওয়ার্কের স্ন্যাপশট নেওয়া (উদা: 'show ip interface brief')।",
+        "post_change verification": "পরিবর্তন করার পর আবার স্ন্যাপশট নেওয়া এবং আগেরটির সাথে তুলনা (Diff analysis) করা।",
+        "dry_run": "Ansible-এ '--check' মোড ব্যবহার করা যা রাউটারে পরিবর্তন না করেই দেখায় কী কী পরিবর্তন হতে পারে।"
+      },
+      "troubleshooting automation issues": {
+        "authentication errors": {
+          "symptom": "HTTP 401 Unauthorized বা SSH Auth Fail.",
+          "cause": "ভুল ইউজারনেম/পাসওয়ার্ড বা টোকেন এক্সপায়ার হওয়া।",
+          "fix": "Credentials চেক করা এবং SSH Key-exchange এনাবল করা।"
+        },
+        "api endpoint errors": {
+          "symptom": "HTTP 404 Not Found.",
+          "cause": "ভুল URI/URL বা রাউটারে ওই সার্ভিস (RESTCONF/NETCONF) এনাবল না থাকা।",
+          "fix": "রাউটারে 'restconf' বা 'netconf-yang' কমান্ড চেক করা।"
+        },
+        "payload errors": {
+          "symptom": "HTTP 400 Bad Request.",
+          "cause": "JSON বা XML ফরম্যাটে সিনট্যাক্স ভুল থাকা (যেমন: কমা বা ব্র্যাকেট মিসিং)।",
+          "fix": "JSON Validator দিয়ে ডাটা ফরম্যাট চেক করা।"
+        }
+      },
+      "debugging tools_and commands": {
+        "python debugging": "pdb লাইব্রেরি ব্যবহার করে কোডের প্রতিটি লাইন আলাদাভাবে চেক করা।",
+        "ansible debugging": "'-vvv' অপশন ব্যবহার করে ব্যাকএন্ডে কী হচ্ছে তা বিস্তারিত দেখা।",
+        "network level": "tcpdump বা Wireshark ব্যবহার করে API প্যাকেটগুলো অ্যানালাইসিস করা।"
+      },
+      "the rollback strategy": {
+        "definition": "যদি ভেরিফিকেশন ফেইল করে, তবে অটোমেটিক আগের অবস্থায় ফিরে যাওয়া।",
+        "implementation": "NETCONF-এ 'confirmed-commit' ব্যবহার করা। যদি নির্দিষ্ট সময়ের মধ্যে আপনি 'confirm' না করেন, রাউটার অটোমেটিক আগের কনফিগারেশনে ফিরে যাবে।"
+      },
+      "best practices for reliable automation": [
+        "সবসময় 'Logging' এনাবল রাখা যেন পরে দেখা যায় কোন স্ক্রিপ্ট কখন চলেছে।",
+        "কোডে 'Try-Except' ব্লক ব্যবহার করা যাতে একটি রাউটারে সমস্যা হলে পুরো নেটওয়ার্কের স্ক্রিপ্ট বন্ধ না হয়ে যায়।",
+        "প্রোডাকশন নেটওয়ার্কে পুশ করার আগে ভার্চুয়াল ল্যাবে (GNS3/CML) টেস্ট করা।"
+      ]
+    }
+
+
+
+
+
+
+
+  },
+  "m32": {
+    "m32s1":{
+  "Programming Fundamentals": "প্রোগ্রামিং হলো কম্পিউটার বা নেটওয়ার্ক ডিভাইসকে ইনস্ট্রাকশন দেওয়ার ভাষা। নেটওয়ার্ক ইঞ্জিনিয়ারদের জন্য প্রোগ্রামিং মানে হলো জটিল এবং পুনরাবৃত্তিমূলক কাজগুলোকে (Repetitive tasks) কোডের মাধ্যমে অটোমেট করা।",
+  "why python for networking": {
+    "readability": "পাইথন অনেকটা সাধারণ ইংরেজি ভাষার মতো, যা নেটওয়ার্ক ইঞ্জিনিয়ারদের জন্য শেখা খুব সহজ।",
+    "libraries": "নেটওয়ার্কিংয়ের জন্য পাইথনে প্রচুর রেডিমেড লাইব্রেরি (Netmiko, Napalm, Scapy) আছে।",
+    "community": "বিশ্বের অধিকাংশ নেটওয়ার্ক অটোমেশন টুলস এবং স্ক্রিপ্ট পাইথনে লেখা।"
+  },
+  "core programming constructs": [
+    {
+      "concept": "Variables & Data Types",
+      "description": "ডাটা স্টোর করার পাত্র।",
+      "types": {
+        "String": "টেক্সট ডাটা (উদা: 'Interface GigabitEthernet1')",
+        "Integer/Float": "সংখ্যা (উদা: VLAN ID, IP Octet)",
+        "Boolean": "True/False (উদা: Interface status is Up?)"
+      }
+    },
+    {
+      "concept": "Data Structures (The Most Important)",
+      "description": "নেটওয়ার্ক ডাটা অর্গানাইজ করার পদ্ধতি।",
+      "structures": {
+        "Lists": "অর্ডারড ডাটা (উদা: [ 'R1', 'R2', 'R3' ])",
+        "Dictionaries": "Key-Value পেয়ার (উদা: { 'hostname': 'R1', 'ip': '10.1.1.1' })"
+      }
+    },
+    {
+      "concept": "Control Flow",
+      "description": "কোড কোন দিকে যাবে তা ঠিক করা।",
+      "logic": {
+        "If-Else": "শর্ত সাপেক্ষে কাজ করা (উদা: যদি ইন্টারফেস ডাউন থাকে, তবে নোটিফিকেশন পাঠাও)।",
+        "Loops (For/While)": "একই কাজ বারবার করা (উদা: লুপ চালিয়ে ১০০টি রাউটারের ব্যাকআপ নেওয়া)।"
+      }
+    },
+    {
+      "concept": "Functions",
+      "description": "কোড রিইউজেবিলিটি; একই কোড বারবার না লিখে একটি ফাংশনে রাখা এবং প্রয়োজনমতো কল করা।"
+    }
+  ],
+  "application in networking": {
+    "parsing": "রাউটারের 'Show' কমান্ডের জটিল আউটপুট থেকে প্রয়োজনীয় তথ্য (যেমন: শুধু IP address) খুঁজে বের করা।",
+    "automation": "এপিআই (API) কল করে ডাটাবেস থেকে তথ্য নিয়ে রাউটারে পুশ করা।",
+    "error handling": "যদি কোনো রাউটার অফলাইনে থাকে, তবে যেন স্ক্রিপ্ট ক্র্যাশ না করে সেটির ব্যবস্থা করা (Try-Except block)।"
+  },
+  "programming tools setup": [
+    {
+      "tool": "IDE (Visual Studio Code)",
+      "purpose": "কোড লেখার আধুনিক প্ল্যাটফর্ম যেখানে এরর ডিটেকশন এবং অটো-কমপ্লিশন থাকে।"
+    },
+    {
+      "tool": "Virtual Environments (venv)",
+      "purpose": "একটি প্রজেক্টের লাইব্রেরি অন্যটির থেকে আলাদা রাখার জন্য ব্যবহৃত হয়।"
+    },
+    {
+      "tool": "Git/GitHub",
+      "purpose": "কোডের ভার্সন কন্ট্রোল এবং অন্যদের সাথে কোড শেয়ার করার জন্য।"
+    }
+  ],
+  "learning mindset": "প্রোগ্রামিং শেখা মানে শুধু সিনট্যাক্স মুখস্থ করা নয়, এটি হলো লজিক্যাল প্রবলেম সলভিং। নেটওয়ার্কিং নলেজ + পাইথন = নেটওয়ার্ক সুপারহিরো।"
+},
+    "m32s2": {
+      "Python Basic for Network Automation": "এই টিউটোরিয়ালটি এমনভাবে তৈরি করা হয়েছে যেন আপনি প্রতিটি সেকশনের কোড সরাসরি কপি করে প্র্যাকটিস করতে পারেন।",
+      "lessons": [
+        {
+          "topic": "Variables and Essential Data Types",
+          "learning objective": "মেমোরিতে ডাটা স্টোর করা এবং পরিবর্তন করা শিখুন।",
+          "code examples": {
+            "String": "device_name = 'Cisco_Nexus_9K'  # টেক্সট ডাটা",
+            "Integer": "vlan_id = 100               # পূর্ণসংখ্যা",
+            "Float": "cpu_load = 45.8              # দশমিক",
+            "Boolean": "is_up = True               # সত্য বা মিথ্যা"
+          },
+          "hands on task": "একটি ভেরিয়েবল তৈরি করুন 'ip_address' নামে এবং তাতে আপনার পিসির আইপি রাখুন।"
+        },
+        {
+          "topic": "Advanced Data Structures",
+          "learning objective": "একাধিক ডাটাকে লিস্ট বা ডিকশনারিতে সাজিয়ে রাখা।",
+          "code examples": {
+            "List": "interfaces = ['Gig0/1', 'Gig0/2', 'Gig0/3'] # আইটেম লিস্ট",
+            "Dictionary": "router_info = {'ip': '10.1.1.1', 'model': 'ISR4331'} # Key-Value পেয়ার",
+            "List Access": "print(interfaces[0]) # প্রথম আইটেম 'Gig0/1' দেখাবে"
+          },
+          "network tip": "নেটওয়ার্কিংয়ে সাধারণত ডিকশনারি ব্যবহার করা হয় রাউটারের ডিটেইলস সেভ করার জন্য।"
+        },
+        {
+          "topic": "Control Flow (The Logic)",
+          "learning objective": "শর্ত এবং লুপের মাধ্যমে কোড কন্ট্রোল করা।",
+          "code examples": {
+            "If Condition": "if vlan_id == 100: \n    print('Management VLAN')",
+            "For Loop": "for port in interfaces: \n    print('Configuring port: ' + port)",
+            "Logic Flow": "লুপ ব্যবহার করে আমরা একসাথে ১০০টি সুইচে কনফিগারেশন পাঠাই।"
+          },
+          "indentation rule": "মনে রাখবেন: পাইথনে কোলন (:) এর পরের লাইন অবশ্যই ৪টি স্পেস ভেতরে হতে হবে।"
+        },
+        {
+          "topic": "Functions (The Reusable Code)",
+          "learning objective": "একই কোড বারবার না লিখে ছোট ছোট ব্লকে ভাগ করা।",
+          "code examples": {
+            "Definition": "def check_status(device): \n    return f'Checking {device}... Done.'",
+            "Execution": "status = check_status('Cisco_R1') \n print(status)"
+          }
+        },
+        {
+          "topic": "File I/O (Read & Write)",
+          "learning objective": "ফাইল থেকে ডাটা পড়া এবং ফাইলে ডাটা সেভ করা।",
+          "code examples": {
+            "Read File": "with open('config.txt', 'r') as file: \n    print(file.read())",
+            "Write File": "with open('log.txt', 'w') as log: \n    log.write('Backup successful on March 17')"
+          }
+        },
+        {
+          "topic": "Error Handling (The Safety Net)",
+          "learning objective": "কোড ক্র্যাশ হওয়া থেকে বাঁচানো।",
+          "code examples": {
+            "Try Except": "try: \n    result = 10 / 0 \n except ZeroDivisionError: \n    print('You cannot divide by zero!')"
+          }
+        },
+        {
+          "topic": "Libraries (Extending Python)",
+          "learning objective": "অন্যের বানানো টুলস নিজের কাজে লাগানো।",
+          "essential imports": [
+            "import json  # JSON ডাটা হ্যান্ডেল করতে",
+            "import requests # API কল করতে",
+            "from netmiko import ConnectHandler # রাউটারে লগইন করতে"
+          ]
+        }
+      ],
+      "best practiceschecklist": [
+        "১. কোডের শুরুতে অর্থবহ নাম ব্যবহার করুন (যেমন 'x' এর বদলে 'router_ip')।",
+        "২. হ্যাশ (#) চিহ্ন দিয়ে কমেন্ট লিখুন যেন অন্য কেউ আপনার কোড বুঝতে পারে।",
+        "৩. বড় কোডকে ছোট ছোট ফাংশনে ভাগ করুন।"
+      ]
+    },
+    "m32s3": {
+      "Python Function": "ফাংশন হলো একটি সেলফ-কন্টেইনড কোড ব্লক যা শুধুমাত্র তখনই কাজ করে যখন তাকে 'কল' (Call) করা হয়। এটি নেটওয়ার্কিংয়ের বড় কোডকে ছোট ছোট লজিক্যাল অংশে ভাগ করে দেয়।",
+      "core concepts": [
+        {
+          "topic": "Defining a Function",
+          "logic": "পাইথনে ফাংশন তৈরি করতে 'def' কীওয়ার্ড ব্যবহার করা হয়।",
+          "code snippet": "def greet_engineer():\n    print('Welcome to Automation Portal')",
+          "execution": "greet_engineer() # এটি ফাংশনটিকে চালু করবে"
+        },
+        {
+          "topic": "Arguments & Parameters",
+          "logic": "ফাংশনের ভেতরে বাইরের কোনো ডাটা (যেমন রাউটার আইপি) পাঠানোর মাধ্যম।",
+          "code snippet": "def configure_vlan(vlan_id):\n    print(f'Configuring VLAN {vlan_id} on the switch...')",
+          "usage": "configure_vlan(10) # এখানে ১০ হলো আর্গুমেন্ট"
+        },
+        {
+          "topic": "Return Statement",
+          "logic": "ফাংশন কাজ শেষ করার পর কোনো ফলাফল বা আউটপুট ফেরত দেওয়ার জন্য এটি ব্যবহৃত হয়।",
+          "code snippet": "def calculate_usage(active, total):\n    usage = (active / total) * 100\n    return usage",
+          "result": "percentage = calculate_usage(40, 48) # এখানে রেজাল্ট সেভ হবে"
+        },
+        {
+          "topic": "Default Parameters",
+          "logic": "যদি কোনো ভ্যালু দেওয়া না হয়, তবে ফাংশনটি আগে থেকেই সেট করা একটি ডিফল্ট ভ্যালু ব্যবহার করবে।",
+          "code_snippet": "def connect_ssh(ip, port=22):\n    print(f'Connecting to {ip} via port {port}')",
+          "example": "connect_ssh('10.1.1.1') # এটি অটোমেটিক পোর্ট ২২ নিয়ে নেবে"
+        }
+      ],
+      "automation use case": {
+        "scenario": "মাল্টিপল ডিভাইসের ব্যাকআপ নেওয়া।",
+        "logic": "একটি ফাংশন লিখুন যা SSH কানেকশন এবং কমান্ড পাঠাবে। এরপর একটি লুপ চালিয়ে সব ডিভাইসের আইপি ওই ফাংশনে পাস করুন।"
+      },
+      "debugging tips": [
+        "Indentation: ফাংশনের ভেতরের সব কোড অবশ্যই এক ট্যাব বা ৪টি স্পেস ভেতরে হতে হবে।",
+        "Namespace: ফাংশনের ভেতরে তৈরি করা ভেরিয়েবল ফাংশনের বাইরে কাজ করে না (Local Variable)।",
+        "Order: আগে ফাংশন ডিফাইন করতে হয়, তারপর কল করতে হয়।"
+      ]
+    },
+    "m32s4": {
+      "Python Modules & Libraries": {
+        "Module": "একটি সিঙ্গেল পাইথন ফাইল (.py) যা অন্য ফাইলে ইমপোর্ট করে ব্যবহার করা যায়।",
+        "Library": "একটি ফোল্ডার বা কালেকশন যা অনেকগুলো মডিউল ধারণ করে (যেমন: Netmiko, Requests)।",
+        "Package Manager": "pip (Python Install Package) - এটি ব্যবহার করে ইন্টারনেট থেকে লাইব্রেরি ইন্সটল করা হয়।"
+      },
+      "how to use": [
+        {
+          "method": "Importing a whole module",
+          "code": "import math\nprint(math.sqrt(16)) # আউটপুট: 4.0"
+        },
+        {
+          "method": "Importing specific parts",
+          "code": "from datetime import date\nprint(date.today())"
+        },
+        {
+          "method": "Aliasing (Alias)",
+          "code": "import pandas as pd # বড় নামকে ছোট করে নেওয়া"
+        }
+      ],
+      "top libraries for network automation": [
+        {
+          "name": "Netmiko",
+          "purpose": "SSH এর মাধ্যমে মাল্টি-ভেন্ডর (Cisco, Juniper, Arista) ডিভাইসে কানেক্ট হওয়া এবং কমান্ড পাঠানো।",
+          "command": "pip install netmiko"
+        },
+        {
+          "name": "Requests",
+          "purpose": "HTTP/REST API এর সাথে কথা বলা। SDN কন্ট্রোলার বা ক্লাউড অটোমেশনের জন্য এটি অপরিহার্য।",
+          "command": "pip install requests"
+        },
+        {
+          "name": "NAPALM",
+          "purpose": "বিভিন্ন ভেন্ডরের ডিভাইস থেকে একই ফরম্যাটে ডাটা রিড করা (Cross-vendor abstraction)।",
+          "command": "pip install napalm"
+        },
+        {
+          "name": "Paramiko",
+          "purpose": "SSHv2 প্রোটোকলের লো-লেভেল ইমপ্লিমেন্টেশন (Netmiko এর পেছনে এটিই কাজ করে)।"
+        }
+      ],
+      "standard libraries pre installed": {
+        "os": "ফাইল সিস্টেম এবং ডিরেক্টরি ম্যানেজ করার জন্য।",
+        "json": "JSON ডাটা এনকোড এবং ডিকোড করার জন্য।",
+        "re": "Regular Expressions; রাউটার আউটপুট থেকে স্পেসিফিক টেক্সট খুঁজে বের করতে।",
+        "csv": "এক্সেল বা CSV ফাইল রিড/রাইট করতে।"
+      },
+      "best practices": [
+        "১. সবসময় ফাইলের একদম উপরে import স্টেটমেন্ট লিখুন।",
+        "২. অপ্রয়োজনীয় বড় লাইব্রেরি ইমপোর্ট করবেন না, শুধু যতটুকু দরকার ততটুকু 'from ... import' করুন।",
+        "৩. ভার্চুয়াল এনভায়রনমেন্ট (venv) ব্যবহার করুন যেন লাইব্রেরি ভার্সন নিয়ে ঝামেলা না হয়।"
+      ]
+    },
+    "m32s5": {
+      "JSON Fundamental": "JSON হলো একটি টেক্সট-বেসড ডাটা ফরম্যাট যা মানুষ সহজে পড়তে পারে এবং কম্পিউটার সহজে পার্স (Parse) করতে পারে। এটি সম্পূর্ণ 'Language Independent' অর্থাৎ পাইথন, জাভা বা জাভাস্ক্রিপ্ট—সবখানেই এটি একইভাবে কাজ করে।",
+      "syntax rules": {
+        "key value pairs": "ডাটা সবসময় 'Key': 'Value' আকারে থাকে।",
+        "quotes": "Key এবং String ভ্যালু অবশ্যই ডাবল কোটেশন (\") এর ভেতরে হতে হবে।",
+        "commas": "প্রতিটি পেয়ারের পর কমা (,) দিতে হবে (শেষেরটি বাদে)।",
+        "brackets": {
+          "curly braces": "অবজেক্ট বা ডিকশনারি বোঝাতে { } ব্যবহৃত হয়।",
+          "square brackets": "লিস্ট বা অ্যারে বোঝাতে [ ] ব্যবহৃত হয়।"
+        }
+      },
+      "supported data types": [
+        { "type": "String", "example": "\"hostname\": \"R1\"" },
+        { "type": "Number", "example": "\"vlan_id\": 10" },
+        { "type": "Boolean", "example": "\"is_active\": true" },
+        { "type": "Array", "example": "\"interfaces\": [\"Gig1\", \"Gig2\"]" },
+        { "type": "Object", "example": "\"config\": { \"ip\": \"1.1.1.1\" }" },
+        { "type": "Null", "example": "\"description\": null" }
+      ],
+      "json vs python dict": {
+        "similarity": "পাইথনের 'Dictionary' এবং JSON দেখতে প্রায় একই।",
+        "difference": "JSON-এ 'true/false' ছোট হাতের হয়, আর পাইথনে 'True/False' বড় হাতের। JSON-এ সিঙ্গেল কোটেশন (' ') চলে না, সবসময় ডাবল কোটেশন (\") লাগে।"
+      },
+      "importance in networking": {
+        "rest api": "কন্ট্রোলার (যেমন DNAC) থেকে ডাটা আনতে JSON লাগে।",
+        "restconf": "রাউটারকে কনফিগার করতে JSON পে-লোড পাঠানো হয়।",
+        "telemetry": "রিয়েল-টাইম ডাটা স্ট্রিমিংয়ে JSON বহুল ব্যবহৃত।"
+      }
+    },
+    "m32s6": {
+      "Python & JSON Interaction": "পাইথনে 'json' নামক একটি বিল্ট-ইন মডিউল থাকে যা JSON ডাটাকে পাইথন অবজেক্টে এবং পাইথন অবজেক্টকে JSON-এ রূপান্তর করতে ব্যবহৃত হয়।",
+      "key methods": [
+        {
+          "method": "json.loads()",
+          "description": "JSON String-কে Python Dictionary-তে রূপান্তর করা (Deserialization)।",
+          "use case": "যখন আপনি কোনো API থেকে ডাটা রিসিভ করেন।",
+          "code example": "import json\njson_data = '{\"name\": \"R1\", \"ip\": \"10.1.1.1\"}'\npy_dict = json.loads(json_data)\nprint(py_dict['ip'])  # আউটপুট: 10.1.1.1"
+        },
+        {
+          "method": "json.dumps()",
+          "description": "Python Dictionary-কে JSON String-এ রূপান্তর করা (Serialization)।",
+          "use case": "যখন আপনি রাউটারে কনফিগারেশন পাঠানোর জন্য ডাটা তৈরি করেন।",
+          "code example": "import json\nrouter_dict = {'hostname': 'R1', 'status': True}\njson_string = json.dumps(router_dict, indent=4)\nprint(json_string)"
+        },
+        {
+          "method": "json.load()",
+          "description": "সরাসরি একটি .json ফাইল থেকে ডাটা রিড করা।",
+          "code example": "with open('device_info.json', 'r') as f:\n    data = json.load(f)"
+        },
+        {
+          "method": "json.dump()",
+          "description": "পাইথন ডিকশনারিকে সরাসরি একটি .json ফাইলে সেভ করা।",
+          "code example": "with open('backup.json', 'w') as f:\n    json.dump(router_dict, f)"
+        }
+      ],
+      "critical differences": {
+        "data type mapping": {
+          "JSON_Object": "Python_Dictionary",
+          "JSON_Array": "Python_List",
+          "JSON_true_false": "Python_True_False (Capitalized)",
+          "JSON_null": "Python_None"
+        }
+      },
+      "automation_workflow": {
+        "step_1": "API থেকে JSON রেসপন্স পান।",
+        "step_2": "json.loads() ব্যবহার করে পাইথন ডিকশনারি বানান।",
+        "step_3": "লুপ চালিয়ে নির্দিষ্ট ইন্টারফেস বা আইপি ডাটা এক্সট্রাক্ট করুন।",
+        "step_4": "প্রয়োজনে ডাটা মডিফাই করে json.dumps() দিয়ে আবার API-তে পাঠান।"
+      }
+    },
+    "m32s7": {
+      "script lifecycle": {
+        "step 1 inventory": "কাকে কনফিগার করতে হবে? (IP list, Credentials).",
+        "step 2 connection": "SSH, NETCONF বা REST API-র মাধ্যমে কানেক্ট হওয়া।",
+        "step 3 execution": "কমান্ড পাঠানো (Show commands বা Config changes)।",
+        "step 4 parsing": "আউটপুট থেকে প্রয়োজনীয় ডাটা আলাদা করা (JSON/Text parsing)।",
+        "step 5 validation": "পরিবর্তনটি সফল হয়েছে কি না তা ভেরিফাই করা।",
+        "step 6 logging": "ভবিষ্যতের জন্য লগ ফাইল সেভ করা।"
+      },
+      "popular scripting approaches": [
+        {
+          "library": "Netmiko (CLI Based)",
+          "best_for": "ট্র্যাডিশনাল সিসকো বা জুনিপার ডিভাইস যেখানে API নেই।",
+          "logic": "এটি SSH সেশন তৈরি করে এবং স্ক্রিপ্টের মাধ্যমে মানুষের মতো টাইপ করে কমান্ড পাঠায়।",
+          "example_flow": "Connect -> send_command('show ip int brief') -> Disconnect"
+        },
+        {
+          "library": "Requests (API Based)",
+          "best for": "SDN কন্ট্রোলার (Cisco DNA Center, Meraki) এবং Cloud।",
+          "logic": "এটি HTTP মেথডস (GET, POST) ব্যবহার করে সরাসরি JSON ডাটা আদান-প্রদান করে।",
+          "example flow": "GET Request -> JSON Response -> Filter Data"
+        },
+        {
+          "library": "NAPALM (Abstraction Layer)",
+          "best for": "মাল্টি-ভেন্ডর নেটওয়ার্ক।",
+          "logic": "একই পাইথন কোড দিয়ে সিসকো এবং আরিস্টা উভয় ডিভাইসের কনফিগ হ্যান্ডেল করা যায়।"
+        }
+      ],
+      "script structure_example": {
+        "setup": "Import libraries (netmiko, json, time).",
+        "data source": "YAML বা JSON ফাইল থেকে ডিভাইসের তথ্য রিড করা।",
+        "loop": "ফর-লুপ ব্যবহার করে প্রতিটি ডিভাইসে এক্সেস করা।",
+        "error handling": "Try-Except ব্লক ব্যবহার করে কানেক্টিভিটি এরর হ্যান্ডেল করা।"
+      },
+      "automation script types": [
+        {
+          "type": "Compliance Scripts",
+          "usage": "প্রতিদিন রাত ১২টায় চেক করা যে সব ডিভাইসে সিকিউরিটি পলিসি ঠিক আছে কি না।"
+        },
+        {
+          "type": "Reporting Scripts",
+          "usage": "পুরো নেটওয়ার্কের ইনভেন্টরি রিপোর্ট (Model, Serial Number, Uptime) জেনারেট করা।"
+        },
+        {
+          "type": "Auto-Remediation Scripts",
+          "usage": "যদি কোনো পোর্ট এরর-ডিজেবল হয়, স্ক্রিপ্ট অটোমেটিক সেটি শাট-নোশাট করবে।"
+        }
+      ]
+    }
+
+
+
+
+
+
+
+
   }
-}
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

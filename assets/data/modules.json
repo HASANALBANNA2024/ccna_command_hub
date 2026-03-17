@@ -316,9 +316,11 @@
         { "id": "m19s11","title": "BGP Attributes Manipulation", "isUnlocked": false, "desc": "Modify Local Pref, MED, Weight for path selection." },
         { "id": "m19s12","title": "BGP Route Aggregation", "isUnlocked": false, "desc": "Combine multiple routes into one summarized route." },
         { "id": "m19s13","title": "BGP Communities", "isUnlocked": false, "desc": "Tagging routes with communities for policy control." },
-        { "id": "m19s14","title": "BGP Confederations", "isUnlocked": false, "desc": "Simplify large AS with confederation design." },
-        { "id": "m19s15","title": "BGP Multi-Hop & Timers", "isUnlocked": false, "desc": "EBGP multi-hop setup and timers." },
-        { "id": "m19s16","title": "BGP Best Practices", "isUnlocked": false, "desc": "Recommended design and configuration practices." }
+        { "id": "m19s14","title": "BGP Route Reflector", "isUnlocked": false, "desc": "Details in BGP Route Reflector." },
+        { "id": "m19s15","title": "BGP Confederations", "isUnlocked": false, "desc": "Simplify large AS with confederation design." },
+        { "id": "m19s16","title": "BGP Multi-Hop & Timers", "isUnlocked": false, "desc": "EBGP multi-hop setup and timers." },
+        { "id": "m19s17","title": "BGP Route Dampening", "isUnlocked": false, "desc": "Explaination of BGP Route Dampening." },
+        { "id": "m19s18","title": "BGP TroubleShoot", "isUnlocked": false, "desc": "How to BGP Trobleshoot and Verification." }
       ]
   },
   {
@@ -332,7 +334,8 @@
         { "id": "m20s2", "title": "Static NAT", "isUnlocked": false, "desc": "Map one private IP to one public IP." },
         { "id": "m20s3", "title": "Dynamic NAT", "isUnlocked": false, "desc": "Map private IPs to pool of public IPs." },
         { "id": "m20s4", "title": "PAT / Overloading", "isUnlocked": false, "desc": "Multiple private IPs using single public IP." },
-        { "id": "m20s5", "title": "NAT Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." }
+        { "id": "m20s5", "title": "NAT Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers." },
+        { "id": "m20s6", "title": "Verification", "isUnlocked": false, "desc": "How to trobuleshoot on NAT." }
       ]
   },
   {
@@ -343,11 +346,11 @@
     "subModules":
     [
         { "id": "m21s1", "title": "DHCP Intro", "isUnlocked": false, "desc": "What is DHCP and why used." },
-        { "id": "m21s2", "title": "DHCP Benefits", "isUnlocked": false, "desc": "Advantages of DHCP in networks." },
-        { "id": "m21s3", "title": "DORA Process", "isUnlocked": false, "desc": "Discover, Offer, Request, Acknowledge steps." },
-        { "id": "m21s4", "title": "DHCP Scopes", "isUnlocked": false, "desc": "IP pool, lease time, and options." },
-        { "id": "m21s5", "title": "DHCP Relay Agent", "isUnlocked": false, "desc": "Forward requests between subnets." },
-        { "id": "m21s6", "title": "DHCP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers/switches." }
+        { "id": "m21s2", "title": "DORA Process", "isUnlocked": false, "desc": "Discover, Offer, Request, Acknowledge steps." },
+        { "id": "m21s3", "title": "DHCP Scopes", "isUnlocked": false, "desc": "IP pool, lease time, and options." },
+        { "id": "m21s4", "title": "DHCP Relay Agent", "isUnlocked": false, "desc": "Forward requests between subnets." },
+        { "id": "m21s5", "title": "DHCP Configuration", "isUnlocked": false, "desc": "Step-by-step setup on routers/switches." },
+        { "id": "m21s6", "title": "DHCP Troubleshoot", "isUnlocked": false, "desc": "How to trobleshoot on DHCP." }
     ]
   },
   {
@@ -375,7 +378,8 @@
       { "id": "m23s2", "title": "SNMP Versions", "isUnlocked": false, "desc": "SNMPv1, v2c, v3 overview." },
       { "id": "m23s3", "title": "SNMP Communities", "isUnlocked": false, "desc": "Community strings and access control." },
       { "id": "m23s4", "title": "SNMP Security", "isUnlocked": false, "desc": "Authentication and encryption (v3)." },
-      { "id": "m23s5", "title": "SNMP Configuration", "isUnlocked": false, "desc": "Step-by-step SNMP setup." }
+      { "id": "m23s5", "title": "SNMP Configuration", "isUnlocked": false, "desc": "Step-by-step SNMP setup." },
+      { "id": "m23s6", "title": "Verification", "isUnlocked": false, "desc": "How to trobleshoot on SNMP." }
     ]
   },
   {
@@ -389,7 +393,8 @@
         { "id": "m24s2", "title": "ACL Numbers & Range", "isUnlocked": false, "desc": "Standard ACL number ranges (1-99, 1300-1999)." },
         { "id": "m24s3", "title": "Permit & Deny", "isUnlocked": false, "desc": "How to allow or block traffic." },
         { "id": "m24s4", "title": "ACL Placement", "isUnlocked": false, "desc": "Where to apply ACL on inbound/outbound." },
-        { "id": "m24s5", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step ACL setup on routers." }
+        { "id": "m24s5", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step ACL setup on routers." },
+        { "id": "m24s6", "title": " Verification", "isUnlocked": false, "desc": "How to trobleshoot on ACL (Standard)." }
     ]
   },
   {
@@ -404,7 +409,8 @@
         { "id": "m25s3", "title": "Protocol Filtering", "isUnlocked": false, "desc": "Filter traffic by TCP, UDP, ICMP." },
         { "id": "m25s4", "title": "Port Filtering", "isUnlocked": false, "desc": "Filter traffic by source/destination ports." },
         { "id": "m25s5", "title": "ACL Placement", "isUnlocked": false, "desc": "Where to apply ACL on inbound/outbound." },
-        { "id": "m25s6", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step extended ACL setup." }
+        { "id": "m25s6", "title": "ACL Configuration", "isUnlocked": false, "desc": "Step-by-step extended ACL setup." },
+        { "id": "m25s7", "title": "Verification", "isUnlocked": false, "desc": "how to trobleshoot on Extended ACL." }
     ]
   },
   {
@@ -418,8 +424,9 @@
         { "id": "m26s2", "title": "MAC Address Basics", "isUnlocked": false, "desc": "How MAC addresses work on switch ports." },
         { "id": "m26s3", "title": "Port Security Modes", "isUnlocked": false, "desc": "Static, Dynamic, Sticky MAC addresses." },
         { "id": "m26s4", "title": "Violation Modes", "isUnlocked": false, "desc": "Protect, Restrict, Shutdown explained." },
-        { "id": "m26s5", "title": "Port Security Configuration", "isUnlocked": false, "desc": "Step-by-step port security setup." }
-   ]
+        { "id": "m26s5", "title": "Port Security Configuration", "isUnlocked": false, "desc": "Step-by-step port security setup." },
+        { "id": "m26s6", "title": "Verification", "isUnlocked": false, "desc": "How to verification on port security." }
+    ]
   },
   {
     "id": "m27",
@@ -434,7 +441,8 @@
         { "id": "m27s4", "title": "PPP Protocol", "isUnlocked": false, "desc": "Point-to-Point Protocol concepts." },
         { "id": "m27s5", "title": "PPP Authentication", "isUnlocked": false, "desc": "PAP and CHAP explained." },
         { "id": "m27s6", "title": "Frame Relay", "isUnlocked": false, "desc": "Frame Relay concepts and DLCIs." },
-        { "id": "m27s7", "title": "WAN Design Considerations", "isUnlocked": false, "desc": "Choosing proper WAN links and protocols." }
+        { "id": "m27s7", "title": "WAN Design Considerations", "isUnlocked": false, "desc": "Choosing proper WAN links and protocols." },
+        { "id": "m27s8", "title": "Verification", "isUnlocked": false, "desc": "How to wan links and protocols." }
     ]
   },
   {
@@ -449,7 +457,8 @@
         { "id": "m28s3", "title": "Tunneling Protocols", "isUnlocked": false, "desc": "GRE, IPsec, L2TP basics." },
         { "id": "m28s4", "title": "Encryption Basics", "isUnlocked": false, "desc": "How VPN secures data in transit." },
         { "id": "m28s5", "title": "VPN Authentication", "isUnlocked": false, "desc": "Pre-shared keys, certificates, and login." },
-        { "id": "m28s6", "title": "VPN Design Considerations", "isUnlocked": false, "desc": "Choosing VPN type and topology." }
+        { "id": "m28s6", "title": "VPN Design Considerations", "isUnlocked": false, "desc": "Choosing VPN type and topology." },
+        { "id": "m28s7", "title": "Verification", "isUnlocked": false, "desc": "How to troubleshoot VPN and VPN Topology." }
     ]
   },
   {
@@ -478,10 +487,8 @@
         { "id": "m30s3", "title": "Authentication Methods", "isUnlocked": false, "desc": "Username/password, certificates, MFA." },
         { "id": "m30s4", "title": "VPN Tunnel & Encryption", "isUnlocked": false, "desc": "How traffic is encrypted and tunneled." },
         { "id": "m30s5", "title": "VPN Configuration", "isUnlocked": false, "desc": "Step-by-step client and server setup." },
-        { "id": "m30s6", "title": "VPN Verification", "isUnlocked": false, "desc": "Check connectivity, encryption, and session status." },
-        { "id": "m30s7", "title": "VPN Troubleshooting", "isUnlocked": false, "desc": "Fix common remote VPN issues." },
-        { "id": "m30s8", "title": "VPN Lab Example", "isUnlocked": false, "desc": "Practical lab with remote user connecting to corporate network." }
-    ]
+        { "id": "m30s6", "title": "VPN Verification", "isUnlocked": false, "desc": "Check connectivity, encryption, and session status." }
+   ]
   },
   {
     "id": "m31",
@@ -496,7 +503,8 @@
         { "id": "m31s4", "title": "APIs in Networking", "isUnlocked": false, "desc": "REST and NETCONF APIs basics." },
         { "id": "m31s5", "title": "Automation Tools", "isUnlocked": false, "desc": "Ansible, Python, and network scripts." },
         { "id": "m31s6", "title": "Configuration Automation", "isUnlocked": false, "desc": "Automate device configs using scripts." },
-        { "id": "m31s7", "title": "Monitoring & Alerts", "isUnlocked": false, "desc": "Automate network monitoring and notifications." }
+        { "id": "m31s7", "title": "Monitoring & Alerts", "isUnlocked": false, "desc": "Automate network monitoring and notifications." },
+        { "id": "m31s8", "title": "Verification", "isUnlocked": false, "desc": "How to trobleshoote Automation Networks." }
     ]
   },
   {
