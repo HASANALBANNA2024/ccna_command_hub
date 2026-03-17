@@ -1,5 +1,6 @@
 import 'package:ccna_command_hub/main.dart';
 import 'package:flutter/material.dart';
+import 'package:ccna_command_hub/services/share_service.dart';
 
 class MainDrawer extends StatefulWidget {
   const MainDrawer({super.key});
@@ -50,6 +51,7 @@ class _MainDrawerState extends State<MainDrawer> {
                   onTap: () {
                     Navigator.pop(context);
                     // Share logic here
+                    ShareService.shareApp();
                   },
                 ),
 

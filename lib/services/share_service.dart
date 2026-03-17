@@ -77,4 +77,15 @@ class ShareService {
       return null;
     }
   }
+
+
+  // Share App
+  static void shareApp() {
+    const String appLink = "https://play.google.com/store/apps/details?id=com.your.package.name";
+    const String message = "Hey! Check out CCNA Command Hub. 🚀\n"
+        "It's an amazing app for CCNA students with Subnetting tools, Quiz Crush game, and Networking commands!\n\n"
+        "Download now: $appLink";
+
+    Share.share(message);
+  }
 }
