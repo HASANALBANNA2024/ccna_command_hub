@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ccna_command_hub/screens/flashcard_game_screen.dart';
 import 'package:ccna_command_hub/screens/sub_module_screen.dart';
+import 'package:ccna_command_hub/screens/subnet_calculator_screen.dart';
 import 'package:ccna_command_hub/widgets/main_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -370,7 +371,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _buildMenuCard(context, "Bookmarks", Icons.bookmark, Colors.amber.shade800, isDark, () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => BookmarkScreen(bookmarkedItems: myGlobalBookmarkList))).then((_) => _refreshStats());
         }),
-        _buildMenuCard(context, "Cheat Sheet", Icons.terminal, Colors.teal, isDark, () {}),
+        _buildMenuCard(context, "IP Master", Icons.construction, Colors.teal, isDark, () {
+          Navigator.push(context, MaterialPageRoute(builder: (_)=> SubnetCalculatorScreen()));
+        }),
         _buildMenuCard(context, "Flashcards", Icons.bolt, Colors.orange, isDark, () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const FlashcardGameScreen())).then((_) => _refreshStats());
         }),
