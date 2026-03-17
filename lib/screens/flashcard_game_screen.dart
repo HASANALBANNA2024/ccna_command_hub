@@ -278,8 +278,10 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
     );
   }
 
+// ১. কার্ডের ভেতর ব্যাজ এর পজিশন বামে সেট করা হয়েছে
   Widget _glassCard(String text, String label, bool isDark, Flashcard? card) {
     return Stack(
+      clipBehavior: Clip.none, // যাতে ব্যাজটি বর্ডারের সাথে সুন্দর দেখায়
       children: [
         Container(
           constraints: const BoxConstraints(minHeight: 220),
@@ -296,6 +298,7 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
             children: [
               Text(label, style: const TextStyle(letterSpacing: 3, fontWeight: FontWeight.w900, fontSize: 11, color: Colors.blueAccent)),
               const SizedBox(height: 20),
+              // টেক্সট যেন ওভারফ্লো না করে তার জন্য Flexible বা ConstrainedBox ব্যবহার করা যেতে পারে
               Text(
                 text,
                 textAlign: TextAlign.center,
@@ -304,63 +307,79 @@ class _FlashcardGameScreenState extends State<FlashcardGameScreen> with SingleTi
             ],
           ),
         ),
+        // রেজাল্ট ব্যাজ বাম পাশে পজিশন করা হলো
         if (card != null)
           Positioned(
-            top: 15,
-            right: 15,
+            top: 25,
+            left: 0, // বাম পাশে সেট করা হয়েছে
             child: _buildResultBadge(card),
           ),
       ],
     );
   }
 
+  // ২. বাম পাশের জন্য ব্যাজ এর ডিজাইন আপডেট
   Widget _buildResultBadge(Flashcard card) {
     bool isCorrect = _selectedOption == card.answer;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: isCorrect ? Colors.green : Colors.red,
-        borderRadius: BorderRadius.circular(8),
+          color: isCorrect ? Colors.green.shade600 : Colors.red.shade600,
+          // বাম দিক সোজা রেখে ডান দিক গোল করা হয়েছে (Tag Style)
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(10),
+            bottomRight: Radius.circular(10),
+          ),
+          boxShadow: [
+            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2))
+          ]
       ),
-      child: Text(
-        isCorrect ? "CORRECT" : "WRONG",
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 10),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(isCorrect ? Icons.check_circle : Icons.cancel, color: Colors.white, size: 14),
+          const SizedBox(width: 5),
+          Text(
+            isCorrect ? "CORRECT" : "WRONG",
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 11),
+          ),
+        ],
       ),
     );
   }
 
+  // ৩. অপশন গ্রিড আপডেট (ওভারফ্লো প্রোটেকশন)
   Widget _buildOptionsGrid(Flashcard card, bool isDark) {
     return Column(
       children: card.options.map((option) {
         bool isCorrect = option == card.answer;
         bool isSelected = option == _selectedOption;
-        Color borderCol = Colors.white24;
-
-        if (_isAnswered) {
-          if (isCorrect) borderCol = Colors.greenAccent;
-          else if (isSelected) borderCol = Colors.redAccent;
-        }
+        Color borderCol = _isAnswered
+            ? (isCorrect ? Colors.greenAccent : (isSelected ? Colors.redAccent : Colors.white12))
+            : Colors.white24;
 
         return GestureDetector(
           onTap: () => _handleAnswer(option),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(isDark ? 0.08 : 0.3),
+              color: isSelected ? Colors.blueAccent.withOpacity(0.2) : Colors.white.withOpacity(isDark ? 0.08 : 0.3),
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: borderCol, width: 2),
             ),
             child: Row(
               children: [
+                // Expanded ব্যবহার করা হয়েছে যাতে বড় টেক্সট হলেও আইকনকে ধাক্কা না দেয়
                 Expanded(
-                    child: Text(
-                        option,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)
-                    )
+                  child: Text(
+                    option,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
                 ),
-                if (_isAnswered && isCorrect) const Icon(Icons.check_circle, color: Colors.greenAccent, size: 22),
-                if (_isAnswered && isSelected && !isCorrect) const Icon(Icons.cancel, color: Colors.redAccent, size: 22),
+                if (_isAnswered && isCorrect) const Icon(Icons.check_circle, color: Colors.greenAccent, size: 20),
+                if (_isAnswered && isSelected && !isCorrect) const Icon(Icons.cancel, color: Colors.redAccent, size: 20),
               ],
             ),
           ),

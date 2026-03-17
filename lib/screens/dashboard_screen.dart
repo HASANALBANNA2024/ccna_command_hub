@@ -374,7 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _buildMenuCard(context, "IP Master", Icons.construction, Colors.teal, isDark, () {
           Navigator.push(context, MaterialPageRoute(builder: (_)=> SubnetCalculatorScreen()));
         }),
-        _buildMenuCard(context, "Flashcards", Icons.bolt, Colors.orange, isDark, () {
+        _buildMenuCard(context, "Quiz Crush", Icons.psychology, Colors.orange, isDark, () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const FlashcardGameScreen())).then((_) => _refreshStats());
         }),
       ],
