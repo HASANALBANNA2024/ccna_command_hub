@@ -61,6 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
           } else {
             final modules = snapshot.data!;
             return ListView.builder(
+              key: const PageStorageKey<String>('module_list_key'),
+              addAutomaticKeepAlives: true, // এটি লিস্ট আইটেমগুলোকে মেমরিতে ধরে রাখে
+
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               itemCount: modules.length,
               itemBuilder: (context, index) {
