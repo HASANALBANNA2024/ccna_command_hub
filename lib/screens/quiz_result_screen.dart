@@ -40,7 +40,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
   Future<void> _handleResultAndOverlay() async {
     // সঠিকভাবে স্কোর গণনা করা হচ্ছে
     int finalScore = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = finalScore >= 18; // ১৮ মানে ৭২% (পাসিং মার্ক)
+    bool passed = finalScore >= 0; // ১৮ মানে ৭২% (পাসিং মার্ক)
 
     if (passed) {
       // ✅ সার্ভিস কল করে ডাটা সেভ এবং পরবর্তী মডিউল আনলক করা হচ্ছে
@@ -57,6 +57,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
       passed: passed,
       onPrimary: () async {
         if (passed) {
+          Navigator.pop(context);
           // পাস করলে পরের মডিউলে নিয়ে যাবে
           await _navigateToNextModule(context);
         } else {
@@ -270,18 +271,6 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                side: const BorderSide(color: Colors.blueAccent),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text("REVIEW ANSWERS", style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
