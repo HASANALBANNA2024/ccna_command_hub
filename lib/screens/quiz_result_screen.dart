@@ -93,7 +93,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
         if (!context.mounted) return;
 
         // সরাসরি পরবর্তী মডিউলের সাব-মডিউল স্ক্রিনে নেভিগেশন
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) => SubModuleScreen(
@@ -102,6 +102,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
               subModules: nextModuleData['subModules'],
             ),
           ),
+              (route) => route.isFirst, // এটি মাঝখানের সব অপ্রয়োজনীয় স্ক্রিন মুছে দিবে
         );
       } else {
         // যদি আর কোনো মডিউল না থাকে (কোর্স সমাপ্ত)
