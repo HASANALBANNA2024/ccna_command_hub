@@ -1431,6 +1431,449 @@
         "command 2": "debug ip bgp keepalives - রিয়েল টাইমে কিপ-অ্যালাইভ মেসেজ আসা-যাওয়া দেখার জন্য।",
         "command 3": "debug ip bgp updates - আপডেটের ভেতরে কী কী রুট আছে তা দেখার জন্য।"
       }
+    },
+    "m19s8": {
+      "BGP Table Architecture & Memory Management": "BGP-র কর্মক্ষমতা নির্ভর করে তার তিনটি প্রধান টেবিলের ওপর। একে বলা হয় RIB (Routing Information Base) আর্কিটেকচার। যখন একটি রুট রাউটারে ঢোকে বা বের হয়, তখন তাকে তিনটি স্তর পার হতে হয়।",
+
+      "BGP Three Table Architecture": {
+        "1. Adj RIB In": {
+          "full_name": "Adjacency Routing Information Base Incoming",
+          "logic": "এটি হলো 'Unfiltered' রুট। নেইবার থেকে আসা সব রুট প্রথমে এখানে জমা হয়। কোনো ইনবাউন্ড পলিসি বা ফিল্টার কাজ করার আগের রূপ এটি।",
+          "memory_note": "যদি 'Soft-reconfiguration inbound' এনাবল না থাকে, তবে রাউটার এই টেবিলটি সেভ করে রাখে না।"
+        },
+        "2. Loc RIB": {
+          "full_name": "Local Routing Information Base (BGP Table)",
+          "logic": "এটিই আসল বিজিবি টেবিল। Adj-RIB-In থেকে রুটগুলো ইনবাউন্ড ফিল্টার পার হয়ে এখানে আসে। এখান থেকেই বিজিবি তার ১৩-ধাপের অ্যালগরিদম ব্যবহার করে 'Best Path' বাছাই করে।",
+          "command": "show ip bgp"
+        },
+        "3. Adj RIB Out": {
+          "full_name": "Adjacency Routing Information Base Outgoing",
+          "logic": "রাউটার তার নেইবারকে যে রুটগুলো পাঠানোর জন্য প্রস্তুত করেছে। এখানে আউটবাউন্ড পলিসি বা ফিল্টার অ্যাপ্লাই করার পর রুটগুলো রাখা হয়।",
+          "command": "show ip bgp neighbors x.x.x.x advertised-routes"
+        }
+      },
+
+      "Dual End Table Processing Lab": {
+        "topology_logic": "Router_A (ISP_1) <---> Router_B (Customer_Edge)",
+        "goal": "আমরা দেখব কীভাবে Router_B ইনবাউন্ড ফিল্টার ব্যবহার করে Adj-RIB-In থেকে Loc-RIB-এ রুট কন্ট্রোল করে।",
+
+        "Router_A_ISP_Config": [
+          "!",
+          "router bgp 100",
+          " neighbor 10.1.1.2 remote-as 200",
+          " network 100.1.1.0 mask 255.255.255.0",
+          " network 101.1.1.0 mask 255.255.255.0",
+          " exit"
+        ],
+
+        "Router_B_Customer_Config": [
+          "!",
+          "ip prefix-list ONLY_100 permit 100.1.1.0/24",
+          "!",
+          "route-map FILTER_IN permit 10",
+          " match ip address prefix-list ONLY_100",
+          "!",
+          "router bgp 200",
+          " neighbor 10.1.1.1 remote-as 100",
+          " !",
+          " ! --- টেবিল প্রসেসিং অপ্টিমাইজেশন ---",
+          " neighbor 10.1.1.1 soft-reconfiguration inbound (Adj-RIB-In সেভ করার জন্য)",
+          " neighbor 10.1.1.1 route-map FILTER_IN in",
+          " exit"
+        ]
+      },
+
+      "Deep Dive Data Flow": {
+        "Step_1": "Router_A তার 'Adj-RIB-Out' থেকে রুট পাঠায়।",
+        "Step_2": "Router_B সেই রুট রিসিভ করে 'Adj-RIB-In' এ রাখে।",
+        "Step_3": "Router_B তার 'route-map FILTER_IN' অ্যাপ্লাই করে। ফলে ১০১.১.১.০ রুটটি বাদ পড়ে যায়।",
+        "Step_4": "শুধুমাত্র ১০০.১.১.০ রুটটি 'Loc-RIB' বা মেইন বিজিবি টেবিলে (show ip bgp) জায়গা পায়।",
+        "Step_5": "সবশেষে সেরা রুটটি IP Routing Table বা RIB-এ ইন্সটল হয়।"
+      },
+
+      "Verification": {
+        "Check Adj RIB In": "show ip bgp neighbors 10.1.1.1 received-routes (এটি দেখার জন্য soft-reconfiguration এনাবল থাকতে হবে)।",
+        "Check Loc RIB": "show ip bgp (এখানে সব ভ্যালিড রুট দেখা যাবে)।",
+        "Check Adj RIB Out": "show ip bgp neighbors 10.1.1.1 advertised-routes (আমি কী পাঠাচ্ছি তা দেখার জন্য)।",
+        "Memory Warning": "লক্ষ লক্ষ ইন্টারনেট রুট Adj-RIB-In এ সেভ করে রাখলে রাউটারের র‍্যাম (RAM) ক্র্যাশ করতে পারে। তাই প্রোডাকশনে 'Route Refresh' ফিচার ব্যবহার করা উত্তম।"
+      }
+    },
+    "m18s9": {
+      "Introduciton of Configuration": "BGP কনফিগারেশন মানে শুধু নেইবারশিপ নয়, বরং সঠিক সোর্স ইন্টারফেস এবং এএস (AS) নম্বর নিশ্চিত করা। প্রোডাকশন নেটওয়ার্কে স্ট্যাবিলিটির জন্য সরাসরি ইন্টারফেসের বদলে লুপব্যাক ইন্টারফেস ব্যবহার করা হয়।",
+      "BGP Configuration Categories": {
+        "Type 1 EBGP Physical": "সরাসরি কানেক্টেড ফিজিক্যাল ইন্টারফেসের মাধ্যমে ভিন্ন AS-এ নেইবারশিপ।",
+        "Type 2 IBGP Physical": "একই AS-এর ভেতরে সরাসরি কানেক্টেড ইন্টারফেস দিয়ে নেইবারশিপ।",
+        "Type 3 IBGP Loopback": "সবচেয়ে স্টেবল মেথড। লুপব্যাক ইন্টারফেস ব্যবহার করে নেইবারশিপ, যা ফিজিক্যাল ইন্টারফেস ডাউন হলেও সেশন আপ রাখে।"
+      },
+      "1 EBGP Dual End Configuration": {
+        "scenario": "ISP_A (AS 100) connecting to ISP_B (AS 200) via Physical Interface.",
+        "Router A ISP 100": [
+          "!",
+          "router bgp 100",
+          " bgp router-id 1.1.1.1",
+          " neighbor 10.1.2.2 remote-as 200",
+          " network 103.10.10.0 mask 255.255.255.0",
+          " exit"
+        ],
+        "Router B ISP 200": [
+          "!",
+          "router bgp 200",
+          " bgp router-id 2.2.2.2",
+          " neighbor 10.1.2.1 remote-as 100",
+          " network 203.20.20.0 mask 255.255.255.0",
+          " exit"
+        ]
+      },
+      "2 IBGP Loopback Dual End Configuration": {
+        "scenario": "Core_R1 and Core_R2 in AS 500. Peering via Loopbacks for stability.",
+        "pre requisite": "IBGP লুপব্যাক পিয়ারিং করার আগে লুপব্যাক আইপিগুলো OSPF বা Static Route দিয়ে রিচেবল হতে হবে।",
+        "Router R1 AS 500": [
+          "!",
+          "interface Loopback0",
+          " ip address 1.1.1.1 255.255.255.255",
+          "!",
+          "router bgp 500",
+          " bgp router-id 1.1.1.1",
+          " neighbor 2.2.2.2 remote-as 500",
+          " neighbor 2.2.2.2 update-source Loopback0 (প্যাকেট লুপব্যাক থেকে বের হবে)",
+          " neighbor 2.2.2.2 next-hop-self (EBGP রুটগুলো ফরওয়ার্ড করার জন্য বাধ্যতামূলক)",
+          " exit"
+        ],
+        "Router R2 AS 500": [
+          "!",
+          "interface Loopback0",
+          " ip address 2.2.2.2 255.255.255.255",
+          "!",
+          "router bgp 500",
+          " bgp router-id 2.2.2.2",
+          " neighbor 1.1.1.1 remote-as 500",
+          " neighbor 1.1.1.1 update-source Loopback0",
+          " neighbor 1.1.1.1 next-hop-self",
+          " exit"
+        ]
+      },
+      "3 EBGP Multihop Dual End Configuration": {
+        "scenario": "যখন দুই AS-এর রাউটার সরাসরি তার দিয়ে যুক্ত নয় (যেমন লুপব্যাক টু লুপব্যাক EBGP)।",
+        "Router A AS 100": [
+          "!",
+          "router bgp 100",
+          " neighbor 2.2.2.2 remote-as 200",
+          " neighbor 2.2.2.2 update-source Loopback0",
+          " neighbor 2.2.2.2 ebgp-multihop 2 (TTL ভ্যালু ১ থেকে বাড়িয়ে ২ করা হলো)",
+          " exit"
+        ],
+        "Router B AS 200": [
+          "!",
+          "router bgp 200",
+          " neighbor 1.1.1.1 remote-as 100",
+          " neighbor 1.1.1.1 update-source Loopback0",
+          " neighbor 1.1.1.1 ebgp-multihop 2",
+          " exit"
+        ]
+      },
+      "Configuration Best Practices": {
+        "Next Hop Self": "IBGP নেইবারশিপে সবসময় 'next-hop-self' ব্যবহার করুন, নাহলে রুটগুলো 'Inaccessible' হয়ে থাকবে।",
+        "Logging": "'bgp log-neighbor-changes' কমান্ডটি রাখুন যাতে নেইবার আপ/ডাউন হলে লগ পাওয়া যায়।",
+        "Authentication": "পাবলিক পিয়ারিংয়ের ক্ষেত্রে 'neighbor x.x.x.x password <key>' ব্যবহার করা সিকিউরিটির জন্য জরুরি।"
+      },
+      "Verification_Commands": {
+        "step 1": "show ip bgp summary - চেক করুন নেইবারশিপ Established কি না।",
+        "step 2": "show ip bgp - চেক করুন রুটগুলো টেবিলে এসেছে কি না।",
+        "step 3": "ping <prefix> source <loopback_ip> - কানেক্টিভিটি টেস্ট করার জন্য।"
+      }
+    },
+    "m19s10":{
+      "BGP Route Filtering & Policy Control": "BGP ফিল্টারিং হলো আপনার নেটওয়ার্কের গেটকিপার। এটি ছাড়া আপনার রাউটার ইন্টারনেটের সব রুট রিসিভ করে হ্যাং হয়ে যেতে পারে। ফিল্টারিং মূলত তিনটি স্তরে কাজ করে: ১. আইপি প্রিফিক্স, ২. এএস-পাথ লিস্ট, এবং ৩. রুট-ম্যাপ (সবকিছুর মিশ্রণ)।",
+      "BGP Filtering Methods": {
+        "1 Prefix Lists": {
+          "logic": "আইপি অ্যাড্রেস এবং সাবনেট মাস্কের ওপর ভিত্তি করে রুট ফিল্টার করে। এটি এক্সেস-লিস্টের চেয়ে অনেক বেশি ফাস্ট এবং ফ্লেক্সিবল (le/ge সাপোর্ট করে)।",
+          "use case": "শুধুমাত্র নির্দিষ্ট ব্লকের রুট রিসিভ বা পাঠানোর জন্য।"
+        },
+        "2_AS_Path_Filters": {
+          "logic": "রেগুলার এক্সপ্রেশন (Regex) ব্যবহার করে AS নম্বর ফিল্টার করে। যেমন: '^$' মানে নিজের এএস-এ তৈরি রুট, '.*' মানে সবকিছু।",
+          "use_case": "নির্দিষ্ট কোনো কোম্পানি বা দেশের এএস-কে ব্লক করার জন্য।"
+        },
+        "3_Route_Maps": {
+          "logic": "এটি বিজিবি-র সবচেয়ে পাওয়ারফুল ফিল্টার। এটি প্রিফিক্স, এএস-পাথ সব একসাথ করে রুটকে এলাউ (Permit), ড্রপ (Deny) বা ম্যানিপুলেট (Set) করে।"
+        }
+      },
+      "Dual End Filtering Configuration Lab": {
+        "topology_logic": "Customer_Router (AS 65000) <---> ISP_Router (AS 100)",
+        "goal": "কাস্টমার শুধুমাত্র তার নির্দিষ্ট রুটটি আইএসপি-কে পাঠাবে (Outbound) এবং আইএসপি শুধুমাত্র ডিফল্ট রুট বা নির্দিষ্ট রুট কাস্টমারকে দিবে (Inbound)।",
+
+        "Router_A_Customer_Edge": [
+          "!",
+          "ip prefix-list MY_PUBLIC_LAN permit 203.0.113.0/24",
+          "!",
+          "route-map SEND_ONLY_MY_LAN permit 10",
+          " match ip address prefix-list MY_PUBLIC_LAN",
+          "!",
+          "router bgp 65000",
+          " neighbor 1.1.1.2 remote-as 100",
+          " ! --- আউটবাউন্ড ফিল্টার অ্যাপ্লাই ---",
+          " ! আইএসপি-র কাছে যেন ভুল করে কোনো প্রাইভেট বা অন্য রুট না যায়",
+          " neighbor 1.1.1.2 route-map SEND_ONLY_MY_LAN out",
+          " exit"
+        ],
+
+        "Router_B_ISP_Core": [
+          "!",
+          "ip prefix-list CUSTOMER_ALLOWED permit 203.0.113.0/24",
+          "!",
+          "route-map FILTER_INCOMING_CUSTOMER permit 10",
+          " match ip address prefix-list CUSTOMER_ALLOWED",
+          "!",
+          "router bgp 100",
+          " neighbor 1.1.1.1 remote-as 65000",
+          " ! --- ইনবাউন্ড ফিল্টার অ্যাপ্লাই ---",
+          " ! কাস্টমার যদি ভুল করে ১ লাখ রুট পাঠায়, আইএসপি শুধু তার নিজেরটা নিবে",
+          " neighbor 1.1.1.1 route-map FILTER_INCOMING_CUSTOMER in",
+          " exit"
+        ]
+      },
+      "Deep Dive Regex AS Path": {
+        "AS_PATH_ACL": [
+          { "pattern": "^$", "meaning": "Routes originated locally in the AS (নিজস্ব রুট)।" },
+          { "pattern": "_100_", "meaning": "Routes that passed through AS 100 (এএস ১০০-এর ভেতর দিয়ে আসা রুট)।" },
+          { "pattern": "^200_", "meaning": "Routes originated directly from neighbor AS 200 (সরাসরি পাশের এএস থেকে আসা)।" }
+        ],
+        "Configuration": [
+          "ip as-path access-list 1 permit ^$",
+          "router bgp 100",
+          " neighbor 1.1.1.1 filter-list 1 out (শুধু নিজের রুটগুলো নেইবারকে দেওয়ার জন্য)"
+        ]
+      },
+      "Verification": {
+        "command 1": "show ip bgp neighbors x.x.x.x advertised-routes - ফিল্টারিংয়ের পর আমি কী পাঠাচ্ছি তা দেখা।",
+        "command 2": "show ip bgp neighbors x.x.x.x routes - ফিল্টারিংয়ের পর আমি কী রিসিভ করছি তা দেখা।",
+        "command 3": "clear ip bgp * soft - ফিল্টার চেঞ্জ করলে সেশন রিসেট না করে রুট সিংক্রোনাইজ করা।"
+      }
+    },
+    "m19s11":{
+      "BGP Attributes Manipulation (Traffic Engineering)": "বিজিবিতে ট্রাফিক কন্ট্রোল করার দুটি দিক আছে: ১. আউটবাউন্ড (আমি কোন দিক দিয়ে বের হবো) এবং ২. ইনবাউন্ড (বাইরের পৃথিবী আমার কাছে কোন দিক দিয়ে ঢুকবে)। এই মডিউলে আমরা শিখব কীভাবে 'Route-map' ব্যবহার করে এই ডিসিশনগুলো পরিবর্তন করা যায়।",
+      "Manipulation Strategies": {
+        "Outbound Traffic Control": {
+          "preferred attributes": ["Weight", "Local Preference"],
+          "logic": "আমার রাউটারে ইনকামিং রুটের ওপর পলিসি অ্যাপ্লাই করা (Apply on 'In')।"
+        },
+        "Inbound Traffic Control": {
+          "preferred_attributes": ["AS-Path Prepending", "MED"],
+          "logic": "আমার রাউটার থেকে আউটগোয়িং আপডেটের ওপর পলিসি অ্যাপ্লাই করা (Apply on 'Out')।"
+        }
+      },
+      "Dual End Manipulation Lab": {
+        "topology": "Customer_R1 (AS 600) <---> ISP_A (AS 100) & ISP_B (AS 200)",
+        "goal": "কাস্টমার চাচ্ছে ISP_A দিয়ে ইন্টারনেট ব্রাউজ করতে (Outbound) এবং চাচ্ছে ইন্টারনেটের ট্রাফিক যেন ISP_B দিয়ে তার কাছে ঢোকে (Inbound)।",
+        "Router A Customer Configuration": [
+          "!",
+          "ip prefix-list ANY_INTERNET permit 0.0.0.0/0 le 32",
+          "!",
+          "route-map PREFER_ISP_A_IN permit 10",
+          " set local-preference 500 (ডিফল্ট ১০০ থেকে বাড়ানো হলো)",
+          "!",
+          "route-map INFLUENCE_INBOUND_OUT permit 10",
+          " set as-path prepend 600 600 600 (পথ লম্বা করে ISP_A কে নিরুৎসাহিত করা)",
+          "!",
+          "router bgp 600",
+          " neighbor 1.1.1.1 remote-as 100 (ISP_A)",
+          " neighbor 1.1.1.1 route-map PREFER_ISP_A_IN in",
+          " !",
+          " neighbor 2.2.2.2 remote-as 200 (ISP_B)",
+          " neighbor 2.2.2.2 route-map INFLUENCE_INBOUND_OUT out",
+          " exit"
+        ],
+        "Router_B_ISP_A_Configuration": [
+          "!",
+          "router bgp 100",
+          " neighbor 1.1.1.2 remote-as 600",
+          " ! ISP সাধারণত কাস্টমারের পাঠানো রুট রিসিভ করে",
+          " ! কিন্তু কাস্টমার তার নিজের প্রান্তে Local Pref দিয়ে ISP_A কে প্রাইমারি করেছে।",
+          " exit"
+        ]
+      },
+      "Attribute Manipulation Deep Dive": {
+        "1 Weight Manipulation": {
+          "command": "neighbor x.x.x.x weight 500",
+          "detail": "এটি শুধুমাত্র লোকাল রাউটারে কাজ করে। যদি আপনার একটিই রাউটার থাকে এবং দুটি আইএসপি থাকে, তবে এটিই সবচেয়ে সহজ উপায়।"
+        },
+        "2 Local Pref Manipulation": {
+          "command": "set local-preference 300 (inside route-map)",
+          "detail": "এটি পুরো AS-এর সব রাউটারে ছড়িয়ে পড়ে। মাল্টি-রাউটার এনভায়রনমেন্টে এটিই সেরা।"
+        },
+        "3 AS Path Prepending": {
+          "command": "set as-path prepend 600 600",
+          "detail": "নিজের AS নম্বর বারবার লিখে রুটকে 'Unattractive' করা। এর মাধ্যমে আপনি বাইরের দুনিয়াকে বলেন অন্য রাস্তা দিয়ে আসতে।"
+        },
+        "4 MED Manipulation": {
+          "command": "set metric 50",
+          "detail": "পাশের AS-কে রিকোয়েস্ট করা। তবে মনে রাখবেন, পাশের AS চাইলে এটি ইগনোর করতে পারে।"
+        }
+      },
+      "Verification": {
+        "command 1": "show ip bgp - চেক করুন '>' চিহ্নটি আপনার পছন্দের পাথের পাশে আছে কি না।",
+        "command 2": "show ip bgp neighbors x.x.x.x advertised-routes - দেখুন AS-Path লম্বা হয়ে বের হচ্ছে কি না।",
+        "command 3": "clear ip bgp * soft - পলিসি পরিবর্তনের পর এটি দিতেই হবে।"
+      },
+      "Golden Rule": "Inbound ট্রাফিক কন্ট্রোল করা (AS-Path/MED) সবসময় কঠিন, কারণ এটি অন্য কারো (ISP) ডিসিশনের ওপর নির্ভর করে। কিন্তু Outbound (Local Pref) আপনার নিজের হাতে।"
+    },
+    "m19s12":{
+      "BGP Route Aggregation & Summarization": "ইন্টারনেটের রাউটিং টেবিল বর্তমানে ১ মিলিয়নের বেশি রুট বহন করছে। যদি প্রতিটি ছোট ছোট সাবনেট (যেমন /২৪) আলাদাভাবে পাঠানো হয়, তবে রাউটার ক্র্যাশ করবে। BGP এগ্রিগেশন এই হাজার হাজার রুটকে একটি বড় ব্লকে (যেমন /১৬) রূপান্তর করে ইন্টারনেটের লোড কমায়।",
+      "Core Aggregation Concepts": {
+        "1 Aggregate Address": "বিজিবি-তে 'aggregate-address' কমান্ড ব্যবহার করে ছোট রুটগুলোকে একটি বড় সামারি রুটে রূপান্তর করা হয়।",
+        "2 Summary Only": "এটি ব্যবহার করলে রাউটার শুধু বড় সামারি রুটটি পাঠাবে, পেছনের ছোট স্পেসিফিক রুটগুলো হাইড (Suppress) করে রাখবে।",
+        "3 AS SET Importance": "সামারি করার সময় অরিজিনাল রুটের AS-PATH তথ্য হারিয়ে যায়। 'as-set' ব্যবহার করলে সেই তথ্য সংরক্ষিত থাকে, যা লুপ হওয়া থেকে বাঁচায়।"
+      },
+      "Dual End_Aggregation Lab": {
+        "topology logic": "Customer_R1 (AS 600) has four /24 subnets. It connects to ISP_R2 (AS 100).",
+        "goal": "Customer তার ৪টি নেটওয়ার্ককে একটি /২২ ব্লকে সামারি করে ISP-কে পাঠাবে।",
+        "Router A Customer Edge": [
+          "!",
+          "router bgp 600",
+          " bgp router-id 1.1.1.1",
+          " neighbor 10.1.1.2 remote-as 100",
+          " !",
+          " ! --- অরিজিনাল রুটগুলো ডিক্লেয়ার করা ---",
+          " network 192.168.0.0 mask 255.255.255.0",
+          " network 192.168.1.0 mask 255.255.255.0",
+          " network 192.168.2.0 mask 255.255.255.0",
+          " network 192.168.3.0 mask 255.255.255.0",
+          " !",
+          " ! --- এগ্রিগেশন কনফিগারেশন ---",
+          " ! summary-only দিলে শুধু /২২ যাবে, ছোট /২৪ গুলো যাবে না।",
+          " ! as-set দিলে অরিজিনাল এএস ইনফরমেশন সাথে থাকবে।",
+          " aggregate-address 192.168.0.0 255.255.252.0 summary-only as-set",
+          " exit"
+        ],
+        "Router B ISP Core": [
+          "!",
+          "router bgp 100",
+          " neighbor 10.1.1.1 remote-as 600",
+          " !",
+          " ! ISP এখন শুধুমাত্র একটি রুট (192.168.0.0/22) রিসিভ করবে।",
+          " ! এতে আইএসপির রাউটিং টেবিল ছোট থাকবে।",
+          " exit"
+        ]
+      },
+      "Deep Dive Technical Details": {
+        "Atomic Aggregate": "যখন কোনো রুট সামারি করা হয়, বিজিবি তাতে 'Atomic Aggregate' অ্যাট্রিবিউট যোগ করে দেয়। এর মানে হলো কিছু স্পেসিফিক তথ্য এখানে ড্রপ করা হয়েছে।",
+        "Suppress Map": "যদি আপনি চান সামারি রুটের সাথে নির্দিষ্ট কিছু ছোট রুটও পাঠাতে (সবগুলো নয়), তবে 'suppress-map' ব্যবহার করতে হয়।",
+        "Null0 Interface": "বিজিবি যখন সামারি রুট তৈরি করে, এটি অটোমেটিক একটি স্ট্যাটিক রুট 'Summary to Null0' তৈরি করে যাতে রাউটিং লুপ না হয়।"
+      },
+      "Verification_Commands": {
+        "command 1": "show ip bgp - দেখবেন সামারি রুটের পাশে 's' (suppressed) লেখা আছে কি না।",
+        "command 2": "show ip bgp 192.168.0.0/22 - সামারি রুটের ডিটেইলস এবং AS-SET দেখা।",
+        "command 3": "show ip route - রাউটিং টেবিলে Null0 এন্ট্রি চেক করা।"
+      },
+      "Common Interview Question": "কেন as-set ব্যবহার করা জরুরি? উত্তর: as-set ছাড়া সামারি রুটটি মনে হয় যেন এই রাউটারেই তৈরি হয়েছে। এটি অরিজিনাল AS-PATH মুছে ফেলে, ফলে নেটওয়ার্কে লুপ হওয়ার ঝুঁকি তৈরি হয়।"
+    },
+    "m19s13":{
+      "BGP Communities (Tagging & Policy Grouping)": "BGP কমিউনিটি হলো রুটের গায়ে লাগানো একটি স্টিকারের মতো। এর মাধ্যমে আমরা রুটগুলোকে ক্যাটাগরি অনুযায়ী ভাগ করি (যেমন: 'Customer Routes', 'Local Routes', 'Do Not Advertise')। এটি জটিল আইপি লিস্টের বদলে শুধুমাত্র একটি ট্যাগ দিয়ে পুরো নেটওয়ার্ক কন্ট্রোল করতে সাহায্য করে।",
+      "BGP Community Formats": {
+        "Standard Format": "32-bit number (যেমন: 6553600)",
+        "New Format AA NN": "AS:Number (যেমন: 100:20)। এখানে প্রথম অংশ AS নম্বর এবং দ্বিতীয় অংশ একটি কাস্টম আইডি।"
+      },
+      "Well known Communities Standard": {
+        "1 No Advertise": "এই রুটটি কোনো নেইবারকেই (EBGP বা IBGP) পাঠানো হবে না।",
+        "2 No Export": "এই রুটটি AS-এর বাইরে (EBGP) পাঠানো হবে না, শুধু ইন্টারনাল (IBGP) থাকবে।",
+        "3 Local AS": "কনফেডারেশন এনভায়রনমেন্টে সাব-এএস এর বাইরে রুটটি যাবে না।",
+        "4 Internet": "ডিফল্ট কমিউনিটি, যা গ্লোবাল ইন্টারনেটে রুট প্রচার করতে দেয়।"
+      },
+
+      "Dual End Community Lab": {
+        "topology logic": "Customer_R1 (AS 600) <---> ISP_R2 (AS 100)",
+        "goal": "কাস্টমার একটি নির্দিষ্ট রুটকে 'No-Export' ট্যাগ দিয়ে পাঠাবে যেন ISP সেটি ইন্টারনেটে আউট না করে।",
+        "Router A Customer Edge": [
+          "!",
+          "ip prefix-list PRIVATE_LAN permit 192.168.10.0/24",
+          "!",
+          "route-map SET_COMMUNITY permit 10",
+          " match ip address prefix-list PRIVATE_LAN",
+          " set community no-export",
+          "!",
+          "router bgp 600",
+          " neighbor 10.1.1.2 remote-as 100",
+          " ! --- কমিউনিটি পাঠাতে হলে এই কমান্ডটি বাধ্যতামূলক ---",
+          " neighbor 10.1.1.2 send-community",
+          " neighbor 10.1.1.2 route-map SET_COMMUNITY out",
+          " exit"
+        ],
+        "Router B ISP Core": [
+          "!",
+          "router bgp 100",
+          " neighbor 10.1.1.1 remote-as 600",
+          " !",
+          " ! ISP এখন রুটটি রিসিভ করবে কিন্তু এর গায়ে 'No-Export' ট্যাগ থাকায়",
+          " ! এটি তার অন্য কোনো EBGP নেইবারকে পাঠাবে না।",
+          " exit"
+        ]
+      },
+      "Deep Dive Custom Communities": {
+        "Concept": "আইএসপি-রা নির্দিষ্ট কমিউনিটি ভ্যালু দিয়ে কাস্টমারকে ট্রাফিক কন্ট্রোল করার ক্ষমতা দেয়।",
+        "Example": "যদি কাস্টমার রুটকে '100:50' ট্যাগ দেয়, তবে আইএসপি সেই রুটের Local Preference কমিয়ে দিবে।",
+        "Configuration ISP Side": [
+          "ip community-list 1 permit 100:50",
+          "!",
+          "route-map CUSTOMER_POLICY permit 10",
+          " match community 1",
+          " set local-preference 50",
+          "!"
+        ]
+      },
+      "Verification": {
+        "command 1": "show ip bgp 192.168.10.0 - রুটের ডিটেইলসে গিয়ে কমিউনিটি ট্যাগটি চেক করা।",
+        "command 2": "show ip bgp community - নির্দিষ্ট কমিউনিটি অনুযায়ী সব রুট ফিল্টার করে দেখা।",
+        "command 3": "ip bgp-community new-format - রাউটারে AA:NN ফরম্যাট এনাবল করার জন্য।"
+      },
+      "Critical Note": "মনে রাখবেন, BGP ডিফল্টভাবে কমিউনিটি এট্রিবিউট নেইবারকে পাঠায় না। 'neighbor x.x.x.x send-community' কমান্ডটি না দিলে কোনো কমিউনিটি পলিসি কাজ করবে না।"
+    },
+    "m19s14":{
+      "BGP Confederation (Scaling the Giant AS)": "BGP কনফেডারেশন হলো একটি বিশাল সাম্রাজ্যকে ছোট ছোট প্রদেশে ভাগ করার মতো। বাইরের দুনিয়া শুধু একটি বড় 'Public AS' দেখবে, কিন্তু ভেতরে রাউটারগুলো ছোট ছোট 'Private AS' ব্যবহার করে একে অপরের সাথে কথা বলবে। এটি IBGP Full-Mesh-এর প্রয়োজনীয়তা কমিয়ে দেয়।",
+      "Core Confederation Concepts": {
+        "1 Public AS": "এটি হলো মেইন এএস নম্বর যা গ্লোবাল ইন্টারনেটে পরিচিত (যেমন: AS 100)।",
+        "2 Private Sub AS": "বড় এএস-এর ভেতরে তৈরি করা ছোট ছোট এএস (যেমন: 65001, 65002)। এগুলো ইন্টারনেটে দেখা যায় না।",
+        "3 Confederation Peering": {
+          "Intra Confed EBGP": "দুটি সাব-এএস এর মধ্যকার পিয়ারিং। এটি অনেকটা EBGP-র মতো কাজ করলেও নেক্সট-হপ এবং লোকাল প্রেফারেন্স পরিবর্তন করে না।"
+        }
+      },
+      "Dual End Confederation Lab": {
+        "topology logic": "Public AS 100 is split into Sub-AS 65001 and Sub-AS 65002.",
+        "goal": "Sub-AS 65001-এর রাউটার Sub-AS 65002-এর রাউটারের সাথে পিয়ারিং করবে।",
+        "Router R1 Sub AS 65001": [
+          "!",
+          "router bgp 65001 (নিজের প্রাইভেট এএস দিয়ে বিজিবি শুরু)",
+          " bgp confederation identifier 100 (মেইন পাবলিক এএস নম্বর ঘোষণা করা)",
+          " bgp confederation peers 65002 (অন্য কোন সাব-এএস এর সাথে কথা বলবে তা বলে দেওয়া)",
+          " !",
+          " neighbor 10.1.2.2 remote-as 65002 (সাব-এএস নেইবারশিপ)",
+          " neighbor 10.1.2.2 description PEERING_WITH_SUB_AS_65002",
+          " exit"
+        ],
+
+        "Router R2 Sub AS 65002": [
+          "!",
+          "router bgp 65002",
+          " bgp confederation identifier 100",
+          " bgp confederation peers 65001",
+          " !",
+          " neighbor 10.1.2.1 remote-as 65001",
+          " neighbor 10.1.2.1 description PEERING_WITH_SUB_AS_65001",
+          " exit"
+        ]
+      },
+      "Deep Dive Technical Behavior": {
+        "AS PATH Attribute": "কনফেডারেশনের ভেতরে AS_PATH-এ সাব-এএস নম্বরগুলো ব্র্যাকেটে ( ) থাকে। যখন রুটটি মেইন পাবলিক এএস থেকে বের হয়, তখন এই ব্র্যাকেটের অংশটুকু মুছে যায়।",
+        "Next Hop Propagation": "সাব-এএস গুলোর মধ্যে রুট যাওয়ার সময় 'Next-hop' পরিবর্তন হয় না, যা সাধারণ EBGP থেকে আলাদা।",
+        "Local Preference": "আইবিজিবি-র মতো এখানেও 'Local Preference' এবং 'MED' সাব-এএস গুলোর মধ্যে পাস হতে পারে।"
+      },
+      "Confederation vs Route Reflector": [
+        "RR কনফিগার করা সহজ এবং ডিজাইনে পরিবর্তন কম লাগে।",
+        "Confederation বড় নেটওয়ার্ককে ছোট ছোট লজিক্যাল ভাগে ভাগ করে ম্যানেজ করতে সুবিধা দেয়, কিন্তু এটি কনফিগার করা এবং ট্রাবলশুট করা কিছুটা জটিল।"
+      ],
+      "Verification": {
+        "command 1": "show ip bgp - দেখবেন AS_PATH-এ সাব-এএস নম্বরগুলো ব্র্যাকেটে দেখাচ্ছে কি না (যেমন: (65001) 200)।",
+        "command 2": "show ip bgp summary - নেইবারশিপ কনফেডারেশন স্টাইলে আপ হয়েছে কি না তা চেক করা।",
+        "command 3": "show ip bgp neighbors x.x.x.x - নেইবারের ডিটেইলসে সাব-এএস এর তথ্য দেখা।"
+      }
     }
   }
 }
