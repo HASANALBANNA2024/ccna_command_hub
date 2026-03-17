@@ -1,4 +1,5 @@
 import 'package:ccna_command_hub/main.dart';
+import 'package:ccna_command_hub/screens/about_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ccna_command_hub/services/share_service.dart';
 
@@ -33,15 +34,16 @@ class _MainDrawerState extends State<MainDrawer> {
                   isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
-                    showAboutDialog(
-                      context: context,
-                      applicationName: "CCNA Hub",
-                      applicationVersion: "1.0.0",
-                      applicationIcon: const Icon(Icons.terminal_rounded, color: Colors.blueAccent),
-                      children: [
-                        const Text("Comprehensive offline guide for CCNA commands."),
-                      ],
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> AboutScreen()));
+                    // showAboutDialog(
+                    //   context: context,
+                    //   applicationName: "CCNA Hub",
+                    //   applicationVersion: "1.0.0",
+                    //   applicationIcon: const Icon(Icons.terminal_rounded, color: Colors.blueAccent),
+                    //   children: [
+                    //     const Text("Comprehensive offline guide for CCNA commands."),
+                    //   ],
+                    // );
                   },
                 ),
                 _buildDrawerItem(
@@ -208,7 +210,7 @@ class _MainDrawerState extends State<MainDrawer> {
           Divider(color: isDark ? Colors.white10 : Colors.black12),
           const SizedBox(height: 10),
           Text(
-            "Developed with ❤️ for Students",
+            "Connecting Knowledge • v1.0.2",
             style: TextStyle(color: Colors.grey.shade500, fontSize: 10),
           ),
         ],

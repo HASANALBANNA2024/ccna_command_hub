@@ -40,7 +40,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
   Future<void> _handleResultAndOverlay() async {
     // সঠিকভাবে স্কোর গণনা করা হচ্ছে
     int finalScore = widget.questions.where((q) => q.selectedAnswer == q.answer).length;
-    bool passed = finalScore >= 5; // ১৮ মানে ৭২% (পাসিং মার্ক)
+    bool passed = finalScore >= 4; // ১৮ মানে ৭২% (পাসিং মার্ক)
 
     if (passed) {
       // ✅ সার্ভিস কল করে ডাটা সেভ এবং পরবর্তী মডিউল আনলক করা হচ্ছে

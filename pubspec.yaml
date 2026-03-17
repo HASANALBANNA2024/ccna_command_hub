@@ -61,3 +61,5 @@ flutter:
     #sound system
     - assets/sounds/click.ogg
     - assets/sounds/complete.wav
+    #Developer Image
+    - assets/images/Developer_image.jpg
