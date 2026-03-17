@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:ccna_command_hub/services/subnet_service.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:ccna_command_hub/services/bookmark_service.dart';
+
 
 class SubnetCalculatorScreen extends StatefulWidget {
   const SubnetCalculatorScreen({super.key});
@@ -10,6 +12,7 @@ class SubnetCalculatorScreen extends StatefulWidget {
 }
 
 class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> with SingleTickerProviderStateMixin {
+  bool _isSaved = false;
   late AnimationController _controller;
   final TextEditingController _ipController = TextEditingController(text: "192.168.1.1");
   int _cidr = 24;
@@ -34,6 +37,18 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> with Si
         result = SubnetLogic.calculateIPv6(_ipController.text, _cidr);
       }
     });
+  }
+
+  void _checkIfSaved() async {
+    // আপনার টাইটেল ফরম্যাট অনুযায়ী এটি চেক করবে
+    String currentTitle = "Subnet: ${_ipController.text}/$_cidr";
+    bool saved = await BookmarkService.isBookmarked(currentTitle);
+
+    if (mounted) {
+      setState(() {
+        _isSaved = saved;
+      });
+    }
   }
 
 
@@ -214,21 +229,95 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> with Si
   Widget _buildActionButtons(bool isDark) {
     return Row(
       children: [
-        Expanded(child: _actionBtn(Icons.share_rounded, "Share Report", isDark, _shareSubnetData)),
+        // শেয়ার বাটন
+        Expanded(
+          child: _actionBtn(
+            Icons.share_rounded,
+            "Share",
+            isDark,
+            _shareSubnetData,
+            color: Colors.blueAccent, // শেয়ার বাটনের জন্য ডিফল্ট নীল
+          ),
+        ),
         const SizedBox(width: 10),
-        Expanded(child: _actionBtn(Icons.bookmark_border_rounded, "Save", isDark, () {})),
+        // বুকমার্ক বাটন
+        Expanded(
+          child: _actionBtn(
+            _isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+            _isSaved ? "Bookmarked" : "Bookmark",
+            isDark,
+                () async {
+              if (result == null) return;
+
+              // ডাটা গোছানো (সুন্দর ফরম্যাট)
+              Map<String, dynamic> subnetData = {
+                "title": "Subnet: ${_ipController.text}/$_cidr",
+                "IP Address": _ipController.text,
+                "Network ID": "➜ ${result!.networkAddress}",
+                "Broadcast IP": "➜ ${result!.broadcastAddress}",
+                "Usable Range": "➜ ${result!.hostRange}",
+                "Subnet Mask": "➜ ${result!.subnetMask}",
+                "Total Hosts": "➜ ${result!.totalHosts}",
+                "Protocol": isIPv4 ? "IPv4" : "IPv6",
+              };
+
+              if (isIPv4) {
+                var blocks = SubnetLogic.getAllBlocks(_ipController.text, _cidr);
+                String formattedBlocks = "";
+                for (int i = 0; i < blocks.length; i++) {
+                  formattedBlocks += "📍 Block-${(i + 1).toString().padLeft(2, '0')}:\n"
+                      "   • Net: ${blocks[i]['net']}\n"
+                      "   • Broad: ${blocks[i]['broad']}\n\n";
+                }
+                if (formattedBlocks.isNotEmpty) {
+                  subnetData["--- ALL SUBNET BLOCKS ---"] = "\n$formattedBlocks";
+                }
+              }
+
+              // সেভ বা রিমুভ টগল করা
+              await BookmarkService.toggleBookmark(subnetData);
+
+              // স্টেট চেক করে বাটন আপডেট করা
+              _checkIfSaved();
+
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_isSaved ? "বুকমার্ক থেকে সরানো হয়েছে!" : "বুকমার্কে সেভ করা হয়েছে!"),
+                    backgroundColor: _isSaved ? Colors.redAccent : Colors.green,
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              }
+            },
+            // বুকমার্ক করা থাকলে কমলা (Orange), না থাকলে নীল (Blue) দেখাবে
+            color: _isSaved ? Colors.orange.shade700 : Colors.blueAccent,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _actionBtn(IconData icon, String label, bool isDark, VoidCallback onTap) {
+  Widget _actionBtn(IconData icon, String label, bool isDark, VoidCallback onTap, {Color? color}) {
     return SizedBox(
       height: 44,
       child: ElevatedButton.icon(
         onPressed: onTap,
         icon: Icon(icon, size: 18),
-        label: Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+        label: Text(
+            label,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)
+        ),
+        style: ElevatedButton.styleFrom(
+          // যদি বাইরে থেকে কালার দেওয়া হয় তবে সেটি নিবে, না হলে ডিফল্ট blueAccent
+          backgroundColor: color ?? Colors.blueAccent,
+          foregroundColor: Colors.white,
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          // একটু অ্যানিমেশন ইফেক্ট যোগ করা হয়েছে
+          shadowColor: (color ?? Colors.blueAccent).withOpacity(0.5),
+        ),
       ),
     );
   }
